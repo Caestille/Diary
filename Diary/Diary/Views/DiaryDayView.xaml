@@ -1,0 +1,90 @@
+﻿<UserControl
+    x:Class="Diary.Views.DiaryDayView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:controls="clr-namespace:ModernThemables.Controls;assembly=ModernThemables"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Diary.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:scalableicons="clr-namespace:ModernThemables.ScalableIcons;assembly=ModernThemables"
+    xmlns:vms="clr-namespace:Diary.Core.ViewModels.Views;assembly=Diary.Core"
+    x:Name="root"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type vms:DiaryEntryViewModel}">
+            <local:DiaryEntryView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:TagSummaryViewModel}">
+            <Grid Margin="0,0,5,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label
+                    Margin="0,0,0,-5"
+                    Content="{Binding Tag.Tag}"
+                    Foreground="{DynamicResource StatusTextBrush}" />
+                <Label
+                    Grid.Row="1"
+                    Content="{Binding FormattedTime}"
+                    Foreground="{DynamicResource TextBrush}" />
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ScrollViewer
+                x:Name="ScrollViewer"
+                Margin="6,6,0,40"
+                Focusable="False"
+                VerticalScrollBarVisibility="Auto">
+                <ItemsControl
+                    x:Name="ItemsControl"
+                    VerticalAlignment="Top"
+                    Focusable="False"
+                    ItemsSource="{Binding ChildViewModels}" />
+            </ScrollViewer>
+            <StackPanel Grid.Row="1" Margin="10">
+                <Label
+                    VerticalAlignment="Top"
+                    Content="Summary"
+                    FontSize="15"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource TextBrush}" />
+                <ScrollViewer
+                    HorizontalAlignment="Stretch"
+                    Focusable="False"
+                    VerticalScrollBarVisibility="Auto">
+                    <ItemsControl Focusable="False" ItemsSource="{Binding TagSummaries}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ScrollViewer>
+            </StackPanel>
+        </Grid>
+        <StackPanel>
+            <Grid Height="{Binding ElementName=ItemsControl, Path=ActualHeight}" MaxHeight="{Binding ElementName=ScrollViewer, Path=ActualHeight}" />
+            <controls:ExtendedButton
+                Grid.Row="1"
+                Margin="15"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Command="{Binding AddFirstChildCommand}"
+                Style="{StaticResource RoundButtonStyle}"
+                ToolTip="Add entry">
+                <scalableicons:PlusIcon
+                    Margin="2"
+                    Foreground="{DynamicResource StatusTextBrush}"
+                    StrokeThickness="2" />
+            </controls:ExtendedButton>
+        </StackPanel>
+    </Grid>
+</UserControl>
