@@ -21,13 +21,15 @@ namespace Diary.Core.ViewModels.Views
         {
             CustomTags.Add(ProposedTag);
             ProposedTag = new CustomTag();
-            SynchroniseTags();
+			OnPropertyChanged(nameof(CustomTags));
+			SynchroniseTags();
         });
 
         public ICommand DeleteCustomTagCommand => new RelayCommand<CustomTag>((tag) =>
         {
             CustomTags.Remove(tag);
-            SynchroniseTags();
+			OnPropertyChanged(nameof(CustomTags));
+			SynchroniseTags();
         });
         public ICommand CustomTagEditorKeyDownCommand => new RelayCommand<object>((args) => CustomTagEditorKeyDown(args));
 
