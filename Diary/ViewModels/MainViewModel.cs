@@ -1,5 +1,6 @@
 ﻿using CoreUtilities.HelperClasses;
 using CoreUtilities.Interfaces.RegistryInteraction;
+using CoreUtilities.Services;
 using Diary.Core.Messages.Base;
 using Diary.Core.ViewModels.Base;
 using Diary.Core.ViewModels.Views;
@@ -7,18 +8,20 @@ using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using Diary.Core.Extensions;
+using MoreLinq;
 
 namespace Diary.ViewModels
 {
-	public class MainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase
 	{
 		private IRegistryService registryService;
+		private KeepAliveTriggerService trigger;
 
 		private const string MenuPinnedSettingName = "MenuPinned";
-		private const string DefaultSearchText = "Search";
 
 		public ICommand ToggleMenuOpenCommand => new RelayCommand(ToggleMenuOpen);
 		public ICommand ToggleMenuPinCommand => new RelayCommand(ToggleMenuPin);
@@ -56,7 +59,7 @@ namespace Diary.ViewModels
 			set
 			{
 				SetProperty(ref searchText, value);
-				OnPropertyChanged(nameof(FilteredViewModels));
+				trigger.Refresh();
 			}
 		}
 
@@ -74,10 +77,10 @@ namespace Diary.ViewModels
 		{
 			get
 			{
-				return (SearchText == DefaultSearchText || string.IsNullOrWhiteSpace(SearchText)) 
-					? SearchText == DefaultSearchText ? AllViewModels : new RangeObservableCollection<ViewModelBase>() 
+				return string.IsNullOrWhiteSpace(SearchText)
+					? new RangeObservableCollection<ViewModelBase>()
 					: new RangeObservableCollection<ViewModelBase>(
-						AllViewModels.Where(x => x.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)));
+						AllViewModels.Where(x => x.ShowsInSearch).Where(x => x.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)));
 			}
 		}
 
@@ -86,24 +89,7 @@ namespace Diary.ViewModels
 			this.registryService = registryService;
 			ChildViewModels.AddRange(viewModels);
 			SetLevel(0);
-
-			DiaryWeekViewModel? weekVm = ChildViewModels.First().ChildViewModels.Any() 
-				? ChildViewModels.First().ChildViewModels.First() as DiaryWeekViewModel 
-				: null;
-
-            if (weekVm != null)
-			{
-				weekVm.IsSelected = true;
-				VisibleViewModel = weekVm;
-				DiaryDayViewModel? dayVm = weekVm.ChildViewModels.Any()
-					? (weekVm.ChildViewModels.FirstOrDefault(x => (x as DiaryDayViewModel).DayOfWeek == DateTime.Now.DayOfWeek.ToString()) ?? weekVm.ChildViewModels.First()) as DiaryDayViewModel
-					: null;
-				if (dayVm != null)
-				{
-					dayVm.IsSelected = true;
-					weekVm.SelectedDay = dayVm;
-				}
-			}
+			trigger = new KeepAliveTriggerService(() => { if (SearchText != "") OnPropertyChanged(nameof(FilteredViewModels)); }, 100);
 
 			foreach (var vm in AllViewModels)
 			{
@@ -113,7 +99,7 @@ namespace Diary.ViewModels
 
 		protected override void BindMessages()
 		{
-			Messenger.Register<ViewModelRequestShowMessage>(this, (sender, message) => 
+			Messenger.Register<ViewModelRequestShowMessage>(this, (sender, message) =>
 			{
 				foreach (var vm in AllViewModels.Where(x => x is not DiaryDayViewModel))
 				{
@@ -121,8 +107,19 @@ namespace Diary.ViewModels
 				}
 				message.ViewModel.IsSelected = true;
 				VisibleViewModel = message.ViewModel;
-				SearchText = DefaultSearchText;
+				if (SearchText != "") SearchText = "";
 			});
+
+			Messenger.Register<ViewModelRequestShowMessage<DiaryDayViewModel>>(this, (sender, message) =>
+			{
+				if (searchText == string.Empty) return;
+
+				SelectDay(DateTime.ParseExact(
+					(message.ViewModel as DiaryDayViewModel).Name,
+					"dd/MM/yyyy",
+					CultureInfo.InvariantCulture,
+					DateTimeStyles.None));
+            });
 
 			Messenger.Register<ViewModelRequestDeleteMessage>(this, (sender, message) =>
 			{
@@ -145,17 +142,50 @@ namespace Diary.ViewModels
 			OnPropertyChanged(nameof(AllViewModels));
 		}
 
+		protected override void OnShutdownStart(object? sender, EventArgs e)
+		{
+			trigger.Stop();
+			base.OnShutdownStart(sender, e);
+		}
+
+		private void SelectDay(DateTime day, bool includeDay = false)
+		{
+            var weekDate = day.FirstDayOfWeek();
+            var weekVm = AllViewModels
+				.Where(x => x is DiaryWeekViewModel)
+				.First(x => (x as DiaryWeekViewModel).WeekStart.ToString("dd/MM/yyyy") == weekDate.ToString("dd/MM/yyyy"));
+            var calendarVm = ChildViewModels.First(x => x is CalendarViewModel);
+			var yearVm = calendarVm.ChildViewModels
+				.Where(x => x is DiaryYearViewModel)
+				.First(x => x.Name == weekDate.Year.ToString());
+            var monthVm = yearVm.ChildViewModels
+				.Where(x => x is DiaryMonthViewModel)
+				.First(x => x.Name == weekDate.ToString("MMMM"));
+            AllViewModels
+				.Where(x => (x is DiaryYearViewModel || x is DiaryMonthViewModel || x is DiaryWeekViewModel) && x.IsShowingChildren)
+				.ForEach(x => { x.SelectCommand.Execute(null); });
+
+            if (!calendarVm.IsShowingChildren) calendarVm.SelectCommand.Execute(null);
+            if (!yearVm.IsShowingChildren) yearVm.SelectCommand.Execute(null);
+            if (!monthVm.IsShowingChildren) monthVm.SelectCommand.Execute(null);
+            if (!weekVm.IsSelected) weekVm.SelectCommand.Execute(null);
+
+			if (includeDay)
+			{
+				var dayVm = weekVm.ChildViewModels
+					.First(x => (x as DiaryDayViewModel).Name == day.ToString("dd/MM/yyyy"));
+                if (!dayVm.IsSelected) dayVm.SelectCommand.Execute(null);
+            }
+        }
+
 		private async void ToggleMenuOpen()
 		{
 			IsMenuOpen = !IsMenuOpen;
-			if (IsMenuOpen)
+			if (!IsMenuOpen && !string.IsNullOrEmpty(searchText))
 			{
-				await Task.Delay(50);
+				SearchText = "";
 			}
-			else
-			{
-				SearchText = "Search";
-			}
+
 			foreach (var vm in AllViewModels)
 			{
 				vm.IsCollapsed = !IsMenuOpen;
@@ -175,6 +205,8 @@ namespace Diary.ViewModels
 				ToggleMenuOpen();
 			}
 			IsMenuPinned = menuPinned;
-		}
+
+            SelectDay(DateTime.Now, true);
+        }
 	}
 }

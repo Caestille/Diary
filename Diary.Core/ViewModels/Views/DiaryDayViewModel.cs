@@ -46,6 +46,8 @@ namespace Diary.Core.ViewModels.Views
 
         public DiaryDayViewModel() : base("")
         {
+            AllowShowDropdownIndicator = false;
+            ShowsInSearch = true;
             GenerateSummary();
         }
 

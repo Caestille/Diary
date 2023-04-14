@@ -1,6 +1,5 @@
 ﻿
 using CoreUtilities.HelperClasses;
-using Diary.Core.Extensions;
 using Diary.Core.Models;
 using Diary.Core.ViewModels.Base;
 using Diary.Core.ViewModels.Views;

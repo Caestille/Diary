@@ -52,7 +52,7 @@
         <ContentControl
             x:Name="ContentControl"
             Grid.Column="1"
-            Content="{Binding Path=VisibleViewModel, UpdateSourceTrigger=PropertyChanged}"
+            Content="{Binding Path=VisibleViewModel, UpdateSourceTrigger=PropertyChanged, IsAsync=True}"
             Focusable="False"
             Foreground="{DynamicResource TextBrush}">
             <ContentControl.Style>

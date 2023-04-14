@@ -4,9 +4,11 @@ using System.Windows;
 using Diary.Core.ViewModels.Base;
 using CoreUtilities.Services.RegistryInteraction;
 using Diary.Core.ViewModels.Views;
-using System.Threading.Tasks;
 using System;
 using System.IO;
+using System.Linq;
+using System.Text.Json;
+using Diary.Core.Dtos;
 
 namespace Diary
 {
@@ -24,7 +26,7 @@ namespace Diary
 
         public App() { }
 
-        protected override async void OnStartup(StartupEventArgs e)
+        protected override void OnStartup(StartupEventArgs e)
         {
             if (e.Args.Length > 0)
             {
@@ -39,9 +41,18 @@ namespace Diary
             var appRegistryService = new RegistryService(@"SOFTWARE\Diary");
 
             var taggingVm = new DataTaggingViewModel(WorkingDirectory);
+
+            var weeks = Directory.GetFiles(WorkingDirectory)
+                .Where(x => Guid.TryParse(Path.GetFileNameWithoutExtension(x), out _));
+            var weekVms = weeks.Select(
+                x => DiaryWeekViewModel.FromDto(
+                    JsonSerializer.Deserialize<DiaryWeekDto>(File.ReadAllText(x)),
+                    WorkingDirectory,
+                    Guid.Parse(Path.GetFileNameWithoutExtension(x)))).ToList();
+
             var viewModels = new List<ViewModelBase>()
             {
-                new DiaryWeekCollectionViewModel(WorkingDirectory),
+                new CalendarViewModel(WorkingDirectory, weekVms),
                 taggingVm,
             };
 
@@ -52,8 +63,6 @@ namespace Diary
             {
                 DataContext = mainViewModel
             };
-
-            await Task.Delay(1000);
 
             mainView.Show();
         }

@@ -5,13 +5,11 @@ using Diary.Core.Messages;
 using Diary.Core.Messages.Base;
 using Diary.Core.Models;
 using Diary.Core.ViewModels.Base;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using MoreLinq;
 using System.Reactive.Linq;
 using System.Text.Json;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Diary.Core.ViewModels.Views
@@ -89,22 +87,26 @@ namespace Diary.Core.ViewModels.Views
             string workingDirectory, DateTime? overrideWeekStart = null, Guid? overrideGuid = null) : base("", "")
         {
             this.workingDirectory = workingDirectory;
-            var firstDayOfWeek = overrideWeekStart ?? DateTime.Now;
+            var firstDayOfWeek = (overrideWeekStart ?? DateTime.Now).FirstDayOfWeek();
             guid = overrideGuid ?? Guid.NewGuid();
-            while (firstDayOfWeek.DayOfWeek != DayOfWeek.Monday)
-            {
-                firstDayOfWeek -= TimeSpan.FromDays(1);
-            }
             WeekStart = firstDayOfWeek;
             Name = $"Week {firstDayOfWeek.ToString("dd/MM/yyyy")}";
             SetDaysForStartOfWeek();
             SupportsDeleting = true;
+            AllowShowDropdownIndicator = false;
             GenerateSummary();
         }
 
-        internal static DiaryWeekViewModel FromDto(DiaryWeekDto dto, string workingDirectory, Guid guid)
+        public static DiaryWeekViewModel FromDto(DiaryWeekDto dto, string workingDirectory, Guid guid)
         {
-            return new DiaryWeekViewModel(workingDirectory, dto.WeekStart, guid) { ChildViewModels = new RangeObservableCollection<ViewModelBase>(dto.Days.Select(x => DiaryDayViewModel.FromDto(x))) };
+            return new DiaryWeekViewModel(
+                workingDirectory,
+                dto.WeekStart,
+                guid)
+            {
+                ChildViewModels = new RangeObservableCollection<ViewModelBase>(
+                    dto.Days.Select(x => DiaryDayViewModel.FromDto(x)))
+            };
         }
 
         protected override void OnCommitNameUpdate()
@@ -205,12 +207,20 @@ namespace Diary.Core.ViewModels.Views
 
         private void GenerateSummary()
         {
-            var summaries = ChildViewModels.Select(x => new DayTagSummaryViewModel((x as DiaryDayViewModel).DayOfWeek, (x as DiaryDayViewModel).GenerateSummary(false))).ToList();
+            var summaries = ChildViewModels.Select(x => new DayTagSummaryViewModel(
+                (x as DiaryDayViewModel).DayOfWeek,
+                (x as DiaryDayViewModel).GenerateSummary(false))).ToList();
 
             foreach (var summary in summaries)
             {
                 var items = summary.Tags;
-                var newItems = tags.Where(x => x.IsIncluded).Select(x => new TagSummaryViewModel(x, (items.Any(y => (y.Tag != null ? y.Tag.Tag : "") == x.Tag) ? items.First(y => y.Tag.Tag == x.Tag).Time : TimeSpan.FromSeconds(0)).TotalSeconds));
+                var newItems = tags
+                    .Where(x => x.IsIncluded)
+                    .Select(x => new TagSummaryViewModel(
+                        x,
+                        (items.Any(y => (y.Tag != null ? y.Tag.Tag : "") == x.Tag)
+                            ? items.First(y => y.Tag.Tag == x.Tag).Time
+                            : TimeSpan.FromSeconds(0)).TotalSeconds));
                 summary.Tags = new RangeObservableCollection<TagSummaryViewModel>(newItems);
             }
 

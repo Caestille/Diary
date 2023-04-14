@@ -47,9 +47,16 @@ namespace Diary.Core.ViewModels.Base
 		{
 			get => isSelected;
 			set => SetProperty(ref isSelected, value);
-		}
+        }
 
-		private bool isCollapsed;
+		private bool showsInSearch = false;
+        public bool ShowsInSearch
+        {
+            get => showsInSearch;
+            set => SetProperty(ref showsInSearch, value);
+        }
+
+        private bool isCollapsed;
 		public bool IsCollapsed
 		{
 			get => isCollapsed;
@@ -70,9 +77,16 @@ namespace Diary.Core.ViewModels.Base
 		{
 			get => isShowingChildren;
 			set => SetProperty(ref isShowingChildren, value);
-		}
+        }
 
-		private int level = 0;
+		private bool allowShowDropdownIndicator = true;
+        public bool AllowShowDropdownIndicator
+        {
+            get => allowShowDropdownIndicator;
+            set => SetProperty(ref allowShowDropdownIndicator, value);
+        }
+
+        private int level = 0;
 		public int Level
 		{
 			get => level;
@@ -100,10 +114,10 @@ namespace Diary.Core.ViewModels.Base
 		{
 			Messenger.Register<ViewModelRequestShowMessage>(this, async (sender, message) =>
 			{
-				if (message.ViewModel == this)
-					OnViewModelRequestShow(message);
-				else
-					IsSelected = false;
+				//if (message.ViewModel == this)
+				//	OnViewModelRequestShow(message);
+				//else if (IsSelected)
+				//	IsSelected = false;
 			});
 
 			Messenger.Register<ViewModelRequestDeleteMessage>(this, (sender, message) =>
@@ -180,10 +194,10 @@ namespace Diary.Core.ViewModels.Base
 				vm.SetLevel(level + 1);
 			}
 
-			if (SupportsAddingChildren)
-			{
-				IsShowingChildren = true;
-			}
+			//if (SupportsAddingChildren)
+			//{
+			//	IsShowingChildren = true;
+			//}
 
 			OnPropertyChanged(nameof(ChildViewModels));
 			OnChildrenChanged();
