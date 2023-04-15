@@ -150,32 +150,36 @@ namespace Diary.ViewModels
 
 		private void SelectDay(DateTime day, bool includeDay = false)
 		{
-            var weekDate = day.FirstDayOfWeek();
-            var weekVm = AllViewModels
-				.Where(x => x is DiaryWeekViewModel)
-				.First(x => (x as DiaryWeekViewModel).WeekStart.ToString("dd/MM/yyyy") == weekDate.ToString("dd/MM/yyyy"));
-            var calendarVm = ChildViewModels.First(x => x is CalendarViewModel);
-			var yearVm = calendarVm.ChildViewModels
-				.Where(x => x is DiaryYearViewModel)
-				.First(x => x.Name == weekDate.Year.ToString());
-            var monthVm = yearVm.ChildViewModels
-				.Where(x => x is DiaryMonthViewModel)
-				.First(x => x.Name == weekDate.ToString("MMMM"));
-            AllViewModels
-				.Where(x => (x is DiaryYearViewModel || x is DiaryMonthViewModel || x is DiaryWeekViewModel) && x.IsShowingChildren)
-				.ForEach(x => { x.SelectCommand.Execute(null); });
-
-            if (!calendarVm.IsShowingChildren) calendarVm.SelectCommand.Execute(null);
-            if (!yearVm.IsShowingChildren) yearVm.SelectCommand.Execute(null);
-            if (!monthVm.IsShowingChildren) monthVm.SelectCommand.Execute(null);
-            if (!weekVm.IsSelected) weekVm.SelectCommand.Execute(null);
-
-			if (includeDay)
+			try
 			{
-				var dayVm = weekVm.ChildViewModels
-					.First(x => (x as DiaryDayViewModel).Name == day.ToString("dd/MM/yyyy"));
-                if (!dayVm.IsSelected) dayVm.SelectCommand.Execute(null);
-            }
+				var weekDate = day.FirstDayOfWeek();
+				var weekVm = AllViewModels
+					.Where(x => x is DiaryWeekViewModel)
+					.First(x => (x as DiaryWeekViewModel).WeekStart.ToString("dd/MM/yyyy") == weekDate.ToString("dd/MM/yyyy"));
+				var calendarVm = ChildViewModels.First(x => x is CalendarViewModel);
+				var yearVm = calendarVm.ChildViewModels
+					.Where(x => x is DiaryYearViewModel)
+					.First(x => x.Name == weekDate.Year.ToString());
+				var monthVm = yearVm.ChildViewModels
+					.Where(x => x is DiaryMonthViewModel)
+					.First(x => x.Name == weekDate.ToString("MMMM"));
+				AllViewModels
+					.Where(x => (x is DiaryYearViewModel || x is DiaryMonthViewModel || x is DiaryWeekViewModel) && x.IsShowingChildren)
+					.ForEach(x => { x.SelectCommand.Execute(null); });
+
+				if (!calendarVm.IsShowingChildren) calendarVm.SelectCommand.Execute(null);
+				if (!yearVm.IsShowingChildren) yearVm.SelectCommand.Execute(null);
+				if (!monthVm.IsShowingChildren) monthVm.SelectCommand.Execute(null);
+				if (!weekVm.IsSelected) weekVm.SelectCommand.Execute(null);
+
+				if (includeDay)
+				{
+					var dayVm = weekVm.ChildViewModels
+						.First(x => (x as DiaryDayViewModel).Name == day.ToString("dd/MM/yyyy"));
+					if (!dayVm.IsSelected) dayVm.SelectCommand.Execute(null);
+				}
+			}
+			catch { }
         }
 
 		private async void ToggleMenuOpen()
