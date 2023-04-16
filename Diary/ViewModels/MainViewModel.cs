@@ -69,7 +69,7 @@ namespace Diary.ViewModels
 			{
 				RangeObservableCollection<ViewModelBase> result = new RangeObservableCollection<ViewModelBase>();
 				this.GetChildren(ref result, true);
-				return result;
+				return new RangeObservableCollection<ViewModelBase>(result.Where(x => x is not DiaryEntryViewModel));
 			}
 		}
 
