@@ -468,45 +468,7 @@
                         </Grid>
                         <!--#endregion-->
                         <!--#region Child items-->
-                        <Grid Margin="3,0,0,0" Visibility="{Binding IsShowingChildren, Converter={StaticResource VisibleIfTrueConverter}}">
-                            <Grid.Style>
-                                <Style>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsCollapsed}" Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ThicknessAnimation
-                                                            AutoReverse="False"
-                                                            Storyboard.TargetProperty="Margin"
-                                                            To="0,0,0,0"
-                                                            Duration="0:0:0.1">
-                                                            <ThicknessAnimation.EasingFunction>
-                                                                <BackEase Amplitude="0.3" EasingMode="EaseOut" />
-                                                            </ThicknessAnimation.EasingFunction>
-                                                        </ThicknessAnimation>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                            <DataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ThicknessAnimation
-                                                            AutoReverse="False"
-                                                            Storyboard.TargetProperty="Margin"
-                                                            To="3,0,0,0"
-                                                            Duration="0:0:0.1">
-                                                            <ThicknessAnimation.EasingFunction>
-                                                                <BackEase Amplitude="0.3" EasingMode="EaseOut" />
-                                                            </ThicknessAnimation.EasingFunction>
-                                                        </ThicknessAnimation>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.ExitActions>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Grid.Style>
+                        <Grid Visibility="{Binding IsShowingChildren, Converter={StaticResource VisibleIfTrueConverter}}">
                             <ItemsControl
                                 VerticalAlignment="Bottom"
                                 ItemTemplate="{DynamicResource MenuItemDataTemplate}"
