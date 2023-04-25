@@ -13,6 +13,8 @@ using System.Linq;
 using System.Windows.Input;
 using Diary.Core.Extensions;
 using MoreLinq;
+using Diary.Core.Messages.Base;
+using System.Windows;
 
 namespace Diary.ViewModels
 {
@@ -131,7 +133,36 @@ namespace Diary.ViewModels
 				}
 			});
 
-			Messenger.Register<NotifyChildrenChangedMessage>(this, (sender, message) =>
+            Messenger.Register<TakeMeToTodayMessage>(this, (sender, message) =>
+            {
+                if (!SelectDay(DateTime.Now, true))
+				{
+					if (MessageBox.Show("No week added for today, create one?", "No week to select", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+					{
+						var currentDate = DateTime.Now;
+						var calendar = AllViewModels.First(x => x is CalendarViewModel) as CalendarViewModel;
+						var years = calendar.ChildViewModels.Cast<DiaryYearViewModel>();
+						if (!years.Any(x => x.Name == currentDate.Year.ToString()))
+						{
+							calendar.AddChild();
+						}
+						var year = calendar.ChildViewModels.First(x => x.Name == currentDate.Year.ToString());
+						var months = year.ChildViewModels.Cast<DiaryMonthViewModel>();
+						if (!months.Any(x => x.Name == currentDate.ToString("MMMM")))
+						{
+							year.AddChild();
+						}
+						var month = year.ChildViewModels.First(x => x.Name == currentDate.ToString("MMMM"));
+						if (!month.ChildViewModels.Any(x => x.Name == $"Week {currentDate.FirstDayOfWeek().ToString("dd/MM/yyyy")}"))
+						{
+							month.AddChild();
+						}
+						SelectDay(DateTime.Now, true);
+					}
+				}
+            });
+
+            Messenger.Register<NotifyChildrenChangedMessage>(this, (sender, message) =>
 			{
 				OnPropertyChanged(nameof(AllViewModels));
 			});
@@ -148,7 +179,7 @@ namespace Diary.ViewModels
 			base.OnShutdownStart(sender, e);
 		}
 
-		private void SelectDay(DateTime day, bool includeDay = false)
+		private bool SelectDay(DateTime day, bool includeDay = false)
 		{
 			try
 			{
@@ -178,8 +209,13 @@ namespace Diary.ViewModels
 						.First(x => (x as DiaryDayViewModel).Name == day.ToString("dd/MM/yyyy"));
 					if (!dayVm.IsSelected) dayVm.SelectCommand.Execute(null);
 				}
+
+				return true;
 			}
-			catch { }
+			catch
+			{
+				return false;
+			}
         }
 
 		private async void ToggleMenuOpen()

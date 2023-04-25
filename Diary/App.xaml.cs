@@ -52,6 +52,7 @@ namespace Diary
 
             var viewModels = new List<ViewModelBase>()
             {
+                new TakeMeToTodayViewModel(),
                 new CalendarViewModel(WorkingDirectory, weekVms),
                 taggingVm,
             };

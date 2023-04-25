@@ -68,12 +68,12 @@
             BorderBrush="{DynamicResource MenuBorderBrush}"
             BorderThickness="0,0,0,1"
             Foreground="{DynamicResource TextBrush}"
-            Text="{Binding EntryText, UpdateSourceTrigger=PropertyChanged}"
-            TextWrapping="Wrap"
+            Text="{Binding EntryText}"
             ToolTip="Press enter to add a new entry below"
+            TextWrapping="Wrap"
             ToolTipService.InitialShowDelay="100">
             <b:Interaction.Triggers>
-                <b:EventTrigger EventName="PreviewKeyDown">
+                <b:EventTrigger EventName="KeyDown">
                     <b:InvokeCommandAction Command="{Binding EntryKeyDownCommand}" PassEventArgsToCommand="True" />
                 </b:EventTrigger>
                 <b:EventTrigger EventName="GotKeyboardFocus">
