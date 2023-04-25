@@ -1,7 +1,7 @@
 ﻿using Diary.Core.ViewModels.Views;
 using System.Windows.Input;
 
-namespace FinanceTracker.Core.Messages.Base
+namespace Diary.Core.Messages.Base
 {
     public class EntryKeyDownMessage
     {

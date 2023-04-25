@@ -1,6 +1,6 @@
 ﻿using Diary.Core.ViewModels.Views;
 
-namespace FinanceTracker.Core.Messages.Base
+namespace Diary.Core.Messages.Base
 {
     public class EntryFocusedMessage
     {
