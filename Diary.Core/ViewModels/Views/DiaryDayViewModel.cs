@@ -8,6 +8,7 @@ using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using MoreLinq;
 using System.Windows.Input;
+using System.Data.Entity.Core.Objects;
 
 namespace Diary.Core.ViewModels.Views
 {
@@ -33,6 +34,13 @@ namespace Diary.Core.ViewModels.Views
                 SetProperty(ref showFullDates, value);
                 ChildViewModels.ForEach(x => (x as DiaryEntryViewModel).ShowFullDates = value);
             }
+        }
+
+        private bool syncDates;
+        public bool SyncDates
+        {
+            get => syncDates;
+            set => SetProperty(ref syncDates, value);
         }
 
         private RangeObservableCollection<TagSummaryViewModel> tagSummaries;
@@ -103,6 +111,29 @@ namespace Diary.Core.ViewModels.Views
                 if (ChildViewModels.Contains(message.Sender))
                 {
                     GenerateSummary();
+                }
+            });
+            Messenger.Register<EntryDateChangedMessage>(this, (recipient, message) =>
+            {
+                if (ChildViewModels.Contains(message.Sender))
+                {
+                    if (SyncDates)
+                    {
+                        var comparerFunc = new Func<DateTime, DateTime, bool>((DateTime original, DateTime comparer) => original.ToString("HH:mm") == comparer.ToString("HH:mm"));
+                        var match = ChildViewModels.FirstOrDefault(x => comparerFunc(((DiaryEntryViewModel)x).StartTime, message.OldValue) || comparerFunc(((DiaryEntryViewModel)x).EndTime, message.OldValue));
+                        if (match != null)
+                        {
+                            var entry = (DiaryEntryViewModel)match;
+                            if (comparerFunc(entry.StartTime, message.OldValue))
+                            {
+                                entry.StartTime = message.NewValue;
+                            }
+                            else if (comparerFunc(entry.EndTime, message.OldValue))
+                            {
+                                entry.EndTime = message.NewValue;
+                            }
+                        }
+                    }
                 }
             });
             base.BindMessages();

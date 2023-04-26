@@ -13,10 +13,12 @@
     FontFamily="Fonts/#Inter"
     FontSize="13"
     Icon="Resources/Icon.ico"
-    RenderOptions.BitmapScalingMode="HighQuality"
-    RenderOptions.ClearTypeHint="Enabled"
+    RenderOptions.BitmapScalingMode="NearestNeighbor"
+    RenderOptions.ClearTypeHint="Auto"
     SnapsToDevicePixels="True"
     UseLayoutRounding="True"
+    VisualEdgeMode="Aliased"
+    VisualTextRenderingMode="Aliased"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None">
     <Window.Resources>

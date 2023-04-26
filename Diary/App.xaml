@@ -136,9 +136,7 @@
                     <!--#region Menu item icons-->
                     <Grid.Resources>
                         <DataTemplate DataType="{x:Type vms:TakeMeToTodayViewModel}">
-                            <scalableicons:PlusIcon
-                                Background="{DynamicResource MenuBrush}"
-                                StrokeThickness="3" />
+                            <scalableicons:PlusIcon Background="{DynamicResource MenuBrush}" StrokeThickness="3" />
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type vms:CalendarViewModel}">
                             <scalableicons:CalendarIcon

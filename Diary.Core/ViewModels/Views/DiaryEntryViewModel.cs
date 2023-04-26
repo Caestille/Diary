@@ -8,6 +8,8 @@ using Diary.Core.Messages.Base;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using System.Windows.Input;
+using System.Windows;
+using ModernThemables.Controls;
 
 namespace Diary.Core.ViewModels.Views
 {
@@ -15,6 +17,7 @@ namespace Diary.Core.ViewModels.Views
     {
         public ICommand EntryGotFocusCommand => new RelayCommand(EntryGotFocus);
         public ICommand EntryKeyDownCommand => new RelayCommand<object>(EntryKeyDown);
+        public ICommand EntryDateChangedCommand => new RelayCommand<object>(EntryDateChanged);
 
         private DateTime startTime;
         public DateTime StartTime
@@ -134,6 +137,14 @@ namespace Diary.Core.ViewModels.Views
             if (args is KeyEventArgs keyArgs && keyArgs.Key == Key.Enter)
             {
                 Messenger.Send(new EntryKeyDownMessage(this, keyArgs));
+            }
+        }
+
+        private void EntryDateChanged(object args)
+        {
+            if (args is RoutedPropertyChangedEventArgs<DateTime?> propertyArgs && propertyArgs.OldValue is DateTime oldVal && propertyArgs.NewValue is DateTime newVal)
+            {
+                Messenger.Send(new EntryDateChangedMessage(this, oldVal, newVal));
             }
         }
     }

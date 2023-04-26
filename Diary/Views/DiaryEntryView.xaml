@@ -37,6 +37,9 @@
                 <b:EventTrigger EventName="GotMouseCapture">
                     <b:InvokeCommandAction Command="{Binding EntryGotFocusCommand}" />
                 </b:EventTrigger>
+                <b:EventTrigger EventName="DateChanged">
+                    <b:InvokeCommandAction Command="{Binding EntryDateChangedCommand}" PassEventArgsToCommand="True" />
+                </b:EventTrigger>
             </b:Interaction.Triggers>
         </controls:DatetimeTextBox>
         <Label
@@ -55,6 +58,9 @@
             <b:Interaction.Triggers>
                 <b:EventTrigger EventName="GotMouseCapture">
                     <b:InvokeCommandAction Command="{Binding EntryGotFocusCommand}" />
+                </b:EventTrigger>
+                <b:EventTrigger EventName="DateChanged">
+                    <b:InvokeCommandAction Command="{Binding EntryDateChangedCommand}" PassEventArgsToCommand="True" />
                 </b:EventTrigger>
             </b:Interaction.Triggers>
         </controls:DatetimeTextBox>

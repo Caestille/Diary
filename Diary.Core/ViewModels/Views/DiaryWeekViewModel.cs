@@ -46,6 +46,17 @@ namespace Diary.Core.ViewModels.Views
             }
         }
 
+        private bool syncDates;
+        public bool SyncDates
+        {
+            get => syncDates;
+            set
+            {
+                SetProperty(ref syncDates, value);
+                ChildViewModels.ForEach(x => (x as DiaryDayViewModel).SyncDates = value);
+            }
+        }
+
         private DateTime weekStart;
         public DateTime WeekStart
         {
