@@ -35,6 +35,9 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
@@ -97,16 +100,64 @@
                     MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                     MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
                     ToolTip="Edit name">
-                    <!--#region Button icon-->
                     <scalableicons:PenIcon
                         Margin="1"
                         Foreground="{DynamicResource StatusTextBrush}"
                         StrokeThickness="4" />
-                    <!--#endregion-->
                 </controls:ExtendedButton>
                 <!--#endregion-->
-                <controls:ExtendedToggleButton
+                <controls:ExtendedButton
+                    x:Name="SaveButton"
                     Grid.Column="3"
+                    Margin="30,4,10,3"
+                    Padding="4"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="{DynamicResource ControlClickablePartBrush}"
+                    BorderThickness="0"
+                    Command="{Binding SaveCommand}"
+                    CornerRadius="5"
+                    DisabledBackgroundColour="{DynamicResource DisabledControlClickablePartBrush}"
+                    DisabledForegroundColour="{DynamicResource DisabledControlNonClickablePartBrush}"
+                    Foreground="{DynamicResource StatusTextBrush}"
+                    IsEnabled="{Binding CanSave}"
+                    MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
+                    MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
+                    ToolTip="Save">
+                    <Grid>
+                        <scalableicons:SaveIcon
+                            Width="18"
+                            Height="18"
+                            Margin="1"
+                            Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=Background}"
+                            StrokeThickness="4" />
+                        <controls:CircularProgressBar
+                            Width="20"
+                            Height="20"
+                            SegmentColor="{DynamicResource ThemeMouseOverBrush}"
+                            IsIndeterminate="True"
+                            StrokeThickness="3"
+                            Visibility="{Binding IsSaving, Converter={StaticResource VisibleIfTrueConverter}}" />
+                    </Grid>
+                </controls:ExtendedButton>
+                <Label
+                    Grid.Column="4"
+                    Margin="0,8,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    HorizontalContentAlignment="Center"
+                    Content="Auto Save"
+                    FontSize="10"
+                    Foreground="{DynamicResource TextBrush}" />
+                <CheckBox
+                    Grid.Column="4"
+                    Margin="5,10,10,14"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    IsChecked="{Binding IsAutoSaveEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource ToggleCheckbox}" />
+                <controls:ExtendedToggleButton
+                    Grid.Column="6"
                     Margin="0,4,10,3"
                     Padding="4"
                     HorizontalAlignment="Right"
@@ -128,7 +179,7 @@
                         Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedToggleButton}}, Path=Background}" />
                 </controls:ExtendedToggleButton>
                 <controls:ExtendedToggleButton
-                    Grid.Column="4"
+                    Grid.Column="7"
                     Margin="0,4,10,3"
                     Padding="4"
                     HorizontalAlignment="Right"
@@ -151,7 +202,7 @@
                 </controls:ExtendedToggleButton>
                 <controls:ExtendedButton
                     x:Name="SummaryButton"
-                    Grid.Column="5"
+                    Grid.Column="8"
                     Margin="0,4,10,3"
                     Padding="5"
                     HorizontalAlignment="Right"

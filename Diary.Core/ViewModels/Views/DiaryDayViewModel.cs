@@ -147,6 +147,8 @@ namespace Diary.Core.ViewModels.Views
 
         private void EntryKeyDown(KeyEventArgs args)
         {
+            Messenger.Send(new EntryKeyDownMessage(this, args));
+
             if (args.Key == Key.Enter)
             {
                 var start = lastFocusedVm != null ? lastFocusedVm.EndTime : DateTime.Now - TimeSpan.FromMinutes(5);

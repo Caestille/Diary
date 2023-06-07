@@ -10,6 +10,7 @@ using Microsoft.Toolkit.Mvvm.Messaging;
 using MoreLinq;
 using System.Reactive.Linq;
 using System.Text.Json;
+using System.Timers;
 using System.Windows.Input;
 
 namespace Diary.Core.ViewModels.Views
@@ -17,6 +18,7 @@ namespace Diary.Core.ViewModels.Views
     public class DiaryWeekViewModel : NameableViewModelBase
     {
         private string workingDirectory;
+        private System.Timers.Timer autoSaveTimer;
 
         public string WritePath => $"{Path.Combine(workingDirectory, guid.ToString())}.json";
 
@@ -27,6 +29,8 @@ namespace Diary.Core.ViewModels.Views
         public ICommand ShowWeekSummaryCommand => new RelayCommand(() => { GenerateSummary(); ShowWeekSummary = true; });
 
         public ICommand CloseWeekSummaryCommand => new RelayCommand(() => ShowWeekSummary = false);
+
+        public ICommand SaveCommand => new AsyncRelayCommand(Save);
 
         private bool showWeekSummary;
         public bool ShowWeekSummary
@@ -92,6 +96,27 @@ namespace Diary.Core.ViewModels.Views
             set => SetProperty(ref formattedTotal, value);
         }
 
+        private bool isAutoSaveEnabled;
+        public bool IsAutoSaveEnabled
+        {
+            get => isAutoSaveEnabled;
+            set => SetProperty(ref isAutoSaveEnabled, value);
+        }
+
+        private bool isSaving;
+        public bool IsSaving
+        {
+            get => isSaving;
+            set => SetProperty(ref isSaving, value);
+        }
+
+        private bool canSave;
+        public bool CanSave
+        {
+            get => canSave;
+            set => SetProperty(ref canSave, value);
+        }
+
         public override bool SupportsAddingChildren => false;
 
         public DiaryWeekViewModel(
@@ -106,6 +131,10 @@ namespace Diary.Core.ViewModels.Views
             SupportsDeleting = true;
             AllowShowDropdownIndicator = false;
             GenerateSummary();
+
+            autoSaveTimer = new System.Timers.Timer(5000);
+            autoSaveTimer.Elapsed += Timer_Elapsed;
+            autoSaveTimer.Start();
         }
 
         public static DiaryWeekViewModel FromDto(DiaryWeekDto dto, string workingDirectory, Guid guid)
@@ -162,6 +191,13 @@ namespace Diary.Core.ViewModels.Views
                         }
                     }
                 });
+            Messenger.Register<EntryKeyDownMessage>(this, (recipient, message) =>
+            {
+                if (ChildViewModels.Contains(message.Sender))
+                {
+                    CanSave = true;
+                }
+            });
             base.BindMessages();
         }
 
@@ -183,13 +219,28 @@ namespace Diary.Core.ViewModels.Views
 
         protected override void OnShutdownStart(object? sender, EventArgs e)
         {
+            CanSave = false;
+            autoSaveTimer.Stop();
+            autoSaveTimer.Elapsed -= Timer_Elapsed;
             Save();
             base.OnShutdownStart(sender, e);
         }
 
-        public void Save()
+        private void Timer_Elapsed(object? sender, ElapsedEventArgs e)
         {
+            if (IsAutoSaveEnabled && CanSave)
+            {
+                Save();
+            }
+        }
+
+        public async Task Save()
+        {
+            IsSaving = true;
+            CanSave = false;
             File.WriteAllText(WritePath, JsonSerializer.Serialize(this.ToDto()));
+            await Task.Delay(500);
+            IsSaving = false;
         }
 
         private void SetDaysForStartOfWeek()

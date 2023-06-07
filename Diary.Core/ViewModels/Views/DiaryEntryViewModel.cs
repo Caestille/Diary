@@ -134,7 +134,7 @@ namespace Diary.Core.ViewModels.Views
 
         private void EntryKeyDown(object args)
         {
-            if (args is KeyEventArgs keyArgs && keyArgs.Key == Key.Enter)
+            if (args is KeyEventArgs keyArgs)
             {
                 Messenger.Send(new EntryKeyDownMessage(this, keyArgs));
             }
