@@ -120,10 +120,15 @@ namespace Diary.Core.ViewModels.Views
                     if (SyncDates)
                     {
                         var comparerFunc = new Func<DateTime, DateTime, bool>((DateTime original, DateTime comparer) => original.ToString("HH:mm") == comparer.ToString("HH:mm"));
-                        var match = ChildViewModels.FirstOrDefault(x => comparerFunc(((DiaryEntryViewModel)x).StartTime, message.OldValue) || comparerFunc(((DiaryEntryViewModel)x).EndTime, message.OldValue));
+                        var match = ChildViewModels.Cast<DiaryEntryViewModel>().FirstOrDefault(x =>
+                            (comparerFunc(x.StartTime, message.OldValue)
+                            && !message.IsStartDate
+                            || comparerFunc(x.EndTime, message.OldValue)
+                            && message.IsStartDate)
+                            && message.Sender != x);
                         if (match != null)
                         {
-                            var entry = (DiaryEntryViewModel)match;
+                            var entry = match;
                             if (comparerFunc(entry.StartTime, message.OldValue))
                             {
                                 entry.StartTime = message.NewValue;

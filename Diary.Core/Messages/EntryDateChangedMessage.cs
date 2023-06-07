@@ -6,13 +6,16 @@ namespace Diary.Core.Messages.Base
     {
         public DiaryEntryViewModel Sender { get; }
 
+        public bool IsStartDate { get; }
+
         public DateTime OldValue { get; }
 
         public DateTime NewValue { get; }
 
-        public EntryDateChangedMessage(DiaryEntryViewModel sender, DateTime oldValue, DateTime newValue)
+        public EntryDateChangedMessage(DiaryEntryViewModel sender, bool isStartDate, DateTime oldValue, DateTime newValue)
         {
             Sender = sender;
+            IsStartDate = isStartDate;
             OldValue = oldValue;
             NewValue = newValue;
         }

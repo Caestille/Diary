@@ -144,7 +144,8 @@ namespace Diary.Core.ViewModels.Views
         {
             if (args is RoutedPropertyChangedEventArgs<DateTime?> propertyArgs && propertyArgs.OldValue is DateTime oldVal && propertyArgs.NewValue is DateTime newVal)
             {
-                Messenger.Send(new EntryDateChangedMessage(this, oldVal, newVal));
+                var isStart = propertyArgs.NewValue == StartTime;
+                Messenger.Send(new EntryDateChangedMessage(this, isStart, oldVal, newVal));
             }
         }
     }

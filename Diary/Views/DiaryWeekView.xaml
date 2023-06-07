@@ -114,7 +114,7 @@
                     Background="{DynamicResource ControlClickablePartBrush}"
                     BorderThickness="0"
                     CornerRadius="5"
-                    Foreground="{DynamicResource TextBrush}"
+                    Foreground="{DynamicResource StatusTextBrush}"
                     IsChecked="{Binding SyncDates}"
                     MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                     MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
@@ -125,8 +125,7 @@
                     <scalableicons:CalculatorIcon
                         Width="18"
                         Height="18"
-                        Background="{DynamicResource ControlClickablePartBrush}"
-                        Foreground="{DynamicResource StatusTextBrush}" />
+                        Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedToggleButton}}, Path=Background}" />
                 </controls:ExtendedToggleButton>
                 <controls:ExtendedToggleButton
                     Grid.Column="4"
@@ -137,7 +136,7 @@
                     Background="{DynamicResource ControlClickablePartBrush}"
                     BorderThickness="0"
                     CornerRadius="5"
-                    Foreground="{DynamicResource TextBrush}"
+                    Foreground="{DynamicResource StatusTextBrush}"
                     IsChecked="{Binding ShowFullDates}"
                     MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                     MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
@@ -148,8 +147,7 @@
                     <scalableicons:CalendarIcon
                         Width="18"
                         Height="18"
-                        Background="{DynamicResource ControlClickablePartBrush}"
-                        Foreground="{DynamicResource StatusTextBrush}" />
+                        Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedToggleButton}}, Path=Background}" />
                 </controls:ExtendedToggleButton>
                 <controls:ExtendedButton
                     x:Name="SummaryButton"
@@ -166,7 +164,6 @@
                     Foreground="{DynamicResource TextBrush}"
                     MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                     MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}" />
-
                 <!--#endregion-->
             </Grid>
             <!--#endregion-->
