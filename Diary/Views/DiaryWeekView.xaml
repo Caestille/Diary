@@ -134,8 +134,8 @@
                         <controls:CircularProgressBar
                             Width="20"
                             Height="20"
+                            IsIndeterminate="{Binding IsSaving}"
                             SegmentColor="{DynamicResource ThemeMouseOverBrush}"
-                            IsIndeterminate="True"
                             StrokeThickness="3"
                             Visibility="{Binding IsSaving, Converter={StaticResource VisibleIfTrueConverter}}" />
                     </Grid>
