@@ -142,18 +142,16 @@
                 </controls:ExtendedButton>
                 <Label
                     Grid.Column="4"
-                    Margin="0,8,0,0"
                     HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
+                    VerticalAlignment="Center"
                     HorizontalContentAlignment="Center"
                     Content="Auto Save"
                     FontSize="10"
-                    Foreground="{DynamicResource TextBrush}" />
+                    Foreground="{DynamicResource StatusTextBrush}" />
                 <CheckBox
-                    Grid.Column="4"
-                    Margin="5,10,10,14"
+                    Grid.Column="5"
                     HorizontalAlignment="Left"
-                    VerticalAlignment="Bottom"
+                    VerticalAlignment="Center"
                     IsChecked="{Binding IsAutoSaveEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource ToggleCheckbox}" />
                 <controls:ExtendedToggleButton
