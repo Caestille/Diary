@@ -97,13 +97,11 @@
                     BorderThickness="0"
                     Command="{Binding EditNameCommand}"
                     CornerRadius="5"
+                    Foreground="{DynamicResource StatusTextBrush}"
                     MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                     MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
                     ToolTip="Edit name">
-                    <scalableicons:PenIcon
-                        Margin="1"
-                        Foreground="{DynamicResource StatusTextBrush}"
-                        StrokeThickness="4" />
+                    <scalableicons:PenIcon Margin="1" StrokeThickness="4" />
                 </controls:ExtendedButton>
                 <!--#endregion-->
                 <controls:ExtendedButton
