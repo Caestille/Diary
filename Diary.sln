@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diary", "Diary\Diary.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diary.Core", "Diary.Core\Diary.Core.csproj", "{5787CD5A-7CB3-4A61-A049-B459E505EC43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diary.OneNoteParser", "Diary.OneNoteParser\Diary.OneNoteParser.csproj", "{F678269B-7912-40B1-8B67-AA473D9FC30E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diary.OneNoteParser", "Diary.OneNoteParser\Diary.OneNoteParser.csproj", "{F678269B-7912-40B1-8B67-AA473D9FC30E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

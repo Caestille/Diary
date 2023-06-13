@@ -170,8 +170,7 @@
                     </controls:ExtendedToggleButton.CheckedColour>
                     <scalableicons:CalculatorIcon
                         Width="18"
-                        Height="18"
-                        Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedToggleButton}}, Path=Background}" />
+                        Height="18" />
                 </controls:ExtendedToggleButton>
                 <controls:ExtendedToggleButton
                     Grid.Column="7"
@@ -190,9 +189,7 @@
                     <controls:ExtendedToggleButton.CheckedColour>
                         <SolidColorBrush Opacity="0.5" Color="{DynamicResource TextColour}" />
                     </controls:ExtendedToggleButton.CheckedColour>
-                    <scalableicons:CalendarIcon
-                        Width="18"
-                        Height="18" />
+                    <scalableicons:CalendarIcon Width="18" Height="18" />
                 </controls:ExtendedToggleButton>
                 <controls:ExtendedButton
                     x:Name="SummaryButton"
@@ -334,9 +331,9 @@
                             MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                             MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}">
                             <scalableicons:CloseIcon
-                                Foreground="{DynamicResource TextBrush}"
                                 Width="10"
-                                Height="10" />
+                                Height="10"
+                                Foreground="{DynamicResource TextBrush}" />
                         </controls:ExtendedButton>
                         <ScrollViewer
                             Margin="40"
