@@ -169,6 +169,7 @@ namespace Diary.Core.ViewModels.Views
                 if (ChildViewModels.Contains(message.Sender))
                 {
                     GenerateSummary();
+                    CanSave = true;
                 }
             });
             Messenger.Register<SyncTagsMessage>(this, (recipient, message) =>
