@@ -97,6 +97,7 @@ namespace Diary.Core.ViewModels.Views
             if (CanAddTag && args is KeyEventArgs e && (e.Key == Key.Enter || e.Key == Key.Escape) && e.Key == Key.Enter)
             {
                 AddCustomTagCommand.Execute(null);
+                File.WriteAllText(tagsWriteDirectory, JsonSerializer.Serialize(CustomTags));
             }
         }
 
