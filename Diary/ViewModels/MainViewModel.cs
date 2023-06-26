@@ -13,7 +13,6 @@ using System.Linq;
 using System.Windows.Input;
 using Diary.Core.Extensions;
 using MoreLinq;
-using Diary.Core.Messages.Base;
 using System.Windows;
 
 namespace Diary.ViewModels

@@ -4,12 +4,10 @@ using Diary.Core.Messages;
 using Diary.Core.Messages.Base;
 using Diary.Core.Models;
 using Diary.Core.ViewModels.Base;
-using Diary.Core.Messages.Base;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using System.Windows.Input;
 using System.Windows;
-using ModernThemables.Controls;
 
 namespace Diary.Core.ViewModels.Views
 {

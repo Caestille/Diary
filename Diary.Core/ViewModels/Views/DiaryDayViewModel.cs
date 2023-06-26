@@ -3,12 +3,10 @@ using Diary.Core.Dtos;
 using Diary.Core.Messages;
 using Diary.Core.Messages.Base;
 using Diary.Core.ViewModels.Base;
-using Diary.Core.Messages.Base;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using MoreLinq;
 using System.Windows.Input;
-using System.Data.Entity.Core.Objects;
 
 namespace Diary.Core.ViewModels.Views
 {

@@ -1,5 +1,4 @@
 ﻿using Diary.Core.ViewModels.Base;
-using Diary.Core.ViewModels.Views;
 using System.Windows.Input;
 
 namespace Diary.Core.Messages.Base
