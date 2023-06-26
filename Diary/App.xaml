@@ -136,16 +136,13 @@
                     <!--#region Menu item icons-->
                     <Grid.Resources>
                         <DataTemplate DataType="{x:Type vms:TakeMeToTodayViewModel}">
-                            <scalableicons:PlusIcon Background="{DynamicResource MenuBrush}" StrokeThickness="3" />
+                            <scalableicons:PlusIcon StrokeThickness="3" />
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type vms:CalendarViewModel}">
-                            <scalableicons:CalendarIcon
-                                Background="{DynamicResource MenuBrush}"
-                                Opacity="0.5"
-                                StrokeThickness="2" />
+                            <scalableicons:CalendarIcon Foreground="{DynamicResource StatusTextBrush}" StrokeThickness="2" />
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type vms:DataTaggingViewModel}">
-                            <scalableicons:TagIcon Background="{DynamicResource MenuBrush}" Opacity="0.5" />
+                            <scalableicons:TagIcon />
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type vms:DiaryWeekViewModel}">
                             <StackPanel
