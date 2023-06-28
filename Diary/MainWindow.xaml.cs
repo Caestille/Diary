@@ -1,11 +1,12 @@
-﻿using System.Windows;
+﻿using ModernThemables.Controls;
+using System.Windows;
 
 namespace Diary
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window
+	public partial class MainWindow : ThemableWindow2
 	{
 		public MainWindow()
 		{
