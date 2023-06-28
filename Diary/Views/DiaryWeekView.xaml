@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:behaviours="clr-namespace:ModernThemables.Behaviours;assembly=ModernThemables"
     xmlns:controls="clr-namespace:ModernThemables.Controls;assembly=ModernThemables"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -130,7 +131,6 @@
                             Width="18"
                             Height="18"
                             Margin="1"
-                            Foreground="{DynamicResource StatusTextBrush}"
                             StrokeThickness="4" />
                         <controls:CircularProgressBar
                             Width="20"
@@ -156,6 +156,7 @@
                     IsChecked="{Binding IsAutoSaveEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource ToggleCheckbox}" />
                 <controls:ExtendedToggleButton
+                    x:Name="SyncDatebutton"
                     Grid.Column="6"
                     Margin="0,4,10,3"
                     Padding="4"
@@ -170,12 +171,48 @@
                     MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                     MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
                     ToolTip="Toggle sync. dates between entries">
+                    <controls:ExtendedToggleButton.Effect>
+                        <DropShadowEffect
+                            BlurRadius="10"
+                            Opacity="0"
+                            ShadowDepth="0"
+                            Color="{DynamicResource TextColour}" />
+                    </controls:ExtendedToggleButton.Effect>
+                    <controls:ExtendedToggleButton.Style>
+                        <Style>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=SyncDatebutton}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetProperty="(Effect).(DropShadowEffect.Opacity)"
+                                                    To="1"
+                                                    Duration="0:0:0.0" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetProperty="(Effect).(DropShadowEffect.Opacity)"
+                                                    To="0"
+                                                    Duration="0:0:0.0" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </controls:ExtendedToggleButton.Style>
                     <scalableicons:CalculatorIcon
                         Width="18"
                         Height="18"
                         Foreground="{DynamicResource StatusTextBrush}" />
                 </controls:ExtendedToggleButton>
                 <controls:ExtendedToggleButton
+                    x:Name="ShowDatesButton"
                     Grid.Column="7"
                     Margin="0,4,10,3"
                     Padding="4"
@@ -190,6 +227,41 @@
                     MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                     MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
                     ToolTip="Toggle show full dates">
+                    <controls:ExtendedToggleButton.Effect>
+                        <DropShadowEffect
+                            BlurRadius="10"
+                            Opacity="0"
+                            ShadowDepth="0"
+                            Color="{DynamicResource TextColour}" />
+                    </controls:ExtendedToggleButton.Effect>
+                    <controls:ExtendedToggleButton.Style>
+                        <Style>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=ShowDatesButton}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetProperty="(Effect).(DropShadowEffect.Opacity)"
+                                                    To="1"
+                                                    Duration="0:0:0.0" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetProperty="(Effect).(DropShadowEffect.Opacity)"
+                                                    To="0"
+                                                    Duration="0:0:0.0" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </controls:ExtendedToggleButton.Style>
                     <scalableicons:CalendarIcon
                         Width="18"
                         Height="18"

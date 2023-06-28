@@ -1,0 +1,128 @@
+﻿<Window
+    x:Class="Diary.Views.SplashScreen"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:ModernThemables.Controls;assembly=ModernThemables"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Splash"
+    Width="500"
+    Height="300"
+    AllowsTransparency="True"
+    Background="Transparent"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None"
+    mc:Ignorable="d">
+    <Border
+        Background="Black"
+        ClipToBounds="True"
+        CornerRadius="20">
+        <Grid>
+            <Border
+                x:Name="Clippy"
+                Background="Black"
+                ClipToBounds="True"
+                CornerRadius="20" />
+            <Image
+                x:Name="Background"
+                Grid.RowSpan="6"
+                Grid.ColumnSpan="5"
+                HorizontalAlignment="Right"
+                Stretch="Fill">
+                <Image.OpacityMask>
+                    <VisualBrush Visual="{Binding ElementName=Clippy}" />
+                </Image.OpacityMask>
+            </Image>
+            <Border Background="{DynamicResource MainBackgroundBrush}" CornerRadius="20">
+                <controls:BlurHost
+                    x:Name="Blurrer"
+                    BlurBackground="{Binding ElementName=Background}"
+                    BlurEnabled="True"
+                    BlurOpacity="0"
+                    BlurRadius="15"
+                    Focusable="False"
+                    RedrawTrigger="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}">
+                    <Grid>
+                        <Grid.OpacityMask>
+                            <VisualBrush Visual="{Binding ElementName=Clippy}" />
+                        </Grid.OpacityMask>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.1*" />
+                            <RowDefinition Height="0.6*" />
+                            <RowDefinition Height="0.3*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.15*" />
+                            <ColumnDefinition Width="0.3*" />
+                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="0.15*" />
+                        </Grid.ColumnDefinitions>
+                        <Image
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Source="..\Resources\Icon.ico" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Margin="20,0,0,0"
+                            VerticalAlignment="Center"
+                            FontFamily="..\Fonts\#Inter"
+                            FontSize="60"
+                            FontWeight="Bold"
+                            Foreground="{DynamicResource TextBrush}"
+                            Text="{Binding ApplicationName}"
+                            TextWrapping="Wrap" />
+                        <WrapPanel
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top">
+                            <controls:CircularProgressBar
+                                Width="30"
+                                Height="30"
+                                Margin="5,0"
+                                VerticalAlignment="Center"
+                                IsIndeterminate="True"
+                                SegmentColor="{DynamicResource ThemeBrush}"
+                                StrokeThickness="5"
+                                Visibility="{Binding UpdateStep, Converter={StaticResource StringNotEmptyVisibilityConverter}}" />
+                            <TextBlock
+                                x:Name="MessageTextBlock"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                Foreground="DarkGray"
+                                Text="{Binding UpdateStep}" />
+                        </WrapPanel>
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.ColumnSpan="5"
+                            Margin="10"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            FontSize="15"
+                            Foreground="DarkGray"
+                            Text="{Binding CopyrightNotice}" />
+                        <ProgressBar
+                            x:Name="ProgressBar"
+                            Grid.Row="2"
+                            Grid.ColumnSpan="4"
+                            Height="3"
+                            VerticalAlignment="Bottom"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Foreground="{DynamicResource ThemeBrush}"
+                            Maximum="100"
+                            Value="{Binding ProgressPercent}">
+                            <ProgressBar.OpacityMask>
+                                <VisualBrush Visual="{Binding ElementName=Clippy}" />
+                            </ProgressBar.OpacityMask>
+                        </ProgressBar>
+                    </Grid>
+                </controls:BlurHost>
+            </Border>
+        </Grid>
+
+    </Border>
+</Window>

@@ -9,6 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using Diary.Core.Dtos;
+using SplashScreen = Diary.Views.SplashScreen;
+using System.Threading.Tasks;
 
 namespace Diary
 {
@@ -26,12 +28,22 @@ namespace Diary
 
         public App() { }
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             if (e.Args.Length > 0)
             {
                 StartingArgs = e.Args;
             }
+
+            var splashVm = new SplashScreenViewModel()
+            {
+                ImageUri = new Uri("ms-appx:///Resources/Icon.ico"),
+                ApplicationName = "Diary",
+                CopyrightNotice = $"© {DateTime.Now.Year} Mercedes AMG F1. All rights reserved"
+            };
+            var splashScreen = new SplashScreen() { DataContext = splashVm };
+            splashVm.UpdateStep = "Intialising";
+            splashScreen.Show();
 
             if (!File.Exists(WorkingDirectory))
             {
@@ -42,20 +54,31 @@ namespace Diary
 
             var taggingVm = new DataTaggingViewModel(WorkingDirectory);
 
-            var weeks = Directory.GetFiles(WorkingDirectory)
-                .Where(x => Guid.TryParse(Path.GetFileNameWithoutExtension(x), out _));
-            var weekVms = weeks.Select(
-                x => DiaryWeekViewModel.FromDto(
-                    JsonSerializer.Deserialize<DiaryWeekDto>(File.ReadAllText(x)),
-                    WorkingDirectory,
-                    Guid.Parse(Path.GetFileNameWithoutExtension(x)))).ToList();
-
-            var viewModels = new List<ViewModelBase>()
+            var viewModels = await Task.Run(() => 
             {
-                new TakeMeToTodayViewModel(),
-                new CalendarViewModel(WorkingDirectory, weekVms),
-                taggingVm,
-            };
+                double i = 0;
+                var weeks = Directory.GetFiles(WorkingDirectory)
+                    .Where(x => Guid.TryParse(Path.GetFileNameWithoutExtension(x), out _))
+                    .ToList();
+                double count = weeks.Count();
+                var weekVms = new List<DiaryWeekViewModel>();
+                foreach (var week in weeks)
+                {
+                    i++;
+                    splashVm.ProgressPercent = (i / count) * 100;
+                    weekVms.Add(DiaryWeekViewModel.FromDto(
+                        JsonSerializer.Deserialize<DiaryWeekDto>(File.ReadAllText(week)),
+                        WorkingDirectory,
+                        Guid.Parse(Path.GetFileNameWithoutExtension(week))));
+                }
+                var vms = new List<ViewModelBase>()
+                {
+                    new TakeMeToTodayViewModel(),
+                    new CalendarViewModel(WorkingDirectory, weekVms),
+                    taggingVm,
+                };
+                return vms;
+            });
 
             var mainViewModel = new MainViewModel(viewModels, appRegistryService);
             viewModels[0].SelectCommand.Execute(null);
@@ -66,6 +89,7 @@ namespace Diary
             };
 
             mainView.Show();
+            splashScreen.Close();
         }
     }
 }
