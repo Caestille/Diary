@@ -101,7 +101,10 @@
                     MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                     MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
                     ToolTip="Edit name">
-                    <scalableicons:PenIcon Margin="1" StrokeThickness="4" />
+                    <scalableicons:PenIcon
+                        Margin="1"
+                        Foreground="{DynamicResource StatusTextBrush}"
+                        StrokeThickness="4" />
                 </controls:ExtendedButton>
                 <!--#endregion-->
                 <controls:ExtendedButton
@@ -127,6 +130,7 @@
                             Width="18"
                             Height="18"
                             Margin="1"
+                            Foreground="{DynamicResource StatusTextBrush}"
                             StrokeThickness="4" />
                         <controls:CircularProgressBar
                             Width="20"
@@ -159,18 +163,17 @@
                     VerticalAlignment="Center"
                     Background="{DynamicResource ControlClickablePartBrush}"
                     BorderThickness="0"
+                    CheckedColour="{DynamicResource ThemeMouseOverBrush}"
                     CornerRadius="5"
                     Foreground="{DynamicResource StatusTextBrush}"
                     IsChecked="{Binding SyncDates}"
                     MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                     MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
                     ToolTip="Toggle sync. dates between entries">
-                    <controls:ExtendedToggleButton.CheckedColour>
-                        <SolidColorBrush Opacity="0.5" Color="{DynamicResource TextColour}" />
-                    </controls:ExtendedToggleButton.CheckedColour>
                     <scalableicons:CalculatorIcon
                         Width="18"
-                        Height="18" />
+                        Height="18"
+                        Foreground="{DynamicResource StatusTextBrush}" />
                 </controls:ExtendedToggleButton>
                 <controls:ExtendedToggleButton
                     Grid.Column="7"
@@ -180,16 +183,17 @@
                     VerticalAlignment="Center"
                     Background="{DynamicResource ControlClickablePartBrush}"
                     BorderThickness="0"
+                    CheckedColour="{DynamicResource ThemeMouseOverBrush}"
                     CornerRadius="5"
                     Foreground="{DynamicResource StatusTextBrush}"
                     IsChecked="{Binding ShowFullDates}"
                     MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                     MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
                     ToolTip="Toggle show full dates">
-                    <controls:ExtendedToggleButton.CheckedColour>
-                        <SolidColorBrush Opacity="0.5" Color="{DynamicResource TextColour}" />
-                    </controls:ExtendedToggleButton.CheckedColour>
-                    <scalableicons:CalendarIcon Width="18" Height="18" />
+                    <scalableicons:CalendarIcon
+                        Width="18"
+                        Height="18"
+                        Foreground="{DynamicResource StatusTextBrush}" />
                 </controls:ExtendedToggleButton>
                 <controls:ExtendedButton
                     x:Name="SummaryButton"
