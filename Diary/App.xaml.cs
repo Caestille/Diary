@@ -11,6 +11,8 @@ using System.Text.Json;
 using Diary.Core.Dtos;
 using SplashScreen = Diary.Views.SplashScreen;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace Diary
 {
@@ -25,8 +27,35 @@ namespace Diary
 
         public static string WorkingDirectory
             => @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Diary";
+		public static string CrashReportsDirectory => $@"{WorkingDirectory}\CrashReports";
 
-        public App() { }
+		public App()
+		{
+			AppDomain.CurrentDomain.UnhandledException += ExceptionHandler;
+		}
+
+		private static void ExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+		{
+#if RELEASE
+            Exception e = (Exception)args.ExceptionObject;
+            if (!Directory.Exists(CrashReportsDirectory))
+                Directory.CreateDirectory(CrashReportsDirectory);
+            string path = CrashReportsDirectory;
+
+            string exceptionText = "FinanceTracker Crash Report\n";
+
+            exceptionText += $"Date/Time: {DateTime.UtcNow} UTC\n";
+            exceptionText += $"Version: {Assembly.GetExecutingAssembly().GetName().Version}\n";
+            exceptionText += $"Source: {e.Source}\n";
+            exceptionText += $"Message: {e.Message}\n";
+            exceptionText += $"InnerException:\n{e.InnerException}";
+            exceptionText += $"Stack trace:\n{e.StackTrace}\n";
+
+            File.WriteAllText(string.Format(path + "\\Diary_CrashReport{0}.txt", DateTime.UtcNow.ToString("ddMMyyyy-HHmmss")), exceptionText);
+            MessageBox.Show(string.Format("Diary_CrashReport{0}.txt written to \n" + path, DateTime.UtcNow.ToString("ddMMyyyy-HHmmss")));
+            Process.Start(path);
+#endif
+        }
 
         protected override async void OnStartup(StartupEventArgs e)
         {
@@ -88,7 +117,9 @@ namespace Diary
                 DataContext = mainViewModel
             };
 
-            mainView.Show();
+			Application.Current.MainWindow = mainView;
+
+			mainView.Show();
             splashScreen.Close();
         }
     }

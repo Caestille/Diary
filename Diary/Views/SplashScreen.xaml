@@ -80,13 +80,13 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Top">
                             <controls:CircularProgressBar
-                                Width="30"
-                                Height="30"
+                                Width="28"
+                                Height="28"
                                 Margin="5,0"
                                 VerticalAlignment="Center"
                                 IsIndeterminate="True"
-                                SegmentColor="{DynamicResource ThemeBrush}"
-                                StrokeThickness="5"
+                                Foreground="{DynamicResource ThemeBrush}"
+                                StrokeWidthFraction="0.4"
                                 Visibility="{Binding UpdateStep, Converter={StaticResource StringNotEmptyVisibilityConverter}}" />
                             <TextBlock
                                 x:Name="MessageTextBlock"
