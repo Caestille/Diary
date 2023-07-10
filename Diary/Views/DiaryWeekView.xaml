@@ -130,6 +130,7 @@
                             Width="18"
                             Height="18"
                             Margin="1"
+                            Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=CurrentForeground}"
                             StrokeThickness="4" />
                         <controls:CircularProgressBar
                             Width="20"

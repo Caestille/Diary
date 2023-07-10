@@ -23,7 +23,6 @@
                 <CheckBox
                     VerticalAlignment="Center"
                     IsChecked="{Binding IsIncluded, Mode=TwoWay}"
-                    Style="{StaticResource ThemableCheckBox}"
                     ToolTip="Include in summaries"
                     ToolTipService.InitialShowDelay="0" />
                 <TextBlock
@@ -141,23 +140,15 @@
                     VerticalAlignment="Top"
                     Command="{Binding AddCustomTagCommand}"
                     DisabledBackgroundColour="{DynamicResource DisabledControlClickablePartBrush}"
+                    DisabledForegroundColour="{DynamicResource ControlClickablePartBrush}"
+                    Foreground="{DynamicResource ButtonForegroundBrush}"
                     IsEnabled="{Binding CanAddTag}"
                     Style="{StaticResource RoundButtonStyle}"
                     ToolTip="Add tag">
-                    <scalableicons:PlusIcon Margin="2" StrokeThickness="2">
-                        <scalableicons:PlusIcon.Style>
-                            <Style BasedOn="{StaticResource ResourceKey={x:Type scalableicons:PlusIcon}}" TargetType="{x:Type scalableicons:PlusIcon}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=AddTagButton, Path=IsEnabled, UpdateSourceTrigger=PropertyChanged}" Value="False">
-                                        <Setter Property="scalableicons:PlayIcon.Foreground" Value="{DynamicResource ControlClickablePartBrush}" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding ElementName=AddTagButton, Path=IsEnabled, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                        <Setter Property="scalableicons:PlayIcon.Foreground" Value="{DynamicResource ButtonForegroundBrush}" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </scalableicons:PlusIcon.Style>
-                    </scalableicons:PlusIcon>
+                    <scalableicons:PlusIcon
+                        Margin="2"
+                        Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=CurrentForeground}"
+                        StrokeThickness="2" />
                 </controls:ExtendedButton>
                 <ListBox
                     Grid.RowSpan="10"
