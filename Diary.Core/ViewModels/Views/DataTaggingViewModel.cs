@@ -31,7 +31,26 @@ namespace Diary.Core.ViewModels.Views
 			OnPropertyChanged(nameof(CustomTags));
 			SynchroniseTags();
         });
-        public ICommand CustomTagEditorKeyDownCommand => new RelayCommand<object>((args) => CustomTagEditorKeyDown(args));
+
+		public ICommand IncreaseIndexCommand => new RelayCommand<CustomTag>((tag) =>
+		{
+			var lastIndex = CustomTags.IndexOf(tag);
+			CustomTags.Remove(tag);
+			CustomTags.Insert(Math.Min(CustomTags.Count, lastIndex + 1), tag);
+			OnPropertyChanged(nameof(CustomTags));
+			SynchroniseTags();
+		});
+
+		public ICommand DecreaseIndexCommand => new RelayCommand<CustomTag>((tag) =>
+		{
+            var lastIndex = CustomTags.IndexOf(tag);
+            CustomTags.Remove(tag);
+            CustomTags.Insert(Math.Max(0, lastIndex - 1), tag);
+			OnPropertyChanged(nameof(CustomTags));
+			SynchroniseTags();
+		});
+
+		public ICommand CustomTagEditorKeyDownCommand => new RelayCommand<object>((args) => CustomTagEditorKeyDown(args));
 
         private CustomTag proposedTag;
         public CustomTag ProposedTag

@@ -96,7 +96,7 @@ namespace Diary.Core.ViewModels.Views
             set => SetProperty(ref formattedTotal, value);
         }
 
-        private bool isAutoSaveEnabled;
+        private bool isAutoSaveEnabled = true;
         public bool IsAutoSaveEnabled
         {
             get => isAutoSaveEnabled;
