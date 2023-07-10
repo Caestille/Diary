@@ -63,7 +63,7 @@
                     Grid.Column="1"
                     Width="Auto"
                     MinWidth="{Binding ElementName=NameLabel, Path=ActualWidth}"
-                    Margin="11,8,9,8"
+                    Margin="13,10,7,9"
                     HorizontalAlignment="Left"
                     BorderBrush="{DynamicResource TextBrush}"
                     BorderThickness="0,0,0,1"
