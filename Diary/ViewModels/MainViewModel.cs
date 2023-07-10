@@ -14,6 +14,8 @@ using System.Windows.Input;
 using Diary.Core.Extensions;
 using MoreLinq;
 using System.Windows;
+using System.Runtime.CompilerServices;
+using System.Transactions;
 
 namespace Diary.ViewModels
 {
@@ -157,6 +159,12 @@ namespace Diary.ViewModels
 							month.AddChild();
 						}
 						SelectDay(DateTime.Now, true);
+						if (!IsMenuOpen)
+						{
+							year.IsCollapsed = true;
+							month.IsCollapsed = true;
+							month.ChildViewModels.First(x => x.IsSelected).IsCollapsed = true;
+						}
 					}
 				}
             });
