@@ -13,79 +13,24 @@
     x:Name="root"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <DataTemplate x:Key="CustomTagTemplate" DataType="{x:Type models:CustomTag}">
-            <Grid x:Name="GriddyBoi" Margin="3">
-                <Grid.Background>
-                    <SolidColorBrush Opacity="0.001" Color="White" />
-                </Grid.Background>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Grid Visibility="{Binding ElementName=GriddyBoi, Path=IsMouseOver, Converter={StaticResource VisibleIfTrueConverter}, ConverterParameter=Hidden}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="0.5*" />
-                        <RowDefinition Height="0.5*" />
-                    </Grid.RowDefinitions>
-                    <controls:ExtendedButton
-                        Margin="0,0,10,0"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Command="{Binding ElementName=root, Path=DataContext.DecreaseIndexCommand}"
-                        CommandParameter="{Binding}"
-                        CornerRadius="2"
-                        MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
-                        MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}">
-                        <scalableicons:CollapseIcon Width="10" Foreground="{DynamicResource TextBrush}" />
-                    </controls:ExtendedButton>
-                    <controls:ExtendedButton
-                        Grid.Row="1"
-                        Margin="0,0,10,0"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Command="{Binding ElementName=root, Path=DataContext.IncreaseIndexCommand}"
-                        CommandParameter="{Binding}"
-                        CornerRadius="2"
-                        MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
-                        MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}">
-                        <scalableicons:ExpandIcon Width="10" Foreground="{DynamicResource TextBrush}" />
-                    </controls:ExtendedButton>
-                </Grid>
-                <CheckBox
-                    Grid.Column="1"
-                    VerticalAlignment="Center"
-                    IsChecked="{Binding IsIncluded, Mode=TwoWay}"
-                    ToolTip="Include in summaries"
-                    ToolTipService.InitialShowDelay="0" />
-                <TextBlock
-                    Grid.Column="2"
-                    MinWidth="100"
-                    Margin="3,0,0,0"
-                    VerticalAlignment="Center"
-                    Foreground="{DynamicResource TextBrush}"
-                    Text="{Binding Tag}" />
-                <controls:ExtendedButton
-                    x:Name="DeleteTagButton"
-                    Grid.Column="3"
-                    Margin="10,0,0,0"
-                    Command="{Binding ElementName=root, Path=DataContext.DeleteCustomTagCommand}"
-                    CommandParameter="{Binding}"
-                    DisabledBackgroundColour="{DynamicResource DisabledControlClickablePartBrush}"
-                    DisabledForegroundColour="{DynamicResource StatusTextBrush}"
-                    Style="{StaticResource RoundButtonStyle}"
-                    ToolTip="Delete tag">
-                    <!--#region Button icon-->
-                    <scalableicons:BinIcon
-                        Margin="2"
-                        Background="{DynamicResource ControlClickablePartBrush}"
-                        Foreground="{DynamicResource ButtonForegroundBrush}"
-                        StrokeThickness="2" />
-                    <!--#endregion-->
-                </controls:ExtendedButton>
-            </Grid>
+        <DataTemplate x:Key="CustomTagTemplate" DataType="{x:Type models:ToDoItem}">
+            <Grid Height="20" Width="100" Background="Red"/>
         </DataTemplate>
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="TextBox.Background">
+                <Setter.Value>
+                    <SolidColorBrush Opacity="0.001" Color="Black" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="TextBox.BorderThickness" Value="0,0,0,1" />
+            <Setter Property="TextBox.HorizontalAlignment" Value="Left" />
+            <Setter Property="TextBox.VerticalAlignment" Value="Top" />
+            <Setter Property="TextBox.MinWidth" Value="100" />
+            <Setter Property="TextBox.Margin" Value="10,0,0,0" />
+            <Setter Property="TextBox.Padding" Value="0,0,0,3" />
+            <Setter Property="TextBox.MaxWidth" Value="200" />
+            <Setter Property="TextBox.Foreground" Value="{DynamicResource TextBrush}" />
+        </Style>
     </UserControl.Resources>
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -168,31 +113,13 @@
                         Foreground="{DynamicResource StatusTextBrush}"
                         Text="Warning threshold (optional)" />
                     <TextBox
+                        Margin="0"
                         Grid.Row="1"
-                        MinWidth="109"
-                        MaxWidth="200"
-                        Padding="0,0,0,3"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Background="{DynamicResource MainBackgroundBrush}"
-                        BorderBrush="{DynamicResource TextBrush}"
-                        BorderThickness="0,0,0,1"
-                        Foreground="{DynamicResource TextBrush}"
                         Text="{Binding ProposedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextWrapping="Wrap" />
                     <TextBox
                         Grid.Row="1"
                         Grid.Column="1"
-                        MinWidth="109"
-                        MaxWidth="200"
-                        Margin="10,0,0,0"
-                        Padding="0,0,0,3"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Background="{DynamicResource MainBackgroundBrush}"
-                        BorderBrush="{DynamicResource TextBrush}"
-                        BorderThickness="0,0,0,1"
-                        Foreground="{DynamicResource TextBrush}"
                         Text="{Binding ProposedDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextWrapping="Wrap" />
                     <controls:DatetimeTextBox
@@ -200,28 +127,18 @@
                         Grid.Column="2"
                         Width="Auto"
                         Height="20"
-                        Margin="10,0,0,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
+                        Margin="0"
                         VerticalContentAlignment="Center"
-                        Background="{DynamicResource MainBackgroundBrush}"
-                        BorderBrush="{DynamicResource TextBrush}"
+                        BorderBrush="LightGray"
                         BorderThickness="0,0,0,1"
-                        DateTime="{Binding ProposedDeadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Foreground="{DynamicResource TextBrush}" />
+                        DateTime="{Binding ProposedDeadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     <WrapPanel
                         Grid.Row="1"
                         Grid.Column="3"
                         Margin="10,0,0,0">
                         <TextBox
+                            Margin="0"
                             MinWidth="40"
-                            Padding="0,0,0,3"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Background="{DynamicResource MainBackgroundBrush}"
-                            BorderBrush="{DynamicResource TextBrush}"
-                            BorderThickness="0,0,0,1"
-                            Foreground="{DynamicResource TextBrush}"
                             Text="{Binding ProposedWarningDays, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <TextBlock
                             Margin="5,0,0,0"
