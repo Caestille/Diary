@@ -10,7 +10,7 @@ namespace Diary.Core.ViewModels.Views
         private string proposedName;
         private string proposedDescription;
         private DateTime? proposedDeadline;
-        private TimeSpan? proposedWarning;
+        private int? proposedWarningDays;
         private bool canAddItem;
 
         public string ProposedName
@@ -39,10 +39,10 @@ namespace Diary.Core.ViewModels.Views
             set => SetProperty(ref proposedDeadline, value);
         }
 
-        public TimeSpan? ProposedWarning
+        public int? ProposedWarningDays
         {
-            get => proposedWarning;
-            set => SetProperty(ref proposedWarning, value);
+            get => proposedWarningDays;
+            set => SetProperty(ref proposedWarningDays, value);
         }
 
         public bool CanAddItem
@@ -51,7 +51,8 @@ namespace Diary.Core.ViewModels.Views
             set => SetProperty(ref canAddItem, value);
         }
 
-        public new ICommand AddChildCommand => new RelayCommand(() => ChildViewModels.Add(new ToDoItem(ProposedName, ProposedDescription, ProposedDeadline, ProposedWarning)));
+        public new ICommand AddChildCommand => new RelayCommand(() => ChildViewModels.Add(
+            new ToDoItem(ProposedName, ProposedDescription, ProposedDeadline, ProposedWarningDays != null ? TimeSpan.FromDays(ProposedWarningDays.Value) : null)));
 
         public ICommand DeleteItemCommand => new RelayCommand<ToDoItem>((item) => ChildViewModels.Remove(item));
 

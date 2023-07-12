@@ -170,6 +170,7 @@
                     <TextBox
                         Grid.Row="1"
                         MinWidth="109"
+                        MaxWidth="200"
                         Padding="0,0,0,3"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
@@ -177,11 +178,13 @@
                         BorderBrush="{DynamicResource TextBrush}"
                         BorderThickness="0,0,0,1"
                         Foreground="{DynamicResource TextBrush}"
-                        Text="{Binding ProposedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding ProposedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap" />
                     <TextBox
                         Grid.Row="1"
                         Grid.Column="1"
                         MinWidth="109"
+                        MaxWidth="200"
                         Margin="10,0,0,0"
                         Padding="0,0,0,3"
                         HorizontalAlignment="Left"
@@ -190,21 +193,22 @@
                         BorderBrush="{DynamicResource TextBrush}"
                         BorderThickness="0,0,0,1"
                         Foreground="{DynamicResource TextBrush}"
-                        Text="{Binding ProposedDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding ProposedDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap" />
                     <controls:DatetimeTextBox
                         Grid.Row="1"
                         Grid.Column="2"
                         Width="Auto"
                         Height="20"
                         Margin="10,0,0,0"
+                        HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         VerticalContentAlignment="Center"
                         Background="{DynamicResource MainBackgroundBrush}"
                         BorderBrush="{DynamicResource TextBrush}"
                         BorderThickness="0,0,0,1"
                         DateTime="{Binding ProposedDeadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Foreground="{DynamicResource TextBrush}"
-                        Format="HH:mm" />
+                        Foreground="{DynamicResource TextBrush}" />
                     <WrapPanel
                         Grid.Row="1"
                         Grid.Column="3"
@@ -217,7 +221,8 @@
                             Background="{DynamicResource MainBackgroundBrush}"
                             BorderBrush="{DynamicResource TextBrush}"
                             BorderThickness="0,0,0,1"
-                            Text="{Binding ProposedDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            Foreground="{DynamicResource TextBrush}"
+                            Text="{Binding ProposedWarningDays, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <TextBlock
                             Margin="5,0,0,0"
                             VerticalAlignment="Center"

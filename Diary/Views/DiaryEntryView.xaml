@@ -75,8 +75,8 @@
             BorderThickness="0,0,0,1"
             Foreground="{DynamicResource TextBrush}"
             Text="{Binding EntryText, UpdateSourceTrigger=PropertyChanged}"
-            ToolTip="Press enter to add a new entry below"
             TextWrapping="Wrap"
+            ToolTip="Press enter to add a new entry below"
             ToolTipService.InitialShowDelay="100">
             <b:Interaction.Triggers>
                 <b:EventTrigger EventName="PreviewKeyDown">
