@@ -105,6 +105,7 @@ namespace Diary
 					new TakeMeToTodayViewModel(),
 					new CalendarViewModel(WorkingDirectory, weekVms),
 					taggingVm,
+					new ToDoListViewModel(),
 				};
 				return vms;
 			});

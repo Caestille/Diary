@@ -1,354 +1,357 @@
 ﻿<UserControl
-	x:Class="Diary.Views.MainView"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-	xmlns:controls="clr-namespace:ModernThemables.Controls;assembly=ModernThemables"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:scalableicons="clr-namespace:ModernThemables.ScalableIcons;assembly=ModernThemables"
-	xmlns:views="clr-namespace:Diary.Views"
-	xmlns:vms="clr-namespace:Diary.Core.ViewModels.Views;assembly=Diary.Core"
-	mc:Ignorable="d">
-	<b:Interaction.Triggers>
-		<b:EventTrigger EventName="Loaded">
-			<b:InvokeCommandAction Command="{Binding FormLoadedCommand}" />
-		</b:EventTrigger>
-	</b:Interaction.Triggers>
-	<UserControl.Resources>
-		<DataTemplate DataType="{x:Type vms:DiaryWeekViewModel}">
-			<views:DiaryWeekView />
-		</DataTemplate>
-		<DataTemplate DataType="{x:Type vms:DataTaggingViewModel}">
-			<views:DataTaggingView />
-		</DataTemplate>
-		<Storyboard x:Key="MenuOpenAnimation">
-			<DoubleAnimation
-				AutoReverse="False"
-				Storyboard.TargetProperty="Width"
-				From="51"
-				To="220"
-				Duration="0:0:0.2">
-				<DoubleAnimation.EasingFunction>
-					<BackEase Amplitude="0.3" EasingMode="EaseOut" />
-				</DoubleAnimation.EasingFunction>
-			</DoubleAnimation>
-		</Storyboard>
-		<Storyboard x:Key="MenuCloseAnimation">
-			<DoubleAnimation
-				AutoReverse="False"
-				Storyboard.TargetProperty="Width"
-				From="220"
-				To="51"
-				Duration="0:0:0.2">
-				<DoubleAnimation.EasingFunction>
-					<BackEase Amplitude="0.3" EasingMode="EaseOut" />
-				</DoubleAnimation.EasingFunction>
-			</DoubleAnimation>
-		</Storyboard>
-	</UserControl.Resources>
-	<Grid>
-		<!--#region Main content control-->
-		<ContentControl
-			x:Name="ContentControl"
-			Grid.Column="1"
-			Content="{Binding Path=VisibleViewModel, UpdateSourceTrigger=PropertyChanged, IsAsync=True}"
-			Focusable="False"
-			Foreground="{DynamicResource TextBrush}">
-			<ContentControl.Style>
-				<Style>
-					<Style.Triggers>
-						<DataTrigger Binding="{Binding IsMenuPinned}" Value="False">
-							<DataTrigger.EnterActions>
-								<BeginStoryboard>
-									<Storyboard>
-										<ThicknessAnimation
-											AutoReverse="False"
-											Storyboard.TargetProperty="Margin"
-											To="51,0,0,0"
-											Duration="0:0:0.1">
-											<ThicknessAnimation.EasingFunction>
-												<BackEase Amplitude="0.2" EasingMode="EaseOut" />
-											</ThicknessAnimation.EasingFunction>
-										</ThicknessAnimation>
-									</Storyboard>
-								</BeginStoryboard>
-							</DataTrigger.EnterActions>
-							<DataTrigger.ExitActions>
-								<BeginStoryboard>
-									<Storyboard>
-										<ThicknessAnimation
-											AutoReverse="False"
-											Storyboard.TargetProperty="Margin"
-											To="220,0,0,0"
-											Duration="0:0:0.1">
-											<ThicknessAnimation.EasingFunction>
-												<BackEase Amplitude="0.2" EasingMode="EaseOut" />
-											</ThicknessAnimation.EasingFunction>
-										</ThicknessAnimation>
-									</Storyboard>
-								</BeginStoryboard>
-							</DataTrigger.ExitActions>
-						</DataTrigger>
-					</Style.Triggers>
-				</Style>
-			</ContentControl.Style>
-		</ContentControl>
-		<!--#endregion-->
-		<!--#region Navigation menu-->
-		<Border
-			x:Name="SettingsBorder"
-			Width="51"
-			Margin="0,0,0,0"
-			HorizontalAlignment="Left"
-			Background="{DynamicResource MenuBrush}">
-			<Border.Style>
-				<Style>
-					<Style.Triggers>
-						<DataTrigger Binding="{Binding IsMenuOpen}" Value="True">
-							<DataTrigger.EnterActions>
-								<BeginStoryboard Storyboard="{StaticResource MenuOpenAnimation}" />
-							</DataTrigger.EnterActions>
-							<DataTrigger.ExitActions>
-								<BeginStoryboard Storyboard="{StaticResource MenuCloseAnimation}" />
-							</DataTrigger.ExitActions>
-						</DataTrigger>
-						<DataTrigger Binding="{Binding IsMenuPinned}" Value="False">
-							<Setter Property="Border.CornerRadius" Value="0 10 10 0" />
-							<Setter Property="Border.Effect">
-								<Setter.Value>
-									<DropShadowEffect
-										x:Name="SettingsShadow"
-										BlurRadius="50"
-										Opacity="0.7"
-										ShadowDepth="0"
-										Color="Black" />
-								</Setter.Value>
-							</Setter>
-						</DataTrigger>
-						<DataTrigger Binding="{Binding IsMenuOpen}" Value="False">
-							<Setter Property="Border.CornerRadius" Value="0" />
-							<Setter Property="Border.Effect">
-								<Setter.Value>
-									<DropShadowEffect
-										x:Name="SettingsShadow2"
-										BlurRadius="50"
-										Opacity="0"
-										ShadowDepth="0"
-										Color="Black" />
-								</Setter.Value>
-							</Setter>
-						</DataTrigger>
-					</Style.Triggers>
-				</Style>
-			</Border.Style>
-			<Border.Clip>
-				<RectangleGeometry Rect="0,0,10000,10000" />
-			</Border.Clip>
-			<Grid>
-				<!--#region Background and items host-->
-				<controls:BlurHost
-					x:Name="Blurrer"
-					BlurBackground="{Binding ElementName=ContentControl}"
-					BlurEnabled="{Binding IsMenuPinned, Converter={StaticResource BoolInverter}}"
-					BlurOpacity="0.5"
-					Focusable="False"
-					RedrawTrigger="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}">
-					<controls:BlurHost.Clip>
-						<RectangleGeometry Rect="0,0,220,10000" />
-					</controls:BlurHost.Clip>
-					<ScrollViewer Margin="0,35,0,0" VerticalScrollBarVisibility="Auto">
-						<Grid>
-							<!--#region Divider-->
-							<!--#endregion-->
-							<TextBlock
-								Margin="16,5,5,5"
-								Foreground="{DynamicResource TextBrush}"
-								Text="No Results">
-								<TextBlock.Visibility>
-									<MultiBinding Converter="{StaticResource MultiBoolAndToVisibilityConverter}">
-										<Binding Converter="{StaticResource SequenceEmptyBooleanConverter}" Path="FilteredViewModels" />
-										<Binding Converter="{StaticResource StringNotEmptyConverter}" Path="SearchText" />
-									</MultiBinding>
-								</TextBlock.Visibility>
-							</TextBlock>
-							<!--#region Navigation menu item controls-->
-							<ItemsControl
-								x:Name="ItemsControl"
-								Margin="0,5,0,0"
-								Focusable="False"
-								ItemTemplate="{StaticResource MenuItemDataTemplate}"
-								ItemsSource="{Binding ChildViewModels}"
-								Visibility="{Binding ElementName=ItemsControlSearch, Path=Visibility, Converter={StaticResource VisibilityInverterConverter}}" />
-							<ItemsControl
-								x:Name="ItemsControlSearch"
-								Height="Auto"
-								Margin="0,5,0,0"
-								VerticalAlignment="Top"
-								Focusable="False"
-								ItemTemplate="{StaticResource SearchItemDataTemplate}"
-								ItemsSource="{Binding FilteredViewModels, UpdateSourceTrigger=PropertyChanged}">
-								<ItemsControl.Visibility>
-									<MultiBinding Converter="{StaticResource MultiBoolAndToVisibilityConverter}">
-										<Binding Converter="{StaticResource StringNotEmptyConverter}" Path="SearchText" />
-										<Binding
-											Converter="{StaticResource StringIsNotValueConverter}"
-											ConverterParameter="Search"
-											Path="SearchText" />
-									</MultiBinding>
-								</ItemsControl.Visibility>
-							</ItemsControl>
-							<Border
-								Height="1"
-								Margin="6,0,7,0"
-								VerticalAlignment="Top"
-								Background="{DynamicResource TextBrush}"
-								Opacity="0.2" />
-							<!--#endregion-->
-						</Grid>
-					</ScrollViewer>
-				</controls:BlurHost>
-				<!--#endregion-->
-				<Border
-					Width="250"
-					HorizontalAlignment="Right"
-					BorderBrush="{DynamicResource MenuBorderBrush}"
-					BorderThickness="0,0,1,0">
-					<Border.Style>
-						<Style>
-							<Style.Triggers>
-								<DataTrigger Binding="{Binding IsMenuPinned}" Value="False">
-									<Setter Property="Border.CornerRadius" Value="0 10 10 0" />
-								</DataTrigger>
-								<DataTrigger Binding="{Binding IsMenuOpen}" Value="False">
-									<Setter Property="Border.CornerRadius" Value="0 0 0 0" />
-								</DataTrigger>
-							</Style.Triggers>
-						</Style>
-					</Border.Style>
-				</Border>
-				<!--#region Menu controls-->
-				<Grid Margin="10,0,0,0" VerticalAlignment="Top">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
-					<!--#region Close menu button-->
-					<controls:ExtendedButton
-						x:Name="MenuCloseButton"
-						Grid.Column="0"
-						Width="30"
-						Height="30"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Top"
-						Background="Transparent"
-						BorderThickness="0"
-						Command="{Binding ToggleMenuOpenCommand}"
-						CornerRadius="5"
-						Foreground="{DynamicResource TextBrush}">
-						<controls:ExtendedButton.Style>
-							<Style TargetType="{x:Type controls:ExtendedButton}">
-								<Style.Triggers>
-									<DataTrigger Binding="{Binding IsMenuOpen, UpdateSourceTrigger=PropertyChanged}" Value="True">
-										<Setter Property="Button.ToolTip" Value="Collapse Menu" />
-									</DataTrigger>
-									<DataTrigger Binding="{Binding IsMenuOpen, UpdateSourceTrigger=PropertyChanged}" Value="False">
-										<Setter Property="Button.ToolTip" Value="Expand Menu" />
-									</DataTrigger>
-								</Style.Triggers>
-							</Style>
-						</controls:ExtendedButton.Style>
-						<controls:ExtendedButton.Visibility>
-							<MultiBinding Converter="{StaticResource MultiBoolOrToVisibilityConverter}">
-								<Binding Converter="{StaticResource BoolInverter}" Path="IsMenuPinned" />
-								<Binding Converter="{StaticResource BoolInverter}" Path="IsMenuOpen" />
-							</MultiBinding>
-						</controls:ExtendedButton.Visibility>
-						<!--#region Button icon-->
-						<Grid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=ActualWidth}" Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=ActualHeight, Converter={StaticResource ValueAdderConverter}, ConverterParameter=-3}">
-							<Grid.Background>
-								<SolidColorBrush Opacity="0.01" Color="Black" />
-							</Grid.Background>
-							<Grid.Style>
-								<Style TargetType="{x:Type Grid}">
-									<Style.Triggers>
-										<Trigger Property="IsMouseOver" Value="False">
-											<Setter Property="Opacity" Value="0.5" />
-										</Trigger>
-									</Style.Triggers>
-								</Style>
-							</Grid.Style>
-							<scalableicons:AnimatedMenuOpenCloseIcon
-								Margin="3,3,5,3"
-								Background="{DynamicResource MenuBrush}"
-								Foreground="{DynamicResource StatusTextBrush}"
-								IsVisuallyDisabled="{Binding IsMenuOpen, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-								StrokeThickness="2" />
-						</Grid>
-						<!--#endregion-->
-					</controls:ExtendedButton>
-					<!--#endregion-->
-					<!--#region Pin menu button-->
-					<controls:ExtendedButton
-						x:Name="ToggleMenuPinButton"
-						Grid.Column="1"
-						Width="30"
-						Height="30"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Top"
-						Background="Transparent"
-						BorderThickness="0"
-						Command="{Binding ToggleMenuPinCommand}"
-						CornerRadius="5"
-						Foreground="{DynamicResource TextBrush}">
-						<!--#region Button icon-->
-						<Grid
-							Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=ActualWidth}"
-							Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=ActualHeight}"
-							Margin="0,-1,0,0">
-							<Grid.Background>
-								<SolidColorBrush Opacity="0.01" Color="Black" />
-							</Grid.Background>
-							<Grid.Style>
-								<Style TargetType="{x:Type Grid}">
-									<Style.Triggers>
-										<Trigger Property="IsMouseOver" Value="False">
-											<Setter Property="Opacity" Value="0.5" />
-										</Trigger>
-										<DataTrigger Binding="{Binding IsMenuOpen}" Value="False">
-											<Setter Property="Visibility" Value="Collapsed" />
-										</DataTrigger>
-									</Style.Triggers>
-								</Style>
-							</Grid.Style>
-							<scalableicons:PinIcon
-								Background="{DynamicResource MenuBrush}"
-								Foreground="{DynamicResource StatusTextBrush}"
-								IsVisuallyDisabled="{Binding IsMenuPinned}" />
-						</Grid>
-						<!--#endregion-->
-					</controls:ExtendedButton>
-					<!--#endregion-->
-					<!--#region Searchbox-->
-					<Border
-						x:Name="SearchBorder"
-						Grid.Column="2"
-						Height="20"
-						Margin="8,6,5,5"
-						VerticalAlignment="Center">
-						<controls:SearchBox
-							Background="{DynamicResource TextBrush}"
-							BackgroundOpacity="0.1"
-							Foreground="{DynamicResource TextBrush}"
-							SearchText="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-							Visibility="{Binding IsMenuOpen, Converter={StaticResource VisibleIfTrueConverter}}" />
-					</Border>
-					<!--#endregion-->
-				</Grid>
-				<!--#endregion-->
-			</Grid>
-		</Border>
-		<!--#endregion-->
-	</Grid>
+    x:Class="Diary.Views.MainView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:controls="clr-namespace:ModernThemables.Controls;assembly=ModernThemables"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:scalableicons="clr-namespace:ModernThemables.ScalableIcons;assembly=ModernThemables"
+    xmlns:views="clr-namespace:Diary.Views"
+    xmlns:vms="clr-namespace:Diary.Core.ViewModels.Views;assembly=Diary.Core"
+    mc:Ignorable="d">
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="Loaded">
+            <b:InvokeCommandAction Command="{Binding FormLoadedCommand}" />
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type vms:DiaryWeekViewModel}">
+            <views:DiaryWeekView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:DataTaggingViewModel}">
+            <views:DataTaggingView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:ToDoListViewModel}">
+            <views:ToDoListView />
+        </DataTemplate>
+        <Storyboard x:Key="MenuOpenAnimation">
+            <DoubleAnimation
+                AutoReverse="False"
+                Storyboard.TargetProperty="Width"
+                From="51"
+                To="220"
+                Duration="0:0:0.2">
+                <DoubleAnimation.EasingFunction>
+                    <BackEase Amplitude="0.3" EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Key="MenuCloseAnimation">
+            <DoubleAnimation
+                AutoReverse="False"
+                Storyboard.TargetProperty="Width"
+                From="220"
+                To="51"
+                Duration="0:0:0.2">
+                <DoubleAnimation.EasingFunction>
+                    <BackEase Amplitude="0.3" EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </UserControl.Resources>
+    <Grid>
+        <!--#region Main content control-->
+        <ContentControl
+            x:Name="ContentControl"
+            Grid.Column="1"
+            Content="{Binding Path=VisibleViewModel, UpdateSourceTrigger=PropertyChanged, IsAsync=True}"
+            Focusable="False"
+            Foreground="{DynamicResource TextBrush}">
+            <ContentControl.Style>
+                <Style>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsMenuPinned}" Value="False">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ThicknessAnimation
+                                            AutoReverse="False"
+                                            Storyboard.TargetProperty="Margin"
+                                            To="51,0,0,0"
+                                            Duration="0:0:0.1">
+                                            <ThicknessAnimation.EasingFunction>
+                                                <BackEase Amplitude="0.2" EasingMode="EaseOut" />
+                                            </ThicknessAnimation.EasingFunction>
+                                        </ThicknessAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ThicknessAnimation
+                                            AutoReverse="False"
+                                            Storyboard.TargetProperty="Margin"
+                                            To="220,0,0,0"
+                                            Duration="0:0:0.1">
+                                            <ThicknessAnimation.EasingFunction>
+                                                <BackEase Amplitude="0.2" EasingMode="EaseOut" />
+                                            </ThicknessAnimation.EasingFunction>
+                                        </ThicknessAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+        <!--#endregion-->
+        <!--#region Navigation menu-->
+        <Border
+            x:Name="SettingsBorder"
+            Width="51"
+            Margin="0,0,0,0"
+            HorizontalAlignment="Left"
+            Background="{DynamicResource MenuBrush}">
+            <Border.Style>
+                <Style>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsMenuOpen}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard Storyboard="{StaticResource MenuOpenAnimation}" />
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard Storyboard="{StaticResource MenuCloseAnimation}" />
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsMenuPinned}" Value="False">
+                            <Setter Property="Border.CornerRadius" Value="0 10 10 0" />
+                            <Setter Property="Border.Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect
+                                        x:Name="SettingsShadow"
+                                        BlurRadius="50"
+                                        Opacity="0.7"
+                                        ShadowDepth="0"
+                                        Color="Black" />
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsMenuOpen}" Value="False">
+                            <Setter Property="Border.CornerRadius" Value="0" />
+                            <Setter Property="Border.Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect
+                                        x:Name="SettingsShadow2"
+                                        BlurRadius="50"
+                                        Opacity="0"
+                                        ShadowDepth="0"
+                                        Color="Black" />
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <Border.Clip>
+                <RectangleGeometry Rect="0,0,10000,10000" />
+            </Border.Clip>
+            <Grid>
+                <!--#region Background and items host-->
+                <controls:BlurHost
+                    x:Name="Blurrer"
+                    BlurBackground="{Binding ElementName=ContentControl}"
+                    BlurEnabled="{Binding IsMenuPinned, Converter={StaticResource BoolInverter}}"
+                    BlurOpacity="0.5"
+                    Focusable="False"
+                    RedrawTrigger="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}">
+                    <controls:BlurHost.Clip>
+                        <RectangleGeometry Rect="0,0,220,10000" />
+                    </controls:BlurHost.Clip>
+                    <ScrollViewer Margin="0,35,0,0" VerticalScrollBarVisibility="Auto">
+                        <Grid>
+                            <!--#region Divider-->
+                            <!--#endregion-->
+                            <TextBlock
+                                Margin="16,5,5,5"
+                                Foreground="{DynamicResource TextBrush}"
+                                Text="No Results">
+                                <TextBlock.Visibility>
+                                    <MultiBinding Converter="{StaticResource MultiBoolAndToVisibilityConverter}">
+                                        <Binding Converter="{StaticResource SequenceEmptyBooleanConverter}" Path="FilteredViewModels" />
+                                        <Binding Converter="{StaticResource StringNotEmptyConverter}" Path="SearchText" />
+                                    </MultiBinding>
+                                </TextBlock.Visibility>
+                            </TextBlock>
+                            <!--#region Navigation menu item controls-->
+                            <ItemsControl
+                                x:Name="ItemsControl"
+                                Margin="0,5,0,0"
+                                Focusable="False"
+                                ItemTemplate="{StaticResource MenuItemDataTemplate}"
+                                ItemsSource="{Binding ChildViewModels}"
+                                Visibility="{Binding ElementName=ItemsControlSearch, Path=Visibility, Converter={StaticResource VisibilityInverterConverter}}" />
+                            <ItemsControl
+                                x:Name="ItemsControlSearch"
+                                Height="Auto"
+                                Margin="0,5,0,0"
+                                VerticalAlignment="Top"
+                                Focusable="False"
+                                ItemTemplate="{StaticResource SearchItemDataTemplate}"
+                                ItemsSource="{Binding FilteredViewModels, UpdateSourceTrigger=PropertyChanged}">
+                                <ItemsControl.Visibility>
+                                    <MultiBinding Converter="{StaticResource MultiBoolAndToVisibilityConverter}">
+                                        <Binding Converter="{StaticResource StringNotEmptyConverter}" Path="SearchText" />
+                                        <Binding
+                                            Converter="{StaticResource StringIsNotValueConverter}"
+                                            ConverterParameter="Search"
+                                            Path="SearchText" />
+                                    </MultiBinding>
+                                </ItemsControl.Visibility>
+                            </ItemsControl>
+                            <Border
+                                Height="1"
+                                Margin="6,0,7,0"
+                                VerticalAlignment="Top"
+                                Background="{DynamicResource TextBrush}"
+                                Opacity="0.2" />
+                            <!--#endregion-->
+                        </Grid>
+                    </ScrollViewer>
+                </controls:BlurHost>
+                <!--#endregion-->
+                <Border
+                    Width="250"
+                    HorizontalAlignment="Right"
+                    BorderBrush="{DynamicResource MenuBorderBrush}"
+                    BorderThickness="0,0,1,0">
+                    <Border.Style>
+                        <Style>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsMenuPinned}" Value="False">
+                                    <Setter Property="Border.CornerRadius" Value="0 10 10 0" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsMenuOpen}" Value="False">
+                                    <Setter Property="Border.CornerRadius" Value="0 0 0 0" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
+                <!--#region Menu controls-->
+                <Grid Margin="10,0,0,0" VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <!--#region Close menu button-->
+                    <controls:ExtendedButton
+                        x:Name="MenuCloseButton"
+                        Grid.Column="0"
+                        Width="30"
+                        Height="30"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Command="{Binding ToggleMenuOpenCommand}"
+                        CornerRadius="5"
+                        Foreground="{DynamicResource TextBrush}">
+                        <controls:ExtendedButton.Style>
+                            <Style TargetType="{x:Type controls:ExtendedButton}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsMenuOpen, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                        <Setter Property="Button.ToolTip" Value="Collapse Menu" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsMenuOpen, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                        <Setter Property="Button.ToolTip" Value="Expand Menu" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </controls:ExtendedButton.Style>
+                        <controls:ExtendedButton.Visibility>
+                            <MultiBinding Converter="{StaticResource MultiBoolOrToVisibilityConverter}">
+                                <Binding Converter="{StaticResource BoolInverter}" Path="IsMenuPinned" />
+                                <Binding Converter="{StaticResource BoolInverter}" Path="IsMenuOpen" />
+                            </MultiBinding>
+                        </controls:ExtendedButton.Visibility>
+                        <!--#region Button icon-->
+                        <Grid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=ActualWidth}" Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=ActualHeight, Converter={StaticResource ValueAdderConverter}, ConverterParameter=-3}">
+                            <Grid.Background>
+                                <SolidColorBrush Opacity="0.01" Color="Black" />
+                            </Grid.Background>
+                            <Grid.Style>
+                                <Style TargetType="{x:Type Grid}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="False">
+                                            <Setter Property="Opacity" Value="0.5" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <scalableicons:AnimatedMenuOpenCloseIcon
+                                Margin="3,3,5,3"
+                                Background="{DynamicResource MenuBrush}"
+                                Foreground="{DynamicResource StatusTextBrush}"
+                                IsVisuallyDisabled="{Binding IsMenuOpen, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                StrokeThickness="2" />
+                        </Grid>
+                        <!--#endregion-->
+                    </controls:ExtendedButton>
+                    <!--#endregion-->
+                    <!--#region Pin menu button-->
+                    <controls:ExtendedButton
+                        x:Name="ToggleMenuPinButton"
+                        Grid.Column="1"
+                        Width="30"
+                        Height="30"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Command="{Binding ToggleMenuPinCommand}"
+                        CornerRadius="5"
+                        Foreground="{DynamicResource TextBrush}">
+                        <!--#region Button icon-->
+                        <Grid
+                            Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=ActualWidth}"
+                            Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=ActualHeight}"
+                            Margin="0,-1,0,0">
+                            <Grid.Background>
+                                <SolidColorBrush Opacity="0.01" Color="Black" />
+                            </Grid.Background>
+                            <Grid.Style>
+                                <Style TargetType="{x:Type Grid}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="False">
+                                            <Setter Property="Opacity" Value="0.5" />
+                                        </Trigger>
+                                        <DataTrigger Binding="{Binding IsMenuOpen}" Value="False">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <scalableicons:PinIcon
+                                Background="{DynamicResource MenuBrush}"
+                                Foreground="{DynamicResource StatusTextBrush}"
+                                IsVisuallyDisabled="{Binding IsMenuPinned}" />
+                        </Grid>
+                        <!--#endregion-->
+                    </controls:ExtendedButton>
+                    <!--#endregion-->
+                    <!--#region Searchbox-->
+                    <Border
+                        x:Name="SearchBorder"
+                        Grid.Column="2"
+                        Height="20"
+                        Margin="8,6,5,5"
+                        VerticalAlignment="Center">
+                        <controls:SearchBox
+                            Background="{DynamicResource TextBrush}"
+                            BackgroundOpacity="0.1"
+                            Foreground="{DynamicResource TextBrush}"
+                            SearchText="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            Visibility="{Binding IsMenuOpen, Converter={StaticResource VisibleIfTrueConverter}}" />
+                    </Border>
+                    <!--#endregion-->
+                </Grid>
+                <!--#endregion-->
+            </Grid>
+        </Border>
+        <!--#endregion-->
+    </Grid>
 </UserControl>
