@@ -51,8 +51,19 @@ namespace Diary.Core.ViewModels.Views
             set => SetProperty(ref canAddItem, value);
         }
 
-        public new ICommand AddChildCommand => new RelayCommand(() => ChildViewModels.Add(
-            new ToDoItem(ProposedName, ProposedDescription, ProposedDeadline, ProposedWarningDays != null ? TimeSpan.FromDays(ProposedWarningDays.Value) : null)));
+        public new ICommand AddChildCommand => new RelayCommand(() =>
+        {
+            ChildViewModels.Add(new ToDoItem(
+                ProposedName,
+                ProposedDescription,
+                ProposedDeadline,
+                ProposedWarningDays != null ? TimeSpan.FromDays(ProposedWarningDays.Value) : null));
+            OnPropertyChanged(nameof(ChildViewModels));
+            ProposedName = "";
+            ProposedDescription = "";
+            ProposedDeadline = null;
+            ProposedWarningDays = null;
+        });
 
         public ICommand DeleteItemCommand => new RelayCommand<ToDoItem>((item) => ChildViewModels.Remove(item));
 

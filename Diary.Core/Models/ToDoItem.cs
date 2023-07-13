@@ -3,17 +3,48 @@ namespace Diary.Core.Models
 {
     public class ToDoItem : ViewModelBase
     {
-        public string Description { get; set; }
+        private string description;
+        private DateTime? deadline;
+        private TimeSpan? remainingTime;
+        private TimeSpan? warningBeforeDeadline;
+        private bool isWarning;
+        private bool isDone;
 
-        public DateTime? Deadline { get; set; }
+        public string Description
+        {
+            get => description;
+            set => SetProperty(ref this.description, value);
+        }
 
-        public TimeSpan? RemainingTime { get; set; }
+        public DateTime? Deadline
+        {
+            get => deadline;
+            set => SetProperty(ref this.deadline, value);
+        }
 
-        public TimeSpan? WarningBeforeDeadline { get; set; }
+        public TimeSpan? RemainingTime
+        {
+            get => remainingTime;
+            set => SetProperty(ref this.remainingTime, value);
+        }
 
-        public bool IsWarning { get; set; }
+        public TimeSpan? WarningBeforeDeadline
+        {
+            get => warningBeforeDeadline;
+            set => SetProperty(ref this.warningBeforeDeadline, value);
+        }
 
-        public bool IsDone { get; set; }
+        public bool IsWarning
+        {
+            get => isWarning;
+            set => SetProperty(ref this.isWarning, value);
+        }
+
+        public bool IsDone
+        {
+            get => isDone;
+            set => SetProperty(ref this.isDone, value);
+        }
 
         public ToDoItem(string name, string description, DateTime? deadline = null, TimeSpan? warningBeforeDeadline = null)
             : base(name)
