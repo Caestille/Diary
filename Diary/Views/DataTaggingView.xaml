@@ -9,7 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:Diary.Core.Models;assembly=Diary.Core"
     xmlns:mvvm="clr-namespace:Microsoft.Toolkit.Mvvm.ComponentModel;assembly=Microsoft.Toolkit.Mvvm"
-    xmlns:scalableicons="clr-namespace:ModernThemables.ScalableIcons;assembly=ModernThemables"
+    xmlns:scalableicons="clr-namespace:ModernThemables.Icons;assembly=ModernThemables.Icons"
     x:Name="root"
     mc:Ignorable="d">
     <UserControl.Resources>
@@ -38,7 +38,7 @@
                         CornerRadius="2"
                         MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                         MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}">
-                        <scalableicons:CollapseIcon Width="10" Foreground="{DynamicResource TextBrush}" />
+                        <scalableicons:Icon Kind="Collapse" Width="10" Foreground="{DynamicResource TextBrush}" />
                     </controls:ExtendedButton>
                     <controls:ExtendedButton
                         Grid.Row="1"
@@ -50,7 +50,7 @@
                         CornerRadius="2"
                         MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                         MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}">
-                        <scalableicons:ExpandIcon Width="10" Foreground="{DynamicResource TextBrush}" />
+                        <scalableicons:Icon Kind="Expand" Width="10" Foreground="{DynamicResource TextBrush}" />
                     </controls:ExtendedButton>
                 </Grid>
                 <CheckBox
@@ -77,11 +77,11 @@
                     Style="{StaticResource RoundButtonStyle}"
                     ToolTip="Delete tag">
                     <!--#region Button icon-->
-                    <scalableicons:BinIcon
+                    <scalableicons:Icon
+                        Kind="Bin"
                         Margin="2"
                         Background="{DynamicResource ControlClickablePartBrush}"
-                        Foreground="{DynamicResource ButtonForegroundBrush}"
-                        StrokeThickness="2" />
+                        Foreground="{DynamicResource ButtonForegroundBrush}" />
                     <!--#endregion-->
                 </controls:ExtendedButton>
             </Grid>
@@ -179,10 +179,10 @@
                     IsEnabled="{Binding CanAddTag}"
                     Style="{StaticResource RoundButtonStyle}"
                     ToolTip="Add tag">
-                    <scalableicons:PlusIcon
+                    <scalableicons:Icon
+                        Kind="Plus"
                         Margin="2"
-                        Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=CurrentForeground}"
-                        StrokeThickness="2" />
+                        Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=CurrentForeground}" />
                 </controls:ExtendedButton>
                 <ListBox
                     Grid.RowSpan="10"

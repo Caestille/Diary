@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Diary.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:scalableicons="clr-namespace:ModernThemables.ScalableIcons;assembly=ModernThemables"
+    xmlns:scalableicons="clr-namespace:ModernThemables.Icons;assembly=ModernThemables.Icons"
     xmlns:vms="clr-namespace:Diary.Core.ViewModels.Views;assembly=Diary.Core"
     x:Name="root"
     mc:Ignorable="d">
@@ -80,10 +80,10 @@
                 Command="{Binding AddFirstChildCommand}"
                 Style="{StaticResource RoundButtonStyle}"
                 ToolTip="Add entry">
-                <scalableicons:PlusIcon
+                <scalableicons:Icon
                     Margin="2"
                     Foreground="{DynamicResource StatusTextBrush}"
-                    StrokeThickness="2" />
+                    Kind="Plus" />
             </controls:ExtendedButton>
         </StackPanel>
     </Grid>

@@ -6,7 +6,7 @@
     xmlns:controls="clr-namespace:ModernThemables.Controls;assembly=ModernThemables"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:scalableicons="clr-namespace:ModernThemables.ScalableIcons;assembly=ModernThemables"
+    xmlns:scalableicons="clr-namespace:ModernThemables.Icons;assembly=ModernThemables.Icons"
     xmlns:views="clr-namespace:Diary.Views"
     xmlns:vms="clr-namespace:Diary.Core.ViewModels.Views;assembly=Diary.Core"
     mc:Ignorable="d">
@@ -101,10 +101,10 @@
                     MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                     MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
                     ToolTip="Edit name">
-                    <scalableicons:PenIcon
+                    <scalableicons:Icon
                         Margin="1"
                         Foreground="{DynamicResource StatusTextBrush}"
-                        StrokeThickness="4" />
+                        Kind="Pen" />
                 </controls:ExtendedButton>
                 <!--#endregion-->
                 <controls:ExtendedButton
@@ -126,17 +126,17 @@
                     MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
                     ToolTip="Save">
                     <Grid>
-                        <scalableicons:SaveIcon
+                        <scalableicons:Icon
                             Width="18"
                             Height="18"
                             Margin="1"
                             Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=CurrentForeground}"
-                            StrokeThickness="4" />
+                            Kind="Save" />
                         <controls:CircularProgressBar
                             Width="20"
                             Height="20"
-                            IsIndeterminate="{Binding IsSaving}"
                             Foreground="{DynamicResource ThemeMouseOverBrush}"
+                            IsIndeterminate="{Binding IsSaving}"
                             StrokeWidthFraction="0.3"
                             Visibility="{Binding IsSaving, Converter={StaticResource VisibleIfTrueConverter}}" />
                     </Grid>
@@ -206,10 +206,11 @@
                             </Style.Triggers>
                         </Style>
                     </controls:ExtendedToggleButton.Style>
-                    <scalableicons:CalculatorIcon
+                    <scalableicons:Icon
                         Width="18"
                         Height="18"
-                        Foreground="{DynamicResource StatusTextBrush}" />
+                        Foreground="{DynamicResource StatusTextBrush}"
+                        Kind="Calculator" />
                 </controls:ExtendedToggleButton>
                 <controls:ExtendedToggleButton
                     x:Name="ShowDatesButton"
@@ -262,10 +263,11 @@
                             </Style.Triggers>
                         </Style>
                     </controls:ExtendedToggleButton.Style>
-                    <scalableicons:CalendarIcon
+                    <scalableicons:Icon
                         Width="18"
                         Height="18"
-                        Foreground="{DynamicResource StatusTextBrush}" />
+                        Foreground="{DynamicResource StatusTextBrush}"
+                        Kind="Calendar" />
                 </controls:ExtendedToggleButton>
                 <controls:ExtendedButton
                     x:Name="SummaryButton"
@@ -406,10 +408,11 @@
                             DisabledBackgroundColour="Transparent"
                             MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                             MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}">
-                            <scalableicons:CloseIcon
+                            <scalableicons:Icon
                                 Width="10"
                                 Height="10"
-                                Foreground="{DynamicResource TextBrush}" />
+                                Foreground="{DynamicResource TextBrush}"
+                                Kind="Close" />
                         </controls:ExtendedButton>
                         <ScrollViewer
                             Margin="40"

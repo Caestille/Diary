@@ -5,12 +5,12 @@
     xmlns:baseVms="clr-namespace:Diary.Core.ViewModels.Base;assembly=Diary.Core"
     xmlns:controls="clr-namespace:ModernThemables.Controls;assembly=ModernThemables"
     xmlns:converters="clr-namespace:Diary.Converters"
-    xmlns:scalableicons="clr-namespace:ModernThemables.ScalableIcons;assembly=ModernThemables"
+    xmlns:scalableicons="clr-namespace:ModernThemables.Icons;assembly=ModernThemables.Icons"
     xmlns:vms="clr-namespace:Diary.Core.ViewModels.Views;assembly=Diary.Core">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/ModernThemables;component/Themes/Icons.xaml" />
+                <ResourceDictionary Source="/ModernThemables.Icons;component/Themes/Icons.xaml" />
                 <ResourceDictionary Source="/ModernThemables;component/Themes/Generic.xaml" />
                 <ResourceDictionary Source="/ModernThemables;component/Themes/Rounded.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -136,13 +136,13 @@
                     <!--#region Menu item icons-->
                     <Grid.Resources>
                         <DataTemplate DataType="{x:Type vms:TakeMeToTodayViewModel}">
-                            <scalableicons:PlusIcon StrokeThickness="3" />
+                            <scalableicons:Icon Kind="Plus" />
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type vms:CalendarViewModel}">
-                            <scalableicons:CalendarIcon Foreground="{DynamicResource StatusTextBrush}" StrokeThickness="2" />
+                            <scalableicons:Icon Foreground="{DynamicResource StatusTextBrush}" Kind="Calendar" />
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type vms:DataTaggingViewModel}">
-                            <scalableicons:TagIcon />
+                            <scalableicons:Icon Kind="Tag" />
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type vms:DiaryWeekViewModel}">
                             <StackPanel
@@ -217,7 +217,7 @@
                             </Border>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type vms:ToDoListViewModel}">
-                            <scalableicons:TagIcon />
+                            <scalableicons:Icon Kind="List" />
                         </DataTemplate>
                     </Grid.Resources>
                     <!--#endregion-->
@@ -397,9 +397,9 @@
                                         <Binding Converter="{StaticResource BoolInverter}" Path="IsCollapsed" />
                                     </MultiBinding>
                                 </controls:ExtendedButton.Visibility>
-                                <scalableicons:PlusIcon
+                                <scalableicons:Icon
                                     Margin="2"
-                                    StrokeThickness="2"
+                                    Kind="Plus"
                                     Visibility="{Binding ElementName=SingleItemGrid, Path=IsMouseOver, Converter={StaticResource VisibleIfTrueConverter}, ConverterParameter=Hidden}" />
                             </controls:ExtendedButton>
                             <!--#endregion-->
@@ -431,7 +431,10 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Grid.Style>
-                                <scalableicons:ExpandIcon Foreground="{DynamicResource TextBrush}" Visibility="{Binding ElementName=BinIcon, Path=Visibility, Converter={StaticResource VisibilityInverterConverter}}" />
+                                <scalableicons:Icon
+                                    Foreground="{DynamicResource TextBrush}"
+                                    Kind="Expand"
+                                    Visibility="{Binding ElementName=BinIcon, Path=Visibility, Converter={StaticResource VisibilityInverterConverter}}" />
                             </Grid>
                             <!--#endregion-->
                             <!--#region Delete button-->
@@ -462,9 +465,10 @@
                                         <Binding Converter="{StaticResource BoolInverter}" Path="IsCollapsed" />
                                     </MultiBinding>
                                 </controls:ExtendedButton.Visibility>
-                                <scalableicons:BinIcon
+                                <scalableicons:Icon
                                     x:Name="BinIcon"
                                     Margin="1,0,0,0"
+                                    Kind="Bin"
                                     Visibility="{Binding ElementName=SingleItemGrid, Path=IsMouseOver, Converter={StaticResource VisibleIfTrueConverter}, ConverterParameter=Hidden}" />
                             </controls:ExtendedButton>
                             <!--#endregion-->

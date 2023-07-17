@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Diary.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:scalableicons="clr-namespace:ModernThemables.ScalableIcons;assembly=ModernThemables"
+    xmlns:scalableicons="clr-namespace:ModernThemables.Icons;assembly=ModernThemables.Icons"
     x:Name="root"
     mc:Ignorable="d">
     <Grid
@@ -116,7 +116,7 @@
             Style="{StaticResource RoundButtonStyle}"
             ToolTip="Delete"
             Visibility="{Binding ElementName=root, Path=IsMouseOver, Converter={StaticResource VisibleIfTrueConverter}, ConverterParameter=Hidden}">
-            <scalableicons:BinIcon Margin="1,0,0,0" Foreground="{DynamicResource StatusTextBrush}" />
+            <scalableicons:Icon Kind="Bin" Margin="1,0,0,0" Foreground="{DynamicResource StatusTextBrush}" />
         </controls:ExtendedButton>
     </Grid>
 </UserControl>
