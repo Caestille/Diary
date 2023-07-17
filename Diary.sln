@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diary.Core", "Diary.Core\Di
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diary.OneNoteParser", "Diary.OneNoteParser\Diary.OneNoteParser.csproj", "{F678269B-7912-40B1-8B67-AA473D9FC30E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModernThemables.Icons", "..\ModernThemables.Icons\ModernThemables.Icons.csproj", "{0F078061-08D7-4495-8448-373D5CB97025}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModernThemables", "..\ModernThemables\ModernThemables\ModernThemables.csproj", "{134E8928-F2C4-4356-8C90-0E12DBCFB848}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModernThemables.Icons", "..\ModernThemables\ModernThemables.Icons\ModernThemables.Icons.csproj", "{B1525391-FB58-481F-BC9B-4B28A8B0D74B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,14 +55,6 @@ Global
 		{F678269B-7912-40B1-8B67-AA473D9FC30E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F678269B-7912-40B1-8B67-AA473D9FC30E}.Release|x64.ActiveCfg = Release|Any CPU
 		{F678269B-7912-40B1-8B67-AA473D9FC30E}.Release|x64.Build.0 = Release|Any CPU
-		{0F078061-08D7-4495-8448-373D5CB97025}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F078061-08D7-4495-8448-373D5CB97025}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0F078061-08D7-4495-8448-373D5CB97025}.Debug|x64.ActiveCfg = Debug|x64
-		{0F078061-08D7-4495-8448-373D5CB97025}.Debug|x64.Build.0 = Debug|x64
-		{0F078061-08D7-4495-8448-373D5CB97025}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0F078061-08D7-4495-8448-373D5CB97025}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0F078061-08D7-4495-8448-373D5CB97025}.Release|x64.ActiveCfg = Release|x64
-		{0F078061-08D7-4495-8448-373D5CB97025}.Release|x64.Build.0 = Release|x64
 		{134E8928-F2C4-4356-8C90-0E12DBCFB848}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{134E8928-F2C4-4356-8C90-0E12DBCFB848}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{134E8928-F2C4-4356-8C90-0E12DBCFB848}.Debug|x64.ActiveCfg = Debug|x64
@@ -71,6 +63,14 @@ Global
 		{134E8928-F2C4-4356-8C90-0E12DBCFB848}.Release|Any CPU.Build.0 = Release|Any CPU
 		{134E8928-F2C4-4356-8C90-0E12DBCFB848}.Release|x64.ActiveCfg = Release|x64
 		{134E8928-F2C4-4356-8C90-0E12DBCFB848}.Release|x64.Build.0 = Release|x64
+		{B1525391-FB58-481F-BC9B-4B28A8B0D74B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1525391-FB58-481F-BC9B-4B28A8B0D74B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1525391-FB58-481F-BC9B-4B28A8B0D74B}.Debug|x64.ActiveCfg = Debug|x64
+		{B1525391-FB58-481F-BC9B-4B28A8B0D74B}.Debug|x64.Build.0 = Debug|x64
+		{B1525391-FB58-481F-BC9B-4B28A8B0D74B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1525391-FB58-481F-BC9B-4B28A8B0D74B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1525391-FB58-481F-BC9B-4B28A8B0D74B}.Release|x64.ActiveCfg = Release|x64
+		{B1525391-FB58-481F-BC9B-4B28A8B0D74B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

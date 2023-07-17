@@ -10,7 +10,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/ModernThemables.Icons;component/Themes/Icons.xaml" />
+                <ResourceDictionary Source="/ModernThemables.Icons;component/Themes/Generic.xaml" />
                 <ResourceDictionary Source="/ModernThemables;component/Themes/Generic.xaml" />
                 <ResourceDictionary Source="/ModernThemables;component/Themes/Rounded.xaml" />
             </ResourceDictionary.MergedDictionaries>

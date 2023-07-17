@@ -9,6 +9,7 @@
     xmlns:scalableicons="clr-namespace:ModernThemables.Icons;assembly=ModernThemables.Icons"
     xmlns:views="clr-namespace:Diary.Views"
     xmlns:vms="clr-namespace:Diary.Core.ViewModels.Views;assembly=Diary.Core"
+    xmlns:animatedicons="clr-namespace:ModernThemables.Icons.AnimatedIcons;assembly=ModernThemables.Icons"
     mc:Ignorable="d">
     <b:Interaction.Triggers>
         <b:EventTrigger EventName="Loaded">
@@ -282,12 +283,11 @@
                                     </Style.Triggers>
                                 </Style>
                             </Grid.Style>
-                            <!--<scalableicons:AnimatedMenuOpenCloseIcon
+                            <animatedicons:AnimatedMenuIcon
                                 Margin="3,3,5,3"
                                 Background="{DynamicResource MenuBrush}"
                                 Foreground="{DynamicResource StatusTextBrush}"
-                                IsVisuallyDisabled="{Binding IsMenuOpen, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                StrokeThickness="2" />-->
+                                IsOpen="{Binding IsMenuOpen, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                         </Grid>
                         <!--#endregion-->
                     </controls:ExtendedButton>
@@ -326,9 +326,9 @@
                                 </Style>
                             </Grid.Style>
                             <scalableicons:Icon
-                                Kind="Pin"
                                 Background="{DynamicResource MenuBrush}"
-                                Foreground="{DynamicResource StatusTextBrush}" />
+                                Foreground="{DynamicResource StatusTextBrush}"
+                                Kind="Pin" />
                         </Grid>
                         <!--#endregion-->
                     </controls:ExtendedButton>
