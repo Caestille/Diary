@@ -116,7 +116,10 @@
             Style="{StaticResource RoundButtonStyle}"
             ToolTip="Delete"
             Visibility="{Binding ElementName=root, Path=IsMouseOver, Converter={StaticResource VisibleIfTrueConverter}, ConverterParameter=Hidden}">
-            <scalableicons:Icon Kind="Bin" Margin="1,0,0,0" Foreground="{DynamicResource StatusTextBrush}" />
+            <scalableicons:Icon
+                Margin="1"
+                Foreground="{DynamicResource StatusTextBrush}"
+                Kind="Bin" />
         </controls:ExtendedButton>
     </Grid>
 </UserControl>

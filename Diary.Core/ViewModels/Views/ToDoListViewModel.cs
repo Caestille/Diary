@@ -19,6 +19,8 @@ namespace Diary.Core.ViewModels.Views
         private int? proposedWarningDays;
         private bool canAddItem;
 
+        private bool hasLoadedItems;
+
         private string workingDirectory;
 
         private System.Timers.Timer cardUpdateTimer;
@@ -110,6 +112,8 @@ namespace Diary.Core.ViewModels.Views
             cardUpdateTimer.Elapsed += CardUpdateTimer_Elapsed;
             cardUpdateTimer.Start();
 
+            hasLoadedItems = true;
+
             Application.Current.Dispatcher.ShutdownStarted += (sender, e) =>
             {
                 cardUpdateTimer.Elapsed -= CardUpdateTimer_Elapsed;
@@ -140,7 +144,10 @@ namespace Diary.Core.ViewModels.Views
             {
                 OnPropertyChanged(nameof(ToDoItems));
                 OnPropertyChanged(nameof(DoneItems));
-                File.WriteAllText(toDoListWriteDirectory, JsonSerializer.Serialize(ChildViewModels));
+                if (hasLoadedItems)
+                {
+                    File.WriteAllText(toDoListWriteDirectory, JsonSerializer.Serialize(ChildViewModels));
+                }
             });
             base.BindMessages();
         }
