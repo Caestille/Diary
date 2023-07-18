@@ -217,7 +217,7 @@
                             </Border>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type vms:ToDoListViewModel}">
-                            <scalableicons:Icon Kind="List" />
+                            <scalableicons:Icon Kind="List" Width="16" />
                         </DataTemplate>
                     </Grid.Resources>
                     <!--#endregion-->
@@ -432,6 +432,7 @@
                                     </Style>
                                 </Grid.Style>
                                 <scalableicons:Icon
+                                    Height="5"
                                     Foreground="{DynamicResource TextBrush}"
                                     Kind="Expand"
                                     Visibility="{Binding ElementName=BinIcon, Path=Visibility, Converter={StaticResource VisibilityInverterConverter}}" />

@@ -326,6 +326,7 @@
                                 </Style>
                             </Grid.Style>
                             <scalableicons:Icon
+                                Margin="6"
                                 Background="{DynamicResource MenuBrush}"
                                 Foreground="{DynamicResource StatusTextBrush}"
                                 Kind="Pin" />
