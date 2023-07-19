@@ -38,7 +38,11 @@
                         CornerRadius="2"
                         MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                         MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}">
-                        <scalableicons:Icon Kind="Collapse" Width="10" Foreground="{DynamicResource TextBrush}" />
+                        <scalableicons:Icon
+                            Width="10"
+                            Height="5"
+                            Foreground="{DynamicResource TextBrush}"
+                            Kind="Collapse" />
                     </controls:ExtendedButton>
                     <controls:ExtendedButton
                         Grid.Row="1"
@@ -50,7 +54,11 @@
                         CornerRadius="2"
                         MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
                         MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}">
-                        <scalableicons:Icon Kind="Expand" Width="10" Foreground="{DynamicResource TextBrush}" />
+                        <scalableicons:Icon
+                            Width="10"
+                            Height="5"
+                            Foreground="{DynamicResource TextBrush}"
+                            Kind="Expand" />
                     </controls:ExtendedButton>
                 </Grid>
                 <CheckBox
@@ -78,10 +86,10 @@
                     ToolTip="Delete tag">
                     <!--#region Button icon-->
                     <scalableicons:Icon
-                        Kind="Bin"
                         Margin="2"
                         Background="{DynamicResource ControlClickablePartBrush}"
-                        Foreground="{DynamicResource ButtonForegroundBrush}" />
+                        Foreground="{DynamicResource ButtonForegroundBrush}"
+                        Kind="Bin" />
                     <!--#endregion-->
                 </controls:ExtendedButton>
             </Grid>
@@ -129,7 +137,7 @@
                 <Label
                     Margin="5"
                     VerticalAlignment="Top"
-                    Content="Custom Tags"
+                    Content="Add Tag"
                     FontSize="15"
                     FontWeight="DemiBold"
                     Foreground="{DynamicResource TextBrush}" />
@@ -180,9 +188,9 @@
                     Style="{StaticResource RoundButtonStyle}"
                     ToolTip="Add tag">
                     <scalableicons:Icon
-                        Kind="Plus"
                         Margin="2"
-                        Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=CurrentForeground}" />
+                        Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=CurrentForeground}"
+                        Kind="Plus" />
                 </controls:ExtendedButton>
                 <ListBox
                     Grid.RowSpan="10"

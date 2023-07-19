@@ -50,7 +50,7 @@ namespace Diary.Core.ViewModels.Views
 			SynchroniseTags();
 		});
 
-		public ICommand CustomTagEditorKeyDownCommand => new RelayCommand<object>((args) => CustomTagEditorKeyDown(args));
+		public ICommand CustomTagEditorKeyDownCommand => new RelayCommand<object>(CustomTagEditorKeyDown);
 
         private CustomTag proposedTag;
         public CustomTag ProposedTag

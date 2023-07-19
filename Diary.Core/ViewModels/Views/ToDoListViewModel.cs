@@ -1,4 +1,5 @@
 ﻿using CoreUtilities.HelperClasses;
+using CoreUtilities.HelperClasses.Extensions;
 using Diary.Core.Messages;
 using Diary.Core.Models;
 using Diary.Core.ViewModels.Base;
@@ -14,10 +15,11 @@ namespace Diary.Core.ViewModels.Views
     public class ToDoListViewModel : ViewModelBase
     {
         private string proposedName;
-        private string proposedDescription;
-        private DateTime? proposedDeadline;
-        private int? proposedWarningDays;
         private bool canAddItem;
+        private bool showItemEditPanel;
+        private ToDoItem? editItem;
+
+        private bool allowUpdate = true;
 
         private bool hasLoadedItems;
 
@@ -37,26 +39,10 @@ namespace Diary.Core.ViewModels.Views
             }
         }
 
-        public string ProposedDescription
+        public ToDoItem? EditItem
         {
-            get => proposedDescription;
-            set
-            {
-                SetProperty(ref proposedDescription, value);
-                SetCanAddItem();
-            }
-        }
-
-        public DateTime? ProposedDeadline
-        {
-            get => proposedDeadline;
-            set => SetProperty(ref proposedDeadline, value);
-        }
-
-        public int? ProposedWarningDays
-        {
-            get => proposedWarningDays;
-            set => SetProperty(ref proposedWarningDays, value);
+            get => editItem;
+            set => SetProperty(ref editItem, value);
         }
 
         public bool CanAddItem
@@ -65,36 +51,81 @@ namespace Diary.Core.ViewModels.Views
             set => SetProperty(ref canAddItem, value);
         }
 
-        private ObservableCollection<ToDoItem> childViewModels = new();
-        public new ObservableCollection<ToDoItem> ChildViewModels
+        private ObservableCollection<ToDoItem> items = new();
+        public new ObservableCollection<ToDoItem> Items
         {
-            get => childViewModels;
-            set => SetProperty(ref childViewModels, value);
+            get => items;
+            set => SetProperty(ref items, value);
         }
 
-        public new ICommand AddChildCommand => new RelayCommand(() =>
+        public bool ShowItemEditPanel
         {
-            ChildViewModels.Add(new ToDoItem(
-                ProposedName,
-                ProposedDescription,
-                ProposedDeadline,
-                ProposedWarningDays != null ? TimeSpan.FromDays(ProposedWarningDays.Value) : null));
+            get => showItemEditPanel;
+            set => SetProperty(ref showItemEditPanel, value);
+        }
+
+        public IEnumerable<ToDoItem> ToDoItems => this.Items.Where(x => !x.IsDone);
+
+        public IEnumerable<ToDoItem> DoneItems => this.Items.Where(x => x.IsDone);
+
+        public new ICommand AddItemCommand => new RelayCommand(() =>
+        {
+            Items.Insert(0, new ToDoItem(ProposedName));
             Notify();
             ProposedName = "";
-            ProposedDescription = "";
-            ProposedDeadline = null;
-            ProposedWarningDays = null;
         });
 
         public ICommand DeleteItemCommand => new RelayCommand<ToDoItem>((item) =>
         {
-            ChildViewModels.Remove(item);
+            Items.Remove(item);
             Notify();
         });
 
-        public IEnumerable<ToDoItem> ToDoItems => this.ChildViewModels.Where(x => !x.IsDone);
+        public ICommand EditItemCommand => new RelayCommand<ToDoItem>((item) =>
+        {
+            EditItem = item;
+            ShowItemEditPanel = true;
+        });
 
-        public IEnumerable<ToDoItem> DoneItems => this.ChildViewModels.Where(x => x.IsDone);
+        public ICommand CloseEditPanelCommand => new RelayCommand(() =>
+        {
+            ShowItemEditPanel = false;
+            EditItem = null;
+        });
+
+        public ICommand IncreaseIndexCommand => new RelayCommand<ToDoItem>((item) =>
+        {
+            allowUpdate = false;
+            var currentIndex = ToDoItems.ToList().IndexOf(item);
+            if (currentIndex == ToDoItems.Count() - 1) return;
+
+            var lastIndex = currentIndex;
+            while (ToDoItems.ToList().IndexOf(item) == currentIndex)
+            {
+                Items.Remove(item);
+                Items.Insert(Math.Min(Items.Count, lastIndex + 1), item);
+            }
+            Notify();
+            allowUpdate = true;
+        });
+
+        public ICommand DecreaseIndexCommand => new RelayCommand<ToDoItem>((item) =>
+        {
+            allowUpdate = false;
+            var currentIndex = ToDoItems.ToList().IndexOf(item);
+            if (currentIndex == 0) return;
+
+            var lastIndex = currentIndex;
+            while (ToDoItems.ToList().IndexOf(item) == currentIndex)
+            {
+                Items.Remove(item);
+                Items.Insert(Math.Max(0, lastIndex - 1), item);
+            }
+            Notify();
+            allowUpdate = true;
+        });
+
+        public ICommand ToDoItemEditorKeyDownCommand => new RelayCommand<object>(CustomTagEditorKeyDown);
 
         public ToDoListViewModel(string workingDirectory)
             : base("To Do List")
@@ -103,7 +134,7 @@ namespace Diary.Core.ViewModels.Views
 
             if (File.Exists(toDoListWriteDirectory))
             {
-                ChildViewModels = new ObservableCollection<ToDoItem>(
+                Items = new ObservableCollection<ToDoItem>(
                     JsonSerializer.Deserialize<List<ToDoItem>>(File.ReadAllText(toDoListWriteDirectory)));
             }
 
@@ -123,7 +154,9 @@ namespace Diary.Core.ViewModels.Views
 
         private void CardUpdateTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
-            foreach (var item in ChildViewModels)
+            if (!allowUpdate) return;
+
+            foreach (var item in Items)
             {
                 item.RemainingTime = item.Deadline != null && !item.IsDone
                     ? DateTime.Now > item.Deadline
@@ -146,7 +179,7 @@ namespace Diary.Core.ViewModels.Views
                 OnPropertyChanged(nameof(DoneItems));
                 if (hasLoadedItems)
                 {
-                    File.WriteAllText(toDoListWriteDirectory, JsonSerializer.Serialize(ChildViewModels));
+                    File.WriteAllText(toDoListWriteDirectory, JsonSerializer.Serialize(Items));
                 }
             });
             base.BindMessages();
@@ -154,15 +187,23 @@ namespace Diary.Core.ViewModels.Views
 
         private void SetCanAddItem()
         {
-            CanAddItem = !string.IsNullOrWhiteSpace(ProposedName) || !string.IsNullOrWhiteSpace(ProposedDescription);
+            CanAddItem = !string.IsNullOrWhiteSpace(ProposedName);
         }
 
         private void Notify()
         {
-            OnPropertyChanged(nameof(ChildViewModels));
+            OnPropertyChanged(nameof(Items));
             OnPropertyChanged(nameof(ToDoItems));
             OnPropertyChanged(nameof(DoneItems));
-            File.WriteAllText(toDoListWriteDirectory, JsonSerializer.Serialize(ChildViewModels));
+            File.WriteAllText(toDoListWriteDirectory, JsonSerializer.Serialize(Items));
+        }
+
+        private void CustomTagEditorKeyDown(object args)
+        {
+            if (CanAddItem && args is KeyEventArgs e && (e.Key == Key.Enter || e.Key == Key.Escape) && e.Key == Key.Enter)
+            {
+                AddItemCommand.Execute(null);
+            }
         }
     }
 }

@@ -10,18 +10,28 @@ namespace Diary.Core.Models
     public class ToDoItem : ObservableRecipient
     {
         private string name;
+        private string? group;
         private string description;
         private DateTime? deadline;
         private TimeSpan? remainingTime;
         private TimeSpan? warningBeforeDeadline;
+        private string? warningBeforeDeadlineDays;
         private bool isWarning;
         private bool isDone;
         private bool isDescriptionExpanded;
 
+        [JsonIgnore]
         public ICommand ToggleExpandDescriptionCommand => new RelayCommand(() =>
         {
             IsDescriptionExpanded = !IsDescriptionExpanded;
         });
+
+        [JsonPropertyName("group")]
+        public string? Group
+        {
+            get => group;
+            set => SetProperty(ref group, value);
+        }
 
         [JsonPropertyName("name")]
         public string Name
@@ -44,6 +54,24 @@ namespace Diary.Core.Models
             set => SetProperty(ref deadline, value);
         }
 
+        [JsonPropertyName("warningBeforeDeadline")]
+        public string? WarningBeforeDeadlineDays
+        {
+            get => warningBeforeDeadlineDays;
+            set
+            {
+                SetProperty(ref warningBeforeDeadlineDays, value);
+                if (double.TryParse(value, out var days))
+                {
+                    WarningBeforeDeadline = TimeSpan.FromDays(days);
+                }
+                else
+                {
+                    WarningBeforeDeadline = null;
+                }
+            }
+        }
+
         [JsonIgnore]
         public TimeSpan? RemainingTime
         {
@@ -51,7 +79,7 @@ namespace Diary.Core.Models
             set => SetProperty(ref remainingTime, value);
         }
 
-        [JsonPropertyName("warningBeforeDeadline")]
+        [JsonIgnore]
         public TimeSpan? WarningBeforeDeadline
         {
             get => warningBeforeDeadline;
@@ -83,12 +111,9 @@ namespace Diary.Core.Models
             set => SetProperty(ref isDescriptionExpanded, value);
         }
 
-        public ToDoItem(string name, string description, DateTime? deadline = null, TimeSpan? warningBeforeDeadline = null)
+        public ToDoItem(string name)
         {
             Name = name;
-            Description = description;
-            Deadline = deadline;
-            WarningBeforeDeadline = warningBeforeDeadline;
         }
     }
 }

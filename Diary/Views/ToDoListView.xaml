@@ -14,18 +14,29 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <DataTemplate x:Key="CustomTagTemplate" DataType="{x:Type models:ToDoItem}">
-            <Border
+            <controls:ExtendedButton
+                x:Name="BorderBoi"
                 MaxWidth="300"
                 Margin="0,0,0,10"
                 HorizontalAlignment="Left"
+                Foreground="{DynamicResource TextBrush}"
                 Background="{DynamicResource MenuBrush}"
-                CornerRadius="5">
+                BorderThickness="0"
+                Command="{Binding ElementName=root, Path=DataContext.EditItemCommand}"
+                CommandParameter="{Binding}"
+                CornerRadius="5"
+                MouseOverColour="{DynamicResource StatusTextLightBrush}">
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
                     <Border
                         Grid.RowSpan="10"
                         Grid.ColumnSpan="10"
@@ -35,7 +46,57 @@
                         IsHitTestVisible="False"
                         Opacity="0.5"
                         Visibility="{Binding IsWarning, Converter={StaticResource VisibleIfTrueConverter}}" />
-                    <Grid Grid.Column="1" VerticalAlignment="Center">
+                    <controls:ExtendedButton
+                        Grid.ColumnSpan="10"
+                        Height="10"
+                        Margin="-5,-5,-5,0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Command="{Binding ElementName=root, Path=DataContext.DecreaseIndexCommand}"
+                        CommandParameter="{Binding}"
+                        CornerRadius="2"
+                        MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
+                        MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}">
+                        <controls:ExtendedButton.Visibility>
+                            <MultiBinding Converter="{StaticResource MultiBoolAndToVisibilityConverter}" ConverterParameter="Hidden">
+                                <Binding ElementName="BorderBoi" Path="IsMouseOver" />
+                                <Binding Converter="{StaticResource BoolInverter}" Path="IsDone" />
+                            </MultiBinding>
+                        </controls:ExtendedButton.Visibility>
+                        <scalableicons:Icon
+                            Width="10"
+                            Height="5"
+                            Foreground="{DynamicResource TextBrush}"
+                            Kind="Collapse" />
+                    </controls:ExtendedButton>
+                    <controls:ExtendedButton
+                        Grid.Row="2"
+                        Grid.ColumnSpan="10"
+                        Height="10"
+                        Margin="-5,0,-5,-5"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Command="{Binding ElementName=root, Path=DataContext.IncreaseIndexCommand}"
+                        CommandParameter="{Binding}"
+                        CornerRadius="2"
+                        MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
+                        MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}">
+                        <controls:ExtendedButton.Visibility>
+                            <MultiBinding Converter="{StaticResource MultiBoolAndToVisibilityConverter}" ConverterParameter="Hidden">
+                                <Binding ElementName="BorderBoi" Path="IsMouseOver" />
+                                <Binding Converter="{StaticResource BoolInverter}" Path="IsDone" />
+                            </MultiBinding>
+                        </controls:ExtendedButton.Visibility>
+                        <scalableicons:Icon
+                            Width="10"
+                            Height="5"
+                            Foreground="{DynamicResource TextBrush}"
+                            Kind="Expand" />
+                    </controls:ExtendedButton>
+                    <Grid
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        VerticalAlignment="Center">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -168,7 +229,7 @@
                             Kind="Bin" />
                     </controls:ExtendedButton>
                 </Grid>
-            </Border>
+            </controls:ExtendedButton>
         </DataTemplate>
         <Style TargetType="{x:Type TextBox}">
             <Setter Property="TextBox.Background">
@@ -198,7 +259,6 @@
             Background="{DynamicResource TextBrush}"
             Opacity="0.1" />
         <Grid>
-            <!--#region Name label-->
             <Label
                 Grid.Column="1"
                 Margin="10,5"
@@ -207,10 +267,9 @@
                 FontSize="30"
                 FontWeight="Bold"
                 Foreground="{DynamicResource TextBrush}" />
-            <!--#endregion-->
         </Grid>
-        <!--#region Rest of form-->
         <Grid
+            x:Name="MainGrid"
             Grid.Row="1"
             Margin="6,0,0,0"
             VerticalAlignment="Stretch">
@@ -221,103 +280,56 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Label
-                    Margin="5"
-                    VerticalAlignment="Top"
-                    Content="Add item"
-                    FontSize="15"
-                    FontWeight="DemiBold"
-                    Foreground="{DynamicResource TextBrush}" />
+                <WrapPanel VerticalAlignment="Center">
+                    <Label
+                        Margin="5"
+                        VerticalAlignment="Top"
+                        Content="To do"
+                        FontSize="15"
+                        FontWeight="DemiBold"
+                        Foreground="{DynamicResource TextBrush}" />
+                    <TextBox
+                        Margin="10"
+                        Text="{Binding ProposedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="PreviewKeyDown">
+                                <b:InvokeCommandAction Command="{Binding ToDoItemEditorKeyDownCommand}" PassEventArgsToCommand="True" />
+                            </b:EventTrigger>
+                            <b:EventTrigger EventName="TextChanged">
+                                <b:InvokeCommandAction Command="{Binding ToDoItemEditorKeyDownCommand}" PassEventArgsToCommand="True" />
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                    </TextBox>
+                    <controls:ExtendedButton
+                        Margin="0,10"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Command="{Binding AddItemCommand}"
+                        DisabledBackgroundColour="{DynamicResource DisabledControlClickablePartBrush}"
+                        DisabledForegroundColour="{DynamicResource ControlClickablePartBrush}"
+                        Foreground="{DynamicResource ButtonForegroundBrush}"
+                        IsEnabled="{Binding CanAddItem}"
+                        Style="{StaticResource RoundButtonStyle}"
+                        ToolTip="Add 'to do' item">
+                        <scalableicons:Icon
+                            Margin="2"
+                            Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=CurrentForeground}"
+                            Kind="Plus" />
+                    </controls:ExtendedButton>
+                </WrapPanel>
                 <Label
                     Grid.Column="1"
-                    Margin="5"
-                    VerticalAlignment="Top"
-                    Content="To do"
-                    FontSize="15"
-                    FontWeight="DemiBold"
-                    Foreground="{DynamicResource TextBrush}" />
-                <Label
-                    Grid.Column="2"
                     Margin="5"
                     VerticalAlignment="Top"
                     Content="Done"
                     FontSize="15"
                     FontWeight="DemiBold"
                     Foreground="{DynamicResource TextBrush}" />
-                <controls:ExtendedButton
-                    x:Name="AddTagButton"
-                    Margin="90,9,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Command="{Binding AddChildCommand}"
-                    DisabledBackgroundColour="{DynamicResource DisabledControlClickablePartBrush}"
-                    DisabledForegroundColour="{DynamicResource ControlClickablePartBrush}"
-                    Foreground="{DynamicResource ButtonForegroundBrush}"
-                    IsEnabled="{Binding CanAddItem}"
-                    Style="{StaticResource RoundButtonStyle}"
-                    ToolTip="Add 'to do' item">
-                    <scalableicons:Icon
-                        Margin="2"
-                        Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=CurrentForeground}"
-                        Kind="Plus" />
-                </controls:ExtendedButton>
-                <StackPanel Grid.Row="1" Margin="10,12,3,0">
-                    <TextBlock
-                        FontSize="12"
-                        Foreground="{DynamicResource StatusTextBrush}"
-                        Text="Name" />
-                    <TextBox
-                        Margin="0"
-                        Text="{Binding ProposedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        TextWrapping="Wrap" />
-                    <TextBlock
-                        Margin="0,20,0,0"
-                        FontSize="12"
-                        Foreground="{DynamicResource StatusTextBrush}"
-                        Text="Description" />
-                    <TextBox
-                        Margin="0"
-                        Text="{Binding ProposedDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        TextWrapping="Wrap" />
-                    <TextBlock
-                        Margin="0,20,0,0"
-                        FontSize="12"
-                        Foreground="{DynamicResource StatusTextBrush}"
-                        Text="Deadline (optional)" />
-                    <controls:DatetimeTextBox
-                        Width="Auto"
-                        Height="20"
-                        Margin="-10,0,0,0"
-                        VerticalContentAlignment="Center"
-                        BorderBrush="LightGray"
-                        BorderThickness="0,0,0,1"
-                        DateTime="{Binding ProposedDeadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource ResourceKey={x:Type controls:DatetimeTextBox}}"
-                        WarningBrush="{DynamicResource StatusTextBrush}" />
-                    <TextBlock
-                        Margin="0,20,0,0"
-                        FontSize="12"
-                        Foreground="{DynamicResource StatusTextBrush}"
-                        Text="Warning threshold (optional)" />
-                    <WrapPanel>
-                        <TextBox
-                            MinWidth="40"
-                            Margin="0"
-                            Text="{Binding ProposedWarningDays, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <TextBlock
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            FontSize="12"
-                            Foreground="{DynamicResource StatusTextBrush}"
-                            Text="days" />
-                    </WrapPanel>
-                </StackPanel>
                 <ListBox
                     Grid.Row="2"
-                    Grid.Column="1"
                     Width="320"
                     Height="Auto"
                     MinHeight="20"
@@ -330,7 +342,7 @@
                     ItemsSource="{Binding ToDoItems}" />
                 <ListBox
                     Grid.Row="2"
-                    Grid.Column="2"
+                    Grid.Column="1"
                     Width="320"
                     Height="Auto"
                     MinHeight="20"
@@ -343,6 +355,113 @@
                     ItemsSource="{Binding DoneItems}" />
             </Grid>
         </Grid>
-        <!--#endregion-->
+        <Grid Grid.RowSpan="10" Visibility="{Binding ShowItemEditPanel, Converter={StaticResource VisibleIfTrueConverter}}">
+            <Grid.Background>
+                <SolidColorBrush Color="{DynamicResource InvertedTextColour}" />
+            </Grid.Background>
+            <controls:BlurHost
+                BlurBackground="{Binding ElementName=MainGrid}"
+                Focusable="False"
+                RedrawTrigger="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}">
+                <Border
+                    Width="Auto"
+                    Height="Auto"
+                    Margin="10"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="{DynamicResource MenuBrush}"
+                    BorderBrush="{DynamicResource MenuBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="10">
+                    <Border.Effect>
+                        <DropShadowEffect
+                            BlurRadius="30"
+                            ShadowDepth="0"
+                            Color="Black" />
+                    </Border.Effect>
+                    <Grid>
+                        <Label
+                            Margin="5"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            HorizontalContentAlignment="Center"
+                            Content="Edit Item"
+                            FontSize="20"
+                            FontWeight="Bold"
+                            Foreground="{DynamicResource TextBrush}" />
+                        <StackPanel Grid.Row="1" Margin="20,50,20,20">
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{DynamicResource StatusTextBrush}"
+                                Text="Name" />
+                            <TextBox
+                                Margin="0"
+                                Text="{Binding EditItem.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="Wrap" />
+                            <TextBlock
+                                Margin="0,20,0,0"
+                                FontSize="12"
+                                Foreground="{DynamicResource StatusTextBrush}"
+                                Text="Description" />
+                            <TextBox
+                                Margin="0"
+                                Text="{Binding EditItem.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="Wrap" />
+                            <TextBlock
+                                Margin="0,20,0,0"
+                                FontSize="12"
+                                Foreground="{DynamicResource StatusTextBrush}"
+                                Text="Deadline (optional)" />
+                            <controls:DatetimeTextBox
+                                Width="Auto"
+                                Height="20"
+                                Margin="-10,0,0,0"
+                                VerticalContentAlignment="Center"
+                                BorderBrush="LightGray"
+                                BorderThickness="0,0,0,1"
+                                DateTime="{Binding EditItem.Deadline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource ResourceKey={x:Type controls:DatetimeTextBox}}"
+                                WarningBrush="{DynamicResource StatusTextBrush}" />
+                            <TextBlock
+                                Margin="0,20,0,0"
+                                FontSize="12"
+                                Foreground="{DynamicResource StatusTextBrush}"
+                                Text="Warning threshold (optional)" />
+                            <WrapPanel>
+                                <TextBox
+                                    MinWidth="40"
+                                    Margin="0"
+                                    Text="{Binding EditItem.WarningBeforeDeadlineDays, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Foreground="{DynamicResource StatusTextBrush}"
+                                    Text="days" />
+                            </WrapPanel>
+                        </StackPanel>
+                        <controls:ExtendedButton
+                            Width="40"
+                            Height="30"
+                            Margin="0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Command="{Binding CloseEditPanelCommand}"
+                            CornerRadius="0,10,0,10"
+                            DisabledBackgroundColour="Transparent"
+                            MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
+                            MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}">
+                            <scalableicons:Icon
+                                Width="10"
+                                Height="10"
+                                Foreground="{DynamicResource TextBrush}"
+                                Kind="Close" />
+                        </controls:ExtendedButton>
+                    </Grid>
+                </Border>
+            </controls:BlurHost>
+        </Grid>
     </Grid>
 </UserControl>
