@@ -455,7 +455,7 @@
                             <TextBox
                                 Grid.Column="1"
                                 Margin="0"
-                                Text="{Binding EditItem.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Text="{Binding EditItem.Name, Mode=TwoWay}"
                                 TextWrapping="Wrap" />
                             <TextBlock
                                 Grid.Row="1"
@@ -475,7 +475,7 @@
                                 Grid.Row="2"
                                 Grid.Column="1"
                                 Margin="0"
-                                Text="{Binding EditItem.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Text="{Binding EditItem.Description, Mode=TwoWay}"
                                 TextWrapping="Wrap" />
                             <TextBlock
                                 Grid.Row="3"

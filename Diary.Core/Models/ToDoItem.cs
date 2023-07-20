@@ -41,21 +41,33 @@ namespace Diary.Core.Models
         public string Name
         {
             get => name;
-            set => SetProperty(ref name, value);
+            set
+            {
+                SetProperty(ref name, value);
+                Messenger.Send(new ToDoItemIsDoneChangedMessage());
+            }
         }
 
         [JsonPropertyName("description")]
         public string Description
         {
             get => description;
-            set => SetProperty(ref description, value);
+            set
+            {
+                SetProperty(ref description, value);
+                Messenger.Send(new ToDoItemIsDoneChangedMessage());
+            }
         }
 
         [JsonPropertyName("deadline")]
         public DateTime? Deadline
         {
             get => deadline;
-            set => SetProperty(ref deadline, value);
+            set
+            {
+                SetProperty(ref deadline, value);
+                Messenger.Send(new ToDoItemIsDoneChangedMessage());
+            }
         }
 
         [JsonPropertyName("warningBeforeDeadline")]
@@ -73,6 +85,7 @@ namespace Diary.Core.Models
                 {
                     WarningBeforeDeadline = null;
                 }
+                Messenger.Send(new ToDoItemIsDoneChangedMessage());
             }
         }
 
