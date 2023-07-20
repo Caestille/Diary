@@ -30,7 +30,11 @@ namespace Diary.Core.Models
         public string? Group
         {
             get => group;
-            set => SetProperty(ref group, value);
+            set
+            {
+                SetProperty(ref group, value);
+                Messenger.Send(new ToDoItemIsDoneChangedMessage());
+            }
         }
 
         [JsonPropertyName("name")]

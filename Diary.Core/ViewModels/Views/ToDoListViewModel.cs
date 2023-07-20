@@ -1,6 +1,4 @@
-﻿using CoreUtilities.HelperClasses;
-using CoreUtilities.HelperClasses.Extensions;
-using Diary.Core.Messages;
+﻿using Diary.Core.Messages;
 using Diary.Core.Models;
 using Diary.Core.ViewModels.Base;
 using Microsoft.Toolkit.Mvvm.Input;
@@ -64,9 +62,23 @@ namespace Diary.Core.ViewModels.Views
             set => SetProperty(ref showItemEditPanel, value);
         }
 
-        public IEnumerable<ToDoItem> ToDoItems => this.Items.Where(x => !x.IsDone);
+        public IEnumerable<GroupedItems> GroupedToDoItems =>
+            this.Items.Where(x => !x.IsDone && x.Group != null)
+                .Select(x => x.Group)
+                .Order()
+                .Distinct()
+                .Select(x => new GroupedItems(x, this.Items.Where(y => !y.IsDone && y.Group == x)));
 
-        public IEnumerable<ToDoItem> DoneItems => this.Items.Where(x => x.IsDone);
+        public IEnumerable<ToDoItem> UnGroupedToDoItems => this.Items.Where(x => !x.IsDone && x.Group == null);
+
+        public IEnumerable<GroupedItems> GroupedDoneItems =>
+            this.Items.Where(x => x.IsDone && x.Group != null)
+                .Select(x => x.Group)
+                .Order()
+                .Distinct()
+                .Select(x => new GroupedItems(x, this.Items.Where(y => y.IsDone && y.Group == x)));
+
+        public IEnumerable<ToDoItem> UnGroupedDoneItems => this.Items.Where(x => x.IsDone && x.Group == null);
 
         public new ICommand AddItemCommand => new RelayCommand(() =>
         {
@@ -96,14 +108,25 @@ namespace Diary.Core.ViewModels.Views
         public ICommand IncreaseIndexCommand => new RelayCommand<ToDoItem>((item) =>
         {
             allowUpdate = false;
-            var currentIndex = ToDoItems.ToList().IndexOf(item);
-            if (currentIndex == ToDoItems.Count() - 1) return;
+
+            var isGrouped = item.Group != null;
+            Func<IEnumerable<ToDoItem>> source = isGrouped
+                ? (() => GroupedToDoItems.First(x => x.Group == item.Group).Items)
+                : (() => UnGroupedToDoItems);
+
+            var currentIndex = source().ToList().IndexOf(item);
+            if (currentIndex == source().Count() - 1) return;
 
             var lastIndex = currentIndex;
-            while (ToDoItems.ToList().IndexOf(item) == currentIndex)
+            var maxIterations = Items.Count;
+            int i = 0;
+            while (source().ToList().IndexOf(item) == currentIndex && i < maxIterations)
             {
                 Items.Remove(item);
                 Items.Insert(Math.Min(Items.Count, lastIndex + 1), item);
+                lastIndex++;
+                Notify(false);
+                i++;
             }
             Notify();
             allowUpdate = true;
@@ -112,14 +135,25 @@ namespace Diary.Core.ViewModels.Views
         public ICommand DecreaseIndexCommand => new RelayCommand<ToDoItem>((item) =>
         {
             allowUpdate = false;
-            var currentIndex = ToDoItems.ToList().IndexOf(item);
+
+            var isGrouped = item.Group != null;
+            Func<IEnumerable<ToDoItem>> source = isGrouped
+                ? (() => GroupedToDoItems.First(x => x.Group == item.Group).Items)
+                : (() => UnGroupedToDoItems);
+
+            var currentIndex = source().ToList().IndexOf(item);
             if (currentIndex == 0) return;
 
             var lastIndex = currentIndex;
-            while (ToDoItems.ToList().IndexOf(item) == currentIndex)
+            var maxIterations = Items.Count;
+            int i = 0;
+            while (source().ToList().IndexOf(item) == currentIndex && i < maxIterations)
             {
                 Items.Remove(item);
                 Items.Insert(Math.Max(0, lastIndex - 1), item);
+                lastIndex--;
+                Notify(false);
+                i++;
             }
             Notify();
             allowUpdate = true;
@@ -175,12 +209,7 @@ namespace Diary.Core.ViewModels.Views
         {
             Messenger.Register<ToDoItemIsDoneChangedMessage>(this, (recipient, sender) =>
             {
-                OnPropertyChanged(nameof(ToDoItems));
-                OnPropertyChanged(nameof(DoneItems));
-                if (hasLoadedItems)
-                {
-                    File.WriteAllText(toDoListWriteDirectory, JsonSerializer.Serialize(Items));
-                }
+                Notify(false);
             });
             base.BindMessages();
         }
@@ -190,12 +219,17 @@ namespace Diary.Core.ViewModels.Views
             CanAddItem = !string.IsNullOrWhiteSpace(ProposedName);
         }
 
-        private void Notify()
+        private void Notify(bool force = true)
         {
             OnPropertyChanged(nameof(Items));
-            OnPropertyChanged(nameof(ToDoItems));
-            OnPropertyChanged(nameof(DoneItems));
-            File.WriteAllText(toDoListWriteDirectory, JsonSerializer.Serialize(Items));
+            OnPropertyChanged(nameof(GroupedToDoItems));
+            OnPropertyChanged(nameof(UnGroupedToDoItems));
+            OnPropertyChanged(nameof(GroupedDoneItems));
+            OnPropertyChanged(nameof(UnGroupedDoneItems));
+            if (hasLoadedItems || force)
+            {
+                File.WriteAllText(toDoListWriteDirectory, JsonSerializer.Serialize(Items));
+            }
         }
 
         private void CustomTagEditorKeyDown(object args)

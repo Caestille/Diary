@@ -13,18 +13,18 @@
     x:Name="root"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <DataTemplate x:Key="CustomTagTemplate" DataType="{x:Type models:ToDoItem}">
+        <DataTemplate x:Key="ToDoItemTemplate" DataType="{x:Type models:ToDoItem}">
             <controls:ExtendedButton
                 x:Name="BorderBoi"
                 MaxWidth="300"
                 Margin="0,0,0,10"
                 HorizontalAlignment="Left"
-                Foreground="{DynamicResource TextBrush}"
                 Background="{DynamicResource MenuBrush}"
                 BorderThickness="0"
                 Command="{Binding ElementName=root, Path=DataContext.EditItemCommand}"
                 CommandParameter="{Binding}"
                 CornerRadius="5"
+                Foreground="{DynamicResource TextBrush}"
                 MouseOverColour="{DynamicResource StatusTextLightBrush}">
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
@@ -231,6 +231,31 @@
                 </Grid>
             </controls:ExtendedButton>
         </DataTemplate>
+        <DataTemplate x:Key="GroupedItemTemplate" DataType="{x:Type models:GroupedItems}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    FontSize="15"
+                    FontWeight="DemiBold"
+                    Foreground="{DynamicResource TextBrush}"
+                    Text="{Binding Group}" />
+                <ListBox
+                    Grid.Row="1"
+                    Width="290"
+                    Height="Auto"
+                    MinHeight="20"
+                    Margin="20,11,0,30"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    ItemTemplate="{DynamicResource ToDoItemTemplate}"
+                    ItemsSource="{Binding Items}" />
+            </Grid>
+        </DataTemplate>
         <Style TargetType="{x:Type TextBox}">
             <Setter Property="TextBox.Background">
                 <Setter.Value>
@@ -328,31 +353,45 @@
                     FontSize="15"
                     FontWeight="DemiBold"
                     Foreground="{DynamicResource TextBrush}" />
-                <ListBox
-                    Grid.Row="2"
-                    Width="320"
-                    Height="Auto"
-                    MinHeight="20"
-                    Margin="10,11,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    ItemTemplate="{StaticResource CustomTagTemplate}"
-                    ItemsSource="{Binding ToDoItems}" />
-                <ListBox
+                <StackPanel Grid.Row="2" Margin="10,11,0,0">
+                    <ListBox
+                        Width="320"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        ItemTemplate="{StaticResource ToDoItemTemplate}"
+                        ItemsSource="{Binding UnGroupedToDoItems}" />
+                    <ListBox
+                        Width="320"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        ItemTemplate="{StaticResource GroupedItemTemplate}"
+                        ItemsSource="{Binding GroupedToDoItems}" />
+                </StackPanel>
+                <StackPanel
                     Grid.Row="2"
                     Grid.Column="1"
-                    Width="320"
-                    Height="Auto"
-                    MinHeight="20"
-                    Margin="10,11,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    ItemTemplate="{StaticResource CustomTagTemplate}"
-                    ItemsSource="{Binding DoneItems}" />
+                    Margin="10,11,0,0">
+                    <ListBox
+                        Width="320"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        ItemTemplate="{StaticResource ToDoItemTemplate}"
+                        ItemsSource="{Binding UnGroupedDoneItems}" />
+                    <ListBox
+                        Width="320"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        ItemTemplate="{StaticResource GroupedItemTemplate}"
+                        ItemsSource="{Binding GroupedDoneItems}" />
+                </StackPanel>
             </Grid>
         </Grid>
         <Grid Grid.RowSpan="10" Visibility="{Binding ShowItemEditPanel, Converter={StaticResource VisibleIfTrueConverter}}">
@@ -389,33 +428,64 @@
                             FontSize="20"
                             FontWeight="Bold"
                             Foreground="{DynamicResource TextBrush}" />
-                        <StackPanel Grid.Row="1" Margin="20,50,20,20">
-                            <TextBlock
-                                FontSize="12"
-                                Foreground="{DynamicResource StatusTextBrush}"
-                                Text="Name" />
+                        <Grid Grid.Row="1" Margin="20,60,20,20">
+                            <Grid.Resources>
+                                <Style x:Key="LabelStyle" TargetType="{x:Type TextBlock}">
+                                    <Setter Property="FontSize" Value="12" />
+                                    <Setter Property="Foreground" Value="{DynamicResource StatusTextBrush}" />
+                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                    <Setter Property="VerticalAlignment" Value="Top" />
+                                    <Setter Property="Margin" Value="10,0" />
+                                </Style>
+                            </Grid.Resources>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="40" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource LabelStyle}" Text="Name" />
                             <TextBox
+                                Grid.Column="1"
                                 Margin="0"
                                 Text="{Binding EditItem.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 TextWrapping="Wrap" />
                             <TextBlock
-                                Margin="0,20,0,0"
-                                FontSize="12"
-                                Foreground="{DynamicResource StatusTextBrush}"
+                                Grid.Row="1"
+                                Style="{StaticResource LabelStyle}"
+                                Text="Group" />
+                            <TextBox
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="0"
+                                Text="{Binding EditItem.Group, Mode=TwoWay}"
+                                TextWrapping="Wrap" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Style="{StaticResource LabelStyle}"
                                 Text="Description" />
                             <TextBox
+                                Grid.Row="2"
+                                Grid.Column="1"
                                 Margin="0"
                                 Text="{Binding EditItem.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 TextWrapping="Wrap" />
                             <TextBlock
-                                Margin="0,20,0,0"
-                                FontSize="12"
-                                Foreground="{DynamicResource StatusTextBrush}"
-                                Text="Deadline (optional)" />
+                                Grid.Row="3"
+                                Style="{StaticResource LabelStyle}"
+                                Text="Deadline" />
                             <controls:DatetimeTextBox
+                                Grid.Row="3"
+                                Grid.Column="1"
                                 Width="Auto"
                                 Height="20"
                                 Margin="-10,0,0,0"
+                                VerticalAlignment="Top"
                                 VerticalContentAlignment="Center"
                                 BorderBrush="LightGray"
                                 BorderThickness="0,0,0,1"
@@ -423,11 +493,10 @@
                                 Style="{StaticResource ResourceKey={x:Type controls:DatetimeTextBox}}"
                                 WarningBrush="{DynamicResource StatusTextBrush}" />
                             <TextBlock
-                                Margin="0,20,0,0"
-                                FontSize="12"
-                                Foreground="{DynamicResource StatusTextBrush}"
-                                Text="Warning threshold (optional)" />
-                            <WrapPanel>
+                                Grid.Row="4"
+                                Style="{StaticResource LabelStyle}"
+                                Text="Warning threshold" />
+                            <WrapPanel Grid.Row="4" Grid.Column="1">
                                 <TextBox
                                     MinWidth="40"
                                     Margin="0"
@@ -439,7 +508,7 @@
                                     Foreground="{DynamicResource StatusTextBrush}"
                                     Text="days" />
                             </WrapPanel>
-                        </StackPanel>
+                        </Grid>
                         <controls:ExtendedButton
                             Width="40"
                             Height="30"
