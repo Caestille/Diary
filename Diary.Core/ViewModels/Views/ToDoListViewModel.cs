@@ -84,13 +84,13 @@ namespace Diary.Core.ViewModels.Views
         {
             var group = ProposedName.Contains(":") ? ProposedName.Split(':').First() : null;
             if (string.IsNullOrEmpty(group)) group = null;
-            var match = GroupedToDoItems.Select(x => x.Group).FirstOrDefault(x => x.IndexOf(group, StringComparison.OrdinalIgnoreCase) != -1);
+            var match = group != null ? GroupedToDoItems.Select(x => x.Group).FirstOrDefault(x => x.IndexOf(group, StringComparison.OrdinalIgnoreCase) != -1) : null;
             if (match != null) group = match;
-            group = group.Trim();
+            group = group != null ? group.Trim() : null;
 
             var name = (ProposedName.Contains(":") ? ProposedName.Split(':').Last() : ProposedName).Trim();
 
-            Items.Insert(0, new ToDoItem(name) { Group = group });
+            Items.Add(new ToDoItem(name) { Group = group });
             Notify();
             ProposedName = "";
         });
