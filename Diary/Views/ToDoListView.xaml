@@ -305,7 +305,7 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <WrapPanel VerticalAlignment="Center">
                     <Label
@@ -317,10 +317,10 @@
                         Foreground="{DynamicResource TextBrush}" />
                     <TextBox
                         Margin="10"
-                        ToolTip="Use ':' to separate group and name to add an item to a group.&#x0a;E.g.: '[Group]:[Name]' will add a 'To Do' item of name [Name] to group [Group]"
-                        ToolTipService.InitialShowDelay="50"
                         Text="{Binding ProposedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        TextWrapping="Wrap">
+                        TextWrapping="Wrap"
+                        ToolTip="Use ':' to separate group and name to add an item to a group.&#x0a;E.g.: '[Group]:[Name]' will add a 'To Do' item of name [Name] to group [Group]"
+                        ToolTipService.InitialShowDelay="50">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="PreviewKeyDown">
                                 <b:InvokeCommandAction Command="{Binding ToDoItemEditorKeyDownCommand}" PassEventArgsToCommand="True" />
@@ -355,45 +355,58 @@
                     FontSize="15"
                     FontWeight="DemiBold"
                     Foreground="{DynamicResource TextBrush}" />
-                <StackPanel Grid.Row="2" Margin="10,11,0,0">
-                    <ListBox
-                        Width="320"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        ItemTemplate="{StaticResource ToDoItemTemplate}"
-                        ItemsSource="{Binding UnGroupedToDoItems}" />
-                    <ListBox
-                        Width="320"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        ItemTemplate="{StaticResource GroupedItemTemplate}"
-                        ItemsSource="{Binding GroupedToDoItems}" />
-                </StackPanel>
-                <StackPanel
+                <ScrollViewer
+                    PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                    Grid.Row="2"
+                    Margin="10,11,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top">
+                    <StackPanel>
+                        <ListBox
+                            Width="320"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            ItemTemplate="{StaticResource ToDoItemTemplate}"
+                            ItemsSource="{Binding UnGroupedToDoItems}" />
+                        <ListBox
+                            Width="320"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            ItemTemplate="{StaticResource GroupedItemTemplate}"
+                            ItemsSource="{Binding GroupedToDoItems}" />
+                    </StackPanel>
+                </ScrollViewer>
+                <ScrollViewer
+                    PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                     Grid.Row="2"
                     Grid.Column="1"
-                    Margin="10,11,0,0">
-                    <ListBox
-                        Width="320"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        ItemTemplate="{StaticResource ToDoItemTemplate}"
-                        ItemsSource="{Binding UnGroupedDoneItems}" />
-                    <ListBox
-                        Width="320"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        ItemTemplate="{StaticResource GroupedItemTemplate}"
-                        ItemsSource="{Binding GroupedDoneItems}" />
-                </StackPanel>
+                    Margin="10,11,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Background="Transparent">
+                    <StackPanel>
+                        <ListBox
+                            Width="320"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            ItemTemplate="{StaticResource ToDoItemTemplate}"
+                            ItemsSource="{Binding UnGroupedDoneItems}" />
+                        <ListBox
+                            Width="320"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            ItemTemplate="{StaticResource GroupedItemTemplate}"
+                            ItemsSource="{Binding GroupedDoneItems}" />
+                    </StackPanel>
+                </ScrollViewer>
             </Grid>
         </Grid>
         <Grid Grid.RowSpan="10" Visibility="{Binding ShowItemEditPanel, Converter={StaticResource VisibleIfTrueConverter}}">
