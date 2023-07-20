@@ -10,242 +10,231 @@ using System.Windows.Input;
 
 namespace Diary.Core.ViewModels.Views
 {
-    public class ToDoListViewModel : ViewModelBase
-    {
-        private string proposedName;
-        private bool canAddItem;
-        private bool showItemEditPanel;
-        private ToDoItem? editItem;
+	public class ToDoListViewModel : ViewModelBase
+	{
+		private string proposedName;
+		private bool canAddItem;
+		private bool showItemEditPanel;
+		private ToDoItem? editItem;
 
-        private bool allowUpdate = true;
+		private bool allowUpdate = true;
 
-        private bool hasLoadedItems;
+		private bool hasLoadedItems;
 
-        private string workingDirectory;
+		private string workingDirectory;
 
-        private System.Timers.Timer cardUpdateTimer;
+		private System.Timers.Timer cardUpdateTimer;
 
-        private string toDoListWriteDirectory => Path.Combine(workingDirectory, "ToDoList.json");
+		private string toDoListWriteDirectory => Path.Combine(workingDirectory, "ToDoList.json");
 
-        public string ProposedName
-        {
-            get => proposedName;
-            set
-            {
-                SetProperty(ref proposedName, value);
-                SetCanAddItem();
-            }
-        }
+		public string ProposedName
+		{
+			get => proposedName;
+			set
+			{
+				SetProperty(ref proposedName, value);
+				SetCanAddItem();
+			}
+		}
 
-        public ToDoItem? EditItem
-        {
-            get => editItem;
-            set => SetProperty(ref editItem, value);
-        }
+		public ToDoItem? EditItem
+		{
+			get => editItem;
+			set => SetProperty(ref editItem, value);
+		}
 
-        public bool CanAddItem
-        {
-            get => canAddItem;
-            set => SetProperty(ref canAddItem, value);
-        }
+		public bool CanAddItem
+		{
+			get => canAddItem;
+			set => SetProperty(ref canAddItem, value);
+		}
 
-        private ObservableCollection<ToDoItem> items = new();
-        public new ObservableCollection<ToDoItem> Items
-        {
-            get => items;
-            set => SetProperty(ref items, value);
-        }
+		private ObservableCollection<ToDoItem> items = new();
+		public new ObservableCollection<ToDoItem> Items
+		{
+			get => items;
+			set => SetProperty(ref items, value);
+		}
 
-        public bool ShowItemEditPanel
-        {
-            get => showItemEditPanel;
-            set => SetProperty(ref showItemEditPanel, value);
-        }
+		public bool ShowItemEditPanel
+		{
+			get => showItemEditPanel;
+			set => SetProperty(ref showItemEditPanel, value);
+		}
 
-        public IEnumerable<GroupedItems> GroupedToDoItems =>
-            this.Items.Where(x => !x.IsDone && x.Group != null)
-                .Select(x => x.Group)
-                .Order()
-                .Distinct()
-                .Select(x => new GroupedItems(x, this.Items.Where(y => !y.IsDone && y.Group == x)));
+		public IEnumerable<GroupedItems> GroupedToDoItems =>
+			this.Items.Where(x => !x.IsDone)
+				.Select(x => x.Group)
+				.Order()
+				.Distinct()
+				.Select(x => new GroupedItems(x, this.Items.Where(y => !y.IsDone && y.Group == x)));
 
-        public IEnumerable<ToDoItem> UnGroupedToDoItems => this.Items.Where(x => !x.IsDone && x.Group == null);
+		public IEnumerable<GroupedItems> GroupedDoneItems =>
+			this.Items.Where(x => !x.IsDone)
+				.Select(x => x.Group)
+				.Order()
+				.Distinct()
+				.Select(x => new GroupedItems(x, this.Items.Where(y => y.IsDone && y.Group == x)));
 
-        public IEnumerable<GroupedItems> GroupedDoneItems =>
-            this.Items.Where(x => x.IsDone && x.Group != null)
-                .Select(x => x.Group)
-                .Order()
-                .Distinct()
-                .Select(x => new GroupedItems(x, this.Items.Where(y => y.IsDone && y.Group == x)));
+		public new ICommand AddItemCommand => new RelayCommand(() =>
+		{
+			var group = ProposedName.Contains(":") ? ProposedName.Split(':').First() : null;
+			if (string.IsNullOrEmpty(group)) group = null;
+			var match = group != null ? Items.Select(x => x.Group).FirstOrDefault(x => x.IndexOf(group, StringComparison.OrdinalIgnoreCase) != -1) : null;
+			if (match != null) group = match;
+			group = group != null ? group.Trim() : null;
 
-        public IEnumerable<ToDoItem> UnGroupedDoneItems => this.Items.Where(x => x.IsDone && x.Group == null);
+			var name = (ProposedName.Contains(":") ? ProposedName.Split(':').Last() : ProposedName).Trim();
 
-        public new ICommand AddItemCommand => new RelayCommand(() =>
-        {
-            var group = ProposedName.Contains(":") ? ProposedName.Split(':').First() : null;
-            if (string.IsNullOrEmpty(group)) group = null;
-            var match = group != null ? GroupedToDoItems.Select(x => x.Group).FirstOrDefault(x => x.IndexOf(group, StringComparison.OrdinalIgnoreCase) != -1) : null;
-            if (match != null) group = match;
-            group = group != null ? group.Trim() : null;
+			Items.Add(new ToDoItem(name) { Group = group });
+			Notify();
+			ProposedName = "";
+		});
 
-            var name = (ProposedName.Contains(":") ? ProposedName.Split(':').Last() : ProposedName).Trim();
+		public ICommand DeleteItemCommand => new RelayCommand<ToDoItem>((item) =>
+		{
+			Items.Remove(item);
+			Notify();
+		});
 
-            Items.Add(new ToDoItem(name) { Group = group });
-            Notify();
-            ProposedName = "";
-        });
+		public ICommand EditItemCommand => new RelayCommand<ToDoItem>((item) =>
+		{
+			EditItem = item;
+			ShowItemEditPanel = true;
+		});
 
-        public ICommand DeleteItemCommand => new RelayCommand<ToDoItem>((item) =>
-        {
-            Items.Remove(item);
-            Notify();
-        });
+		public ICommand CloseEditPanelCommand => new RelayCommand(() =>
+		{
+			ShowItemEditPanel = false;
+			EditItem = null;
+		});
 
-        public ICommand EditItemCommand => new RelayCommand<ToDoItem>((item) =>
-        {
-            EditItem = item;
-            ShowItemEditPanel = true;
-        });
+		public ICommand IncreaseIndexCommand => new RelayCommand<ToDoItem>((item) =>
+		{
+			allowUpdate = false;
 
-        public ICommand CloseEditPanelCommand => new RelayCommand(() =>
-        {
-            ShowItemEditPanel = false;
-            EditItem = null;
-        });
+			var isGrouped = item.Group != null;
+			Func<IEnumerable<ToDoItem>> source = () => GroupedToDoItems.First(x => x.Group == item.Group).Items;
 
-        public ICommand IncreaseIndexCommand => new RelayCommand<ToDoItem>((item) =>
-        {
-            allowUpdate = false;
+			var currentIndex = source().ToList().IndexOf(item);
+			if (currentIndex == source().Count() - 1) return;
 
-            var isGrouped = item.Group != null;
-            Func<IEnumerable<ToDoItem>> source = isGrouped
-                ? (() => GroupedToDoItems.First(x => x.Group == item.Group).Items)
-                : (() => UnGroupedToDoItems);
+			var lastIndex = currentIndex;
+			var maxIterations = Items.Count;
+			int i = 0;
+			while (source().ToList().IndexOf(item) == currentIndex && i < maxIterations)
+			{
+				Items.Remove(item);
+				Items.Insert(Math.Min(Items.Count, lastIndex + 1), item);
+				lastIndex++;
+				Notify(false);
+				i++;
+			}
+			Notify();
+			allowUpdate = true;
+		});
 
-            var currentIndex = source().ToList().IndexOf(item);
-            if (currentIndex == source().Count() - 1) return;
+		public ICommand DecreaseIndexCommand => new RelayCommand<ToDoItem>((item) =>
+		{
+			allowUpdate = false;
 
-            var lastIndex = currentIndex;
-            var maxIterations = Items.Count;
-            int i = 0;
-            while (source().ToList().IndexOf(item) == currentIndex && i < maxIterations)
-            {
-                Items.Remove(item);
-                Items.Insert(Math.Min(Items.Count, lastIndex + 1), item);
-                lastIndex++;
-                Notify(false);
-                i++;
-            }
-            Notify();
-            allowUpdate = true;
-        });
+			var isGrouped = item.Group != null;
+			Func<IEnumerable<ToDoItem>> source = () => GroupedToDoItems.First(x => x.Group == item.Group).Items;
 
-        public ICommand DecreaseIndexCommand => new RelayCommand<ToDoItem>((item) =>
-        {
-            allowUpdate = false;
+			var currentIndex = source().ToList().IndexOf(item);
+			if (currentIndex == 0) return;
 
-            var isGrouped = item.Group != null;
-            Func<IEnumerable<ToDoItem>> source = isGrouped
-                ? (() => GroupedToDoItems.First(x => x.Group == item.Group).Items)
-                : (() => UnGroupedToDoItems);
+			var lastIndex = currentIndex;
+			var maxIterations = Items.Count;
+			int i = 0;
+			while (source().ToList().IndexOf(item) == currentIndex && i < maxIterations)
+			{
+				Items.Remove(item);
+				Items.Insert(Math.Max(0, lastIndex - 1), item);
+				lastIndex--;
+				Notify(false);
+				i++;
+			}
+			Notify();
+			allowUpdate = true;
+		});
 
-            var currentIndex = source().ToList().IndexOf(item);
-            if (currentIndex == 0) return;
+		public ICommand ToDoItemEditorKeyDownCommand => new RelayCommand<object>(CustomTagEditorKeyDown);
 
-            var lastIndex = currentIndex;
-            var maxIterations = Items.Count;
-            int i = 0;
-            while (source().ToList().IndexOf(item) == currentIndex && i < maxIterations)
-            {
-                Items.Remove(item);
-                Items.Insert(Math.Max(0, lastIndex - 1), item);
-                lastIndex--;
-                Notify(false);
-                i++;
-            }
-            Notify();
-            allowUpdate = true;
-        });
+		public ToDoListViewModel(string workingDirectory)
+			: base("To Do List")
+		{
+			this.workingDirectory = workingDirectory;
 
-        public ICommand ToDoItemEditorKeyDownCommand => new RelayCommand<object>(CustomTagEditorKeyDown);
+			if (File.Exists(toDoListWriteDirectory))
+			{
+				Items = new ObservableCollection<ToDoItem>(
+					JsonSerializer.Deserialize<List<ToDoItem>>(File.ReadAllText(toDoListWriteDirectory)));
+			}
 
-        public ToDoListViewModel(string workingDirectory)
-            : base("To Do List")
-        {
-            this.workingDirectory = workingDirectory;
+			cardUpdateTimer = new System.Timers.Timer(1000);
+			cardUpdateTimer.AutoReset = true;
+			cardUpdateTimer.Elapsed += CardUpdateTimer_Elapsed;
+			cardUpdateTimer.Start();
 
-            if (File.Exists(toDoListWriteDirectory))
-            {
-                Items = new ObservableCollection<ToDoItem>(
-                    JsonSerializer.Deserialize<List<ToDoItem>>(File.ReadAllText(toDoListWriteDirectory)));
-            }
+			hasLoadedItems = true;
 
-            cardUpdateTimer = new System.Timers.Timer(1000);
-            cardUpdateTimer.AutoReset = true;
-            cardUpdateTimer.Elapsed += CardUpdateTimer_Elapsed;
-            cardUpdateTimer.Start();
+			Application.Current.Dispatcher.ShutdownStarted += (sender, e) =>
+			{
+				cardUpdateTimer.Elapsed -= CardUpdateTimer_Elapsed;
+				cardUpdateTimer.Stop();
+			};
+		}
 
-            hasLoadedItems = true;
+		private void CardUpdateTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+		{
+			if (!allowUpdate) return;
 
-            Application.Current.Dispatcher.ShutdownStarted += (sender, e) =>
-            {
-                cardUpdateTimer.Elapsed -= CardUpdateTimer_Elapsed;
-                cardUpdateTimer.Stop();
-            };
-        }
+			foreach (var item in Items)
+			{
+				item.RemainingTime = item.Deadline != null && !item.IsDone
+					? DateTime.Now > item.Deadline
+						? TimeSpan.FromSeconds(0)
+						: item.Deadline - DateTime.Now
+					: null;
+				item.IsWarning = item.RemainingTime != null && !item.IsDone
+					? item.RemainingTime == TimeSpan.FromSeconds(0)
+						? true
+						: item.RemainingTime < item.WarningBeforeDeadline
+					: false;
+			}
+		}
 
-        private void CardUpdateTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
-        {
-            if (!allowUpdate) return;
+		protected override void BindMessages()
+		{
+			Messenger.Register<ToDoItemIsDoneChangedMessage>(this, (recipient, sender) =>
+			{
+				Notify(false);
+			});
+			base.BindMessages();
+		}
 
-            foreach (var item in Items)
-            {
-                item.RemainingTime = item.Deadline != null && !item.IsDone
-                    ? DateTime.Now > item.Deadline
-                        ? TimeSpan.FromSeconds(0)
-                        : item.Deadline - DateTime.Now
-                    : null;
-                item.IsWarning = item.RemainingTime != null && !item.IsDone
-                    ? item.RemainingTime == TimeSpan.FromSeconds(0)
-                        ? true
-                        : item.RemainingTime < item.WarningBeforeDeadline
-                    : false;
-            }
-        }
+		private void SetCanAddItem()
+		{
+			CanAddItem = !string.IsNullOrWhiteSpace(ProposedName);
+		}
 
-        protected override void BindMessages()
-        {
-            Messenger.Register<ToDoItemIsDoneChangedMessage>(this, (recipient, sender) =>
-            {
-                Notify(false);
-            });
-            base.BindMessages();
-        }
+		private void Notify(bool force = true)
+		{
+			OnPropertyChanged(nameof(Items));
+			OnPropertyChanged(nameof(GroupedItems));
+			if (hasLoadedItems || force)
+			{
+				File.WriteAllText(toDoListWriteDirectory, JsonSerializer.Serialize(Items));
+			}
+		}
 
-        private void SetCanAddItem()
-        {
-            CanAddItem = !string.IsNullOrWhiteSpace(ProposedName);
-        }
-
-        private void Notify(bool force = true)
-        {
-            OnPropertyChanged(nameof(Items));
-            OnPropertyChanged(nameof(GroupedToDoItems));
-            OnPropertyChanged(nameof(UnGroupedToDoItems));
-            OnPropertyChanged(nameof(GroupedDoneItems));
-            OnPropertyChanged(nameof(UnGroupedDoneItems));
-            if (hasLoadedItems || force)
-            {
-                File.WriteAllText(toDoListWriteDirectory, JsonSerializer.Serialize(Items));
-            }
-        }
-
-        private void CustomTagEditorKeyDown(object args)
-        {
-            if (CanAddItem && args is KeyEventArgs e && (e.Key == Key.Enter || e.Key == Key.Escape) && e.Key == Key.Enter)
-            {
-                AddItemCommand.Execute(null);
-            }
-        }
-    }
+		private void CustomTagEditorKeyDown(object args)
+		{
+			if (CanAddItem && args is KeyEventArgs e && (e.Key == Key.Enter || e.Key == Key.Escape) && e.Key == Key.Enter)
+			{
+				AddItemCommand.Execute(null);
+			}
+		}
+	}
 }
