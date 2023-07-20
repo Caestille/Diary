@@ -317,6 +317,8 @@
                         Foreground="{DynamicResource TextBrush}" />
                     <TextBox
                         Margin="10"
+                        ToolTip="Use ':' to separate group and name to add an item to a group.&#x0a;E.g.: '[Group]:[Name]' will add a 'To Do' item of name [Name] to group [Group]"
+                        ToolTipService.InitialShowDelay="50"
                         Text="{Binding ProposedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextWrapping="Wrap">
                         <b:Interaction.Triggers>

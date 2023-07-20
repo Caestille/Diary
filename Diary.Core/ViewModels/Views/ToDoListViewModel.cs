@@ -82,7 +82,15 @@ namespace Diary.Core.ViewModels.Views
 
         public new ICommand AddItemCommand => new RelayCommand(() =>
         {
-            Items.Insert(0, new ToDoItem(ProposedName));
+            var group = ProposedName.Contains(":") ? ProposedName.Split(':').First() : null;
+            if (string.IsNullOrEmpty(group)) group = null;
+            var match = GroupedToDoItems.Select(x => x.Group).FirstOrDefault(x => x.IndexOf(group, StringComparison.OrdinalIgnoreCase) != -1);
+            if (match != null) group = match;
+            group = group.Trim();
+
+            var name = (ProposedName.Contains(":") ? ProposedName.Split(':').Last() : ProposedName).Trim();
+
+            Items.Insert(0, new ToDoItem(name) { Group = group });
             Notify();
             ProposedName = "";
         });
