@@ -17,7 +17,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\CoreUtilities\CoreUtilities.csproj" />
-	  <ProjectReference Include="..\..\ModernThemables\ModernThemables.csproj" />
+	  <ProjectReference Include="..\..\ModernThemables\ModernThemables\ModernThemables.csproj" />
 	</ItemGroup>
 
 </Project>
