@@ -16,9 +16,9 @@
         <DataTemplate x:Key="ToDoItemTemplate" DataType="{x:Type models:ToDoItem}">
             <controls:ExtendedButton
                 x:Name="BorderBoi"
-                MaxWidth="300"
+                MaxWidth="280"
                 Margin="0,0,0,10"
-                HorizontalAlignment="Left"
+                HorizontalAlignment="Stretch"
                 Background="{DynamicResource MenuBrush}"
                 BorderThickness="0"
                 Command="{Binding ElementName=root, Path=DataContext.EditItemCommand}"
@@ -247,7 +247,7 @@
                     Width="290"
                     Height="Auto"
                     MinHeight="20"
-                    Margin="20,11,0,30"
+                    Margin="10,11,0,20"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Background="Transparent"
@@ -319,6 +319,7 @@
                         Margin="10"
                         Text="{Binding ProposedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextWrapping="Wrap"
+                        MinWidth="200"
                         ToolTip="Use ':' to separate group and name to add an item to a group.&#x0a;E.g.: '[Group]:[Name]' will add a 'To Do' item of name [Name] to group [Group]"
                         ToolTipService.InitialShowDelay="50">
                         <b:Interaction.Triggers>
@@ -356,11 +357,12 @@
                     FontWeight="DemiBold"
                     Foreground="{DynamicResource TextBrush}" />
                 <ScrollViewer
-                    PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                     Grid.Row="2"
                     Margin="10,11,0,0"
                     HorizontalAlignment="Left"
-                    VerticalAlignment="Top">
+                    VerticalAlignment="Top"
+                    HorizontalScrollBarVisibility="Disabled"
+                    PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
                     <StackPanel>
                         <ListBox
                             Width="320"
@@ -381,13 +383,14 @@
                     </StackPanel>
                 </ScrollViewer>
                 <ScrollViewer
-                    PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                     Grid.Row="2"
                     Grid.Column="1"
                     Margin="10,11,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    Background="Transparent">
+                    Background="Transparent"
+                    HorizontalScrollBarVisibility="Disabled"
+                    PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
                     <StackPanel>
                         <ListBox
                             Width="320"
