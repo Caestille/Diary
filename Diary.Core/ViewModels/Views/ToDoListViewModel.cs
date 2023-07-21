@@ -67,6 +67,7 @@ namespace Diary.Core.ViewModels.Views
 				.Select(x => x.Group)
 				.Order()
 				.Distinct()
+				.Where(x => this.Items.Where(y => y.Group == x && !y.IsDone).Any())
 				.Select(x => new GroupedItems(x, this.Items.Where(y => !y.IsDone && y.Group == x)));
 
 		public IEnumerable<GroupedItems> GroupedDoneItems =>
@@ -74,6 +75,7 @@ namespace Diary.Core.ViewModels.Views
 				.Select(x => x.Group)
 				.Order()
 				.Distinct()
+				.Where(x => this.Items.Where(y => y.Group == x && y.IsDone).Any())
 				.Select(x => new GroupedItems(x, this.Items.Where(y => y.IsDone && y.Group == x)));
 
 		public new ICommand AddItemCommand => new RelayCommand(() =>
@@ -222,7 +224,8 @@ namespace Diary.Core.ViewModels.Views
 		private void Notify(bool force = true)
 		{
 			OnPropertyChanged(nameof(Items));
-			OnPropertyChanged(nameof(GroupedItems));
+			OnPropertyChanged(nameof(GroupedToDoItems));
+			OnPropertyChanged(nameof(GroupedDoneItems));
 			if (hasLoadedItems || force)
 			{
 				File.WriteAllText(toDoListWriteDirectory, JsonSerializer.Serialize(Items));
