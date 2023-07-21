@@ -15,7 +15,8 @@ namespace Diary.Core.ViewModels.Views
 		private string proposedName;
 		private bool canAddItem;
 		private bool showItemEditPanel;
-		private ToDoItem? editItem;
+        private bool isListHorizontal;
+        private ToDoItem? editItem;
 
 		private bool allowUpdate = true;
 
@@ -60,9 +61,15 @@ namespace Diary.Core.ViewModels.Views
 		{
 			get => showItemEditPanel;
 			set => SetProperty(ref showItemEditPanel, value);
-		}
+        }
 
-		public IEnumerable<GroupedItems> GroupedToDoItems =>
+        public bool IsListHorizontal
+        {
+            get => isListHorizontal;
+            set => SetProperty(ref isListHorizontal, value);
+        }
+
+        public IEnumerable<GroupedItems> GroupedToDoItems =>
 			this.Items.Where(x => !x.IsDone)
 				.Select(x => x.Group)
 				.Order()
@@ -111,7 +118,12 @@ namespace Diary.Core.ViewModels.Views
 			EditItem = null;
 		});
 
-		public ICommand IncreaseIndexCommand => new RelayCommand<ToDoItem>((item) =>
+        public ICommand ToggleListStyleCommand => new RelayCommand(() =>
+        {
+			IsListHorizontal = !IsListHorizontal;
+        });
+
+        public ICommand IncreaseIndexCommand => new RelayCommand<ToDoItem>((item) =>
 		{
 			allowUpdate = false;
 
