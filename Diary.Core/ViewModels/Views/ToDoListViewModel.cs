@@ -70,20 +70,20 @@ namespace Diary.Core.ViewModels.Views
         }
 
         public IEnumerable<GroupedItems> GroupedToDoItems =>
-			this.Items.Where(x => !x.IsDone)
+			this.Items
 				.Select(x => x.Group)
 				.Order()
 				.Distinct()
-				.Where(x => this.Items.Where(y => y.Group == x && !y.IsDone).Any())
-				.Select(x => new GroupedItems(x, this.Items.Where(y => !y.IsDone && y.Group == x)));
+				//.Where(x => this.Items.Where(y => y.Group == x && !y.IsDone).Any())
+				.Select(x => new GroupedItems(x, this.Items.Where(y => !y.IsDone && y.Group == x), false));
 
 		public IEnumerable<GroupedItems> GroupedDoneItems =>
-			this.Items.Where(x => !x.IsDone)
+			this.Items
 				.Select(x => x.Group)
 				.Order()
 				.Distinct()
-				.Where(x => this.Items.Where(y => y.Group == x && y.IsDone).Any())
-				.Select(x => new GroupedItems(x, this.Items.Where(y => y.IsDone && y.Group == x)));
+				//.Where(x => this.Items.Where(y => y.Group == x && y.IsDone).Any())
+				.Select(x => new GroupedItems(x, this.Items.Where(y => y.IsDone && y.Group == x), true));
 
 		public new ICommand AddItemCommand => new RelayCommand(() =>
 		{

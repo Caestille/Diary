@@ -18,5 +18,5 @@
     VisualEdgeMode="Aliased"
     VisualTextRenderingMode="Aliased"
     WindowStartupLocation="CenterScreen">
-	<views:MainView />
+    <views:MainView />
 </controls:ThemableWindow2>
