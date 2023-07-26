@@ -294,180 +294,182 @@
             <StackPanel />
         </ItemsPanelTemplate>
     </UserControl.Resources>
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Border
-            Height="1"
-            Margin="10,0"
-            VerticalAlignment="Bottom"
-            Background="{DynamicResource TextBrush}"
-            Opacity="0.1" />
-        <Label
-            Grid.Column="1"
-            Margin="10,5"
-            VerticalAlignment="Top"
-            Content="{Binding Name}"
-            FontSize="30"
-            FontWeight="Bold"
-            Foreground="{DynamicResource TextBrush}" />
-        <controls:ExtendedButton
-            Margin="180,4,10,3"
-            Padding="4"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
-            Background="{DynamicResource ControlClickablePartBrush}"
-            BorderThickness="0"
-            Command="{Binding ToggleListStyleCommand}"
-            CornerRadius="5"
-            DisabledBackgroundColour="{DynamicResource DisabledControlClickablePartBrush}"
-            DisabledForegroundColour="{DynamicResource DisabledControlNonClickablePartBrush}"
-            Foreground="{DynamicResource StatusTextBrush}"
-            MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
-            MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
-            ToolTip="Toggle 'to do' list appearance">
-            <scalableicons:Icon
-                x:Name="Bleh"
-                Width="18"
-                Height="18"
-                Margin="1"
-                Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=CurrentForeground}">
-                <scalableicons:Icon.Style>
-                    <Style BasedOn="{StaticResource ResourceKey={x:Type scalableicons:Icon}}" TargetType="{x:Type scalableicons:Icon}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsListHorizontal}" Value="True">
-                                <Setter Property="scalableicons:Icon.Kind" Value="ViewHorizontal" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding IsListHorizontal}" Value="False">
-                                <Setter Property="scalableicons:Icon.Kind" Value="ViewVertical" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </scalableicons:Icon.Style>
-            </scalableicons:Icon>
-        </controls:ExtendedButton>
-        <ScrollViewer
-            Grid.Row="1"
-            Margin="6,0,0,0"
+    <Grid>
+        <Grid
+            x:Name="MainGrid"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            HorizontalScrollBarVisibility="Auto"
-            PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
-            <Grid
-                x:Name="MainGrid"
-                Margin="0,0,0,20"
-                VerticalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <WrapPanel VerticalAlignment="Center">
-                    <Label
-                        Margin="5"
-                        VerticalAlignment="Top"
-                        Content="To do"
-                        FontSize="15"
-                        FontWeight="DemiBold"
-                        Foreground="{DynamicResource TextBrush}" />
-                    <TextBox
-                        MinWidth="200"
-                        Margin="10"
-                        Text="{Binding ProposedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        TextWrapping="Wrap"
-                        ToolTip="Use ':' to separate group and name to add an item to a group.&#x0a;E.g.: '[Group]:[Name]' will add a 'To Do' item of name [Name] to group [Group]"
-                        ToolTipService.InitialShowDelay="50">
-                        <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="PreviewKeyDown">
-                                <b:InvokeCommandAction Command="{Binding ToDoItemEditorKeyDownCommand}" PassEventArgsToCommand="True" />
-                            </b:EventTrigger>
-                            <b:EventTrigger EventName="TextChanged">
-                                <b:InvokeCommandAction Command="{Binding ToDoItemEditorKeyDownCommand}" PassEventArgsToCommand="True" />
-                            </b:EventTrigger>
-                        </b:Interaction.Triggers>
-                    </TextBox>
-                    <controls:ExtendedButton
-                        Margin="0,10"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Command="{Binding AddItemCommand}"
-                        DisabledBackgroundColour="{DynamicResource DisabledControlClickablePartBrush}"
-                        DisabledForegroundColour="{DynamicResource ControlClickablePartBrush}"
-                        Foreground="{DynamicResource ButtonForegroundBrush}"
-                        IsEnabled="{Binding CanAddItem}"
-                        Style="{StaticResource RoundButtonStyle}"
-                        ToolTip="Add 'to do' item">
-                        <scalableicons:Icon
-                            Margin="2"
-                            Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=CurrentForeground}"
-                            Kind="Plus" />
-                    </controls:ExtendedButton>
-                </WrapPanel>
-                <ItemsControl Grid.Row="1" Grid.ColumnSpan="2">
-                    <ItemsControl.Style>
-                        <Style>
+            VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Border
+                Height="1"
+                Margin="10,0"
+                VerticalAlignment="Bottom"
+                Background="{DynamicResource TextBrush}"
+                Opacity="0.1" />
+            <Label
+                Grid.Column="1"
+                Margin="10,5"
+                VerticalAlignment="Top"
+                Content="{Binding Name}"
+                FontSize="30"
+                FontWeight="Bold"
+                Foreground="{DynamicResource TextBrush}" />
+            <controls:ExtendedButton
+                Margin="180,4,10,3"
+                Padding="4"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Background="{DynamicResource ControlClickablePartBrush}"
+                BorderThickness="0"
+                Command="{Binding ToggleListStyleCommand}"
+                CornerRadius="5"
+                DisabledBackgroundColour="{DynamicResource DisabledControlClickablePartBrush}"
+                DisabledForegroundColour="{DynamicResource DisabledControlNonClickablePartBrush}"
+                Foreground="{DynamicResource StatusTextBrush}"
+                MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
+                MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
+                ToolTip="Toggle 'to do' list appearance">
+                <scalableicons:Icon
+                    x:Name="Bleh"
+                    Width="18"
+                    Height="18"
+                    Margin="1"
+                    Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=CurrentForeground}">
+                    <scalableicons:Icon.Style>
+                        <Style BasedOn="{StaticResource ResourceKey={x:Type scalableicons:Icon}}" TargetType="{x:Type scalableicons:Icon}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsListHorizontal}" Value="True">
-                                    <Setter Property="ItemsControl.ItemsPanel" Value="{StaticResource StackTemplate}" />
+                                    <Setter Property="scalableicons:Icon.Kind" Value="ViewHorizontal" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding IsListHorizontal}" Value="False">
-                                    <Setter Property="ItemsControl.ItemsPanel" Value="{StaticResource WrapTemplate}" />
+                                    <Setter Property="scalableicons:Icon.Kind" Value="ViewVertical" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </ItemsControl.Style>
-                    <ItemsControl.Items>
-                        <ItemsControl
-                            Margin="10,11,0,0"
+                    </scalableicons:Icon.Style>
+                </scalableicons:Icon>
+            </controls:ExtendedButton>
+            <ScrollViewer
+                Grid.Row="1"
+                Margin="6,0,0,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                HorizontalScrollBarVisibility="Auto"
+                PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+                <Grid Margin="0,0,0,20" VerticalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <WrapPanel VerticalAlignment="Center">
+                        <Label
+                            Margin="5"
+                            VerticalAlignment="Top"
+                            Content="To do"
+                            FontSize="15"
+                            FontWeight="DemiBold"
+                            Foreground="{DynamicResource TextBrush}" />
+                        <TextBox
+                            MinWidth="200"
+                            Margin="10"
+                            Text="{Binding ProposedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            TextWrapping="Wrap"
+                            ToolTip="Use ':' to separate group and name to add an item to a group.&#x0a;E.g.: '[Group]:[Name]' will add a 'To Do' item of name [Name] to group [Group]"
+                            ToolTipService.InitialShowDelay="50">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="PreviewKeyDown">
+                                    <b:InvokeCommandAction Command="{Binding ToDoItemEditorKeyDownCommand}" PassEventArgsToCommand="True" />
+                                </b:EventTrigger>
+                                <b:EventTrigger EventName="TextChanged">
+                                    <b:InvokeCommandAction Command="{Binding ToDoItemEditorKeyDownCommand}" PassEventArgsToCommand="True" />
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </TextBox>
+                        <controls:ExtendedButton
+                            Margin="0,10"
                             HorizontalAlignment="Left"
-                            VerticalAlignment="Stretch"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            ItemTemplate="{StaticResource GroupedItemTemplate}"
-                            ItemsSource="{Binding GroupedToDoItems}">
-                            <ItemsControl.Style>
-                                <Style>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsListHorizontal}" Value="True">
-                                            <Setter Property="ItemsControl.ItemsPanel" Value="{StaticResource WrapTemplate}" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsListHorizontal}" Value="False">
-                                            <Setter Property="ItemsControl.ItemsPanel" Value="{StaticResource StackTemplate}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ItemsControl.Style>
-                        </ItemsControl>
-                        <ItemsControl
-                            Margin="10,11,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Stretch"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            ItemTemplate="{StaticResource GroupedItemTemplate}"
-                            ItemsSource="{Binding GroupedDoneItems}">
-                            <ItemsControl.Style>
-                                <Style>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsListHorizontal}" Value="True">
-                                            <Setter Property="ItemsControl.ItemsPanel" Value="{StaticResource WrapTemplate}" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsListHorizontal}" Value="False">
-                                            <Setter Property="ItemsControl.ItemsPanel" Value="{StaticResource StackTemplate}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ItemsControl.Style>
-                        </ItemsControl>
-                    </ItemsControl.Items>
-                </ItemsControl>
-            </Grid>
-        </ScrollViewer>
+                            VerticalAlignment="Top"
+                            Command="{Binding AddItemCommand}"
+                            DisabledBackgroundColour="{DynamicResource DisabledControlClickablePartBrush}"
+                            DisabledForegroundColour="{DynamicResource ControlClickablePartBrush}"
+                            Foreground="{DynamicResource ButtonForegroundBrush}"
+                            IsEnabled="{Binding CanAddItem}"
+                            Style="{StaticResource RoundButtonStyle}"
+                            ToolTip="Add 'to do' item">
+                            <scalableicons:Icon
+                                Margin="2"
+                                Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:ExtendedButton}}, Path=CurrentForeground}"
+                                Kind="Plus" />
+                        </controls:ExtendedButton>
+                    </WrapPanel>
+                    <ItemsControl Grid.Row="1" Grid.ColumnSpan="2">
+                        <ItemsControl.Style>
+                            <Style>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsListHorizontal}" Value="True">
+                                        <Setter Property="ItemsControl.ItemsPanel" Value="{StaticResource StackTemplate}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsListHorizontal}" Value="False">
+                                        <Setter Property="ItemsControl.ItemsPanel" Value="{StaticResource WrapTemplate}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ItemsControl.Style>
+                        <ItemsControl.Items>
+                            <ItemsControl
+                                Margin="10,11,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Stretch"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                ItemTemplate="{StaticResource GroupedItemTemplate}"
+                                ItemsSource="{Binding GroupedToDoItems}">
+                                <ItemsControl.Style>
+                                    <Style>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsListHorizontal}" Value="True">
+                                                <Setter Property="ItemsControl.ItemsPanel" Value="{StaticResource WrapTemplate}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsListHorizontal}" Value="False">
+                                                <Setter Property="ItemsControl.ItemsPanel" Value="{StaticResource StackTemplate}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ItemsControl.Style>
+                            </ItemsControl>
+                            <ItemsControl
+                                Margin="10,11,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Stretch"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                ItemTemplate="{StaticResource GroupedItemTemplate}"
+                                ItemsSource="{Binding GroupedDoneItems}">
+                                <ItemsControl.Style>
+                                    <Style>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsListHorizontal}" Value="True">
+                                                <Setter Property="ItemsControl.ItemsPanel" Value="{StaticResource WrapTemplate}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsListHorizontal}" Value="False">
+                                                <Setter Property="ItemsControl.ItemsPanel" Value="{StaticResource StackTemplate}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ItemsControl.Style>
+                            </ItemsControl>
+                        </ItemsControl.Items>
+                    </ItemsControl>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
         <Grid Grid.RowSpan="10" Visibility="{Binding ShowItemEditPanel, Converter={StaticResource VisibleIfTrueConverter}}">
             <Grid.Background>
                 <SolidColorBrush Color="{DynamicResource InvertedTextColour}" />
