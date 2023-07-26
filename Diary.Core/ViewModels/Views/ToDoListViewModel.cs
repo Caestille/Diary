@@ -127,24 +127,18 @@ namespace Diary.Core.ViewModels.Views
 		{
 			allowUpdate = false;
 
-			var isGrouped = item.Group != null;
-			Func<IEnumerable<ToDoItem>> source = () => GroupedToDoItems.First(x => x.Group == item.Group).Items;
+			var source = GroupedToDoItems.First(x => x.Group == item.Group).Items.ToList();
 
-			var currentIndex = source().ToList().IndexOf(item);
-			if (currentIndex == source().Count() - 1) return;
+			var currentIndex = source.IndexOf(item);
+			if (currentIndex == source.Count() - 1) return;
 
-			var lastIndex = currentIndex;
-			var maxIterations = Items.Count;
-			int i = 0;
-			while (source().ToList().IndexOf(item) == currentIndex && i < maxIterations)
-			{
-				Items.Remove(item);
-				Items.Insert(Math.Min(Items.Count, lastIndex + 1), item);
-				lastIndex++;
-				Notify(false);
-				i++;
-			}
-			Notify();
+			var nextItem = source[currentIndex + 1];
+
+            Items.Remove(item);
+            var mainIndex = Items.IndexOf(nextItem);
+			Items.Insert(mainIndex + 1, item);
+
+            Notify();
 			allowUpdate = true;
 		});
 
@@ -152,23 +146,17 @@ namespace Diary.Core.ViewModels.Views
 		{
 			allowUpdate = false;
 
-			var isGrouped = item.Group != null;
-			Func<IEnumerable<ToDoItem>> source = () => GroupedToDoItems.First(x => x.Group == item.Group).Items;
+			var source = GroupedToDoItems.First(x => x.Group == item.Group).Items.ToList();
 
-			var currentIndex = source().ToList().IndexOf(item);
+			var currentIndex = source.IndexOf(item);
 			if (currentIndex == 0) return;
 
-			var lastIndex = currentIndex;
-			var maxIterations = Items.Count;
-			int i = 0;
-			while (source().ToList().IndexOf(item) == currentIndex && i < maxIterations)
-			{
-				Items.Remove(item);
-				Items.Insert(Math.Max(0, lastIndex - 1), item);
-				lastIndex--;
-				Notify(false);
-				i++;
-			}
+			var nextItem = source[currentIndex - 1];
+
+            Items.Remove(item);
+            var mainIndex = Items.IndexOf(nextItem);
+			Items.Insert(mainIndex - 1, item);
+
 			Notify();
 			allowUpdate = true;
 		});
