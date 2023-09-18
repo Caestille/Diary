@@ -48,6 +48,17 @@ namespace Diary.Core.ViewModels.Views
             set => SetProperty(ref tagSummaries, value);
         }
 
+        private string notes;
+        public string Notes
+        {
+            get => notes;
+            set
+            {
+                SetProperty(ref notes, value);
+                Messenger.Send(new EntryKeyDownMessage(this, null));
+            }
+        }
+
         private DiaryEntryViewModel lastFocusedVm;
 
         public DiaryDayViewModel() : base("")
@@ -59,7 +70,7 @@ namespace Diary.Core.ViewModels.Views
 
         internal static DiaryDayViewModel FromDto(DiaryDayDto dto)
         {
-            var vm = new DiaryDayViewModel() { Name = dto.Name, ChildViewModels = new RangeObservableCollection<ViewModelBase>(dto.Entries.Select(x => DiaryEntryViewModel.FromDto(x))), DayOfWeek = dto.DayOfWeek };
+            var vm = new DiaryDayViewModel() { Name = dto.Name, Notes = dto.Notes, ChildViewModels = new RangeObservableCollection<ViewModelBase>(dto.Entries.Select(x => DiaryEntryViewModel.FromDto(x))), DayOfWeek = dto.DayOfWeek };
             return vm;
         }
 
@@ -117,25 +128,17 @@ namespace Diary.Core.ViewModels.Views
                 {
                     if (SyncDates)
                     {
-                        var comparerFunc = new Func<DateTime, DateTime, bool>((DateTime original, DateTime comparer) => original.ToString("HH:mm") == comparer.ToString("HH:mm"));
-                        var match = ChildViewModels.Cast<DiaryEntryViewModel>().FirstOrDefault(x =>
-                            (comparerFunc(x.StartTime, message.OldValue)
-                            && !message.IsStartDate
-                            || comparerFunc(x.EndTime, message.OldValue)
-                            && message.IsStartDate)
-                            && message.Sender != x);
-                        if (match != null)
+                        var index = ChildViewModels.IndexOf(message.Sender);
+                        if (message.IsStartDate && index > 0)
                         {
-                            var entry = match;
-                            if (comparerFunc(entry.StartTime, message.OldValue))
-                            {
-                                entry.StartTime = message.NewValue;
-                            }
-                            else if (comparerFunc(entry.EndTime, message.OldValue))
-                            {
-                                entry.EndTime = message.NewValue;
-                            }
+                            var entryBefore = ChildViewModels[index - 1];
+                            ((DiaryEntryViewModel)entryBefore).EndTime = message.NewValue;
                         }
+                        else if (index < ChildViewModels.Count - 1)
+                        {
+                            var entryAfter = ChildViewModels[index + 1];
+                            ((DiaryEntryViewModel)entryAfter).StartTime = message.NewValue;
+                        }   
                     }
                 }
             });

@@ -37,19 +37,43 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <ScrollViewer
                 x:Name="ScrollViewer"
                 Margin="6,6,0,40"
                 Focusable="False"
                 VerticalScrollBarVisibility="Auto">
-                <ItemsControl
-                    x:Name="ItemsControl"
-                    VerticalAlignment="Top"
-                    Focusable="False"
-                    ItemsSource="{Binding ChildViewModels}" />
+                <StackPanel x:Name="ItemsControl" VerticalAlignment="Top">
+                    <Label
+                        VerticalAlignment="Top"
+                        Content="Entries"
+                        FontSize="15"
+                        FontWeight="Bold"
+                        Foreground="{DynamicResource TextBrush}" />
+                    <ItemsControl
+                        VerticalAlignment="Top"
+                        Focusable="False"
+                        ItemsSource="{Binding ChildViewModels}" />
+                </StackPanel>
             </ScrollViewer>
             <StackPanel Grid.Row="1" Margin="10">
+                <Label
+                    VerticalAlignment="Top"
+                    Content="Notes"
+                    FontSize="15"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource TextBrush}" />
+                <TextBox
+                    Padding="5"
+                    AcceptsReturn="True"
+                    Background="{DynamicResource ControlNonClickablePartBrush}"
+                    BorderBrush="{DynamicResource MenuBorderBrush}"
+                    BorderThickness="0,0,0,1"
+                    Foreground="{DynamicResource TextBrush}"
+                    Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+            <StackPanel Grid.Row="2" Margin="10">
                 <Label
                     VerticalAlignment="Top"
                     Content="Summary"

@@ -8,6 +8,8 @@
 
         public string DayOfWeek { get; set; }
 
+        public string Notes { get; set; }
+
         public List<DiaryEntryDto> Entries { get; set; }
     }
 }

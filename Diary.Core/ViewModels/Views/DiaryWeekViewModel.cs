@@ -223,7 +223,7 @@ namespace Diary.Core.ViewModels.Views
             CanSave = false;
             autoSaveTimer.Stop();
             autoSaveTimer.Elapsed -= Timer_Elapsed;
-            Save();
+            _ = Save();
             base.OnShutdownStart(sender, e);
         }
 
@@ -231,7 +231,7 @@ namespace Diary.Core.ViewModels.Views
         {
             if (IsAutoSaveEnabled && CanSave)
             {
-                Save();
+                _ =Save();
             }
         }
 
