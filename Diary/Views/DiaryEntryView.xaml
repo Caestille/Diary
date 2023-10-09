@@ -73,6 +73,8 @@
             Background="{DynamicResource ControlNonClickablePartBrush}"
             BorderBrush="{DynamicResource MenuBorderBrush}"
             BorderThickness="0,0,0,1"
+            AcceptsTab="True"
+            KeyDown="EntryTextbox_KeyDown"
             Foreground="{DynamicResource TextBrush}"
             Text="{Binding EntryText, UpdateSourceTrigger=PropertyChanged}"
             TextWrapping="Wrap"
