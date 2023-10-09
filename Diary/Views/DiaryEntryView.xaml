@@ -68,7 +68,7 @@
             x:Name="EntryTextbox"
             Grid.Column="3"
             Margin="10,3,3,0"
-            SpellCheck.IsEnabled="True"
+            SpellCheck.IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=IsFocused}"
             Padding="2,4"
             VerticalContentAlignment="Center"
             Background="{DynamicResource ControlNonClickablePartBrush}"
