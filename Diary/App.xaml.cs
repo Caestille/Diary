@@ -77,16 +77,21 @@ namespace Diary
 			if (!File.Exists(WorkingDirectory))
 			{
 				Directory.CreateDirectory(WorkingDirectory);
-			}
+            }
 
-			var appRegistryService = new RegistryService(@"SOFTWARE\Diary");
+            if (!File.Exists(WorkingDirectory + "\\Calendar"))
+            {
+                Directory.CreateDirectory(WorkingDirectory + "\\Calendar");
+            }
+
+            var appRegistryService = new RegistryService(@"SOFTWARE\Diary");
 
 			var taggingVm = new DataTaggingViewModel(WorkingDirectory);
 
 			var viewModels = await Task.Run(() => 
 			{
 				double i = 0;
-				var weeks = Directory.GetFiles(WorkingDirectory)
+				var weeks = Directory.GetFiles(WorkingDirectory + "\\Calendar")
 					.Where(x => Guid.TryParse(Path.GetFileNameWithoutExtension(x), out _))
 					.ToList();
 				double count = weeks.Count();
@@ -97,13 +102,13 @@ namespace Diary
 					splashVm.ProgressPercent = (i / count) * 100;
 					weekVms.Add(DiaryWeekViewModel.FromDto(
 						JsonSerializer.Deserialize<DiaryWeekDto>(File.ReadAllText(week)),
-						WorkingDirectory,
+						WorkingDirectory + "\\Calendar",
 						Guid.Parse(Path.GetFileNameWithoutExtension(week))));
 				}
 				var vms = new List<ViewModelBase>()
 				{
 					new TakeMeToTodayViewModel(),
-					new CalendarViewModel(WorkingDirectory, weekVms),
+					new CalendarViewModel(WorkingDirectory + "\\Calendar", weekVms),
 					taggingVm,
 					new ToDoListViewModel(WorkingDirectory),
 				};

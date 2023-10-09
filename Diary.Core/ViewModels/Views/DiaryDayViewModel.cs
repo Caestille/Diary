@@ -70,6 +70,7 @@ namespace Diary.Core.ViewModels.Views
             AllowShowDropdownIndicator = false;
             ShowsInSearch = true;
             GenerateSummary();
+            Loaded = true;
         }
 
         public DiaryDayViewModel(IEnumerable<DiaryEntryDto> entries) : base("")

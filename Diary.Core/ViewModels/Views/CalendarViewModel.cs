@@ -9,6 +9,16 @@ namespace Diary.Core.ViewModels.Views
             string workingDirectory, IEnumerable<DiaryWeekViewModel> startingWeeks)
             : base("Calendar", () => new DiaryYearViewModel(workingDirectory))
         {
+            var backupDir = Path.Combine(workingDirectory, "Backup");
+            if (Directory.Exists(backupDir))
+            {
+                Directory.Delete(backupDir, true);
+            }
+            Directory.CreateDirectory(backupDir);
+
+            var files = Directory.GetFiles(workingDirectory);
+            files.ForEach(x => File.Copy(x, Path.Combine(backupDir, Path.GetFileName(x))));
+
             if (startingWeeks.Any())
             {
                 var years = startingWeeks.Select(x => x.WeekStart.Year).Distinct();
