@@ -240,13 +240,17 @@ namespace Diary.Core.ViewModels.Views
             var days = this.ChildViewModels.Cast<DiaryDayViewModel>();
             if (days.Any(x => x.Loaded))
             {
-                days.Where(x => !x.Loaded).ToList().ForEach(x => x.LoadEntries());
+                foreach (var day in days.Where(x => !x.Loaded))
+                {
+                    day.LoadEntries();
+                }
+                IsSaving = true;
+                CanSave = false;
+                File.WriteAllText(WritePath, JsonSerializer.Serialize(this.ToDto()));
+                await Task.Delay(500);
+                IsSaving = false;
             }
-            IsSaving = true;
-            CanSave = false;
-            File.WriteAllText(WritePath, JsonSerializer.Serialize(this.ToDto()));
-            await Task.Delay(500);
-            IsSaving = false;
+            
         }
 
         private void SetDaysForStartOfWeek()
