@@ -16,6 +16,10 @@ namespace Diary.Core.ViewModels.Views
 
         private IEnumerable<DiaryEntryViewModel> castChildren => ChildViewModels.Cast<DiaryEntryViewModel>();
 
+        public bool Loaded { get; private set; }
+
+        private IEnumerable<DiaryEntryDto> entries;
+
         private string dayOfWeek;
         public string DayOfWeek
         {
@@ -68,9 +72,25 @@ namespace Diary.Core.ViewModels.Views
             GenerateSummary();
         }
 
+        public DiaryDayViewModel(IEnumerable<DiaryEntryDto> entries) : base("")
+        {
+            this.entries = entries;
+
+            AllowShowDropdownIndicator = false;
+            ShowsInSearch = true;
+            GenerateSummary();
+        }
+
+        public void LoadEntries()
+        {
+            this.ChildViewModels = new RangeObservableCollection<ViewModelBase>(entries.Select(x => DiaryEntryViewModel.FromDto(x)));
+            Loaded = true;
+            entries = new List<DiaryEntryDto>();
+        }
+
         internal static DiaryDayViewModel FromDto(DiaryDayDto dto)
         {
-            var vm = new DiaryDayViewModel() { Name = dto.Name, Notes = dto.Notes, ChildViewModels = new RangeObservableCollection<ViewModelBase>(dto.Entries.Select(x => DiaryEntryViewModel.FromDto(x))), DayOfWeek = dto.DayOfWeek };
+            var vm = new DiaryDayViewModel(dto.Entries) { Name = dto.Name, Notes = dto.Notes, DayOfWeek = dto.DayOfWeek };
             return vm;
         }
 
@@ -79,6 +99,11 @@ namespace Diary.Core.ViewModels.Views
             IsSelected = true;
             Messenger.Send(new ViewModelRequestShowMessage<DiaryDayViewModel>(this));
             GenerateSummary();
+
+            if (!Loaded)
+            {
+                LoadEntries();
+            }
         }
 
         protected override void OnChildrenChanged()

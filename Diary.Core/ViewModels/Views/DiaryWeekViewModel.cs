@@ -231,12 +231,17 @@ namespace Diary.Core.ViewModels.Views
         {
             if (IsAutoSaveEnabled && CanSave)
             {
-                _ =Save();
+                _ = Save();
             }
         }
 
         public async Task Save()
         {
+            var days = this.ChildViewModels.Cast<DiaryDayViewModel>();
+            if (days.Any(x => x.Loaded))
+            {
+                days.Where(x => !x.Loaded).ToList().ForEach(x => x.LoadEntries());
+            }
             IsSaving = true;
             CanSave = false;
             File.WriteAllText(WritePath, JsonSerializer.Serialize(this.ToDto()));
