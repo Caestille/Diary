@@ -8,31 +8,54 @@ using Diary.Core.ViewModels.Base;
 using Diary.Core.Messages;
 using Diary.Core.Messages.Base;
 using Diary.Core.Models;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using MrMeeseeks.Extensions;
+using System.Linq;
+using Diary.Core.Dtos;
 
 namespace Diary.Core.ViewModels.Views
 {
-    public class DataTaggingViewModel : ViewModelBase
-    {
-        private string tagsWriteDirectory => Path.Combine(workingDirectory, "CustomTags.json");
+	public class DataTaggingViewModel : ViewModelBase
+	{
+		private string workingDirectory;
+		private string tagsWritePath => Path.Combine(workingDirectory, "CustomTags.json");
+		private string rulesWritePath => Path.Combine(workingDirectory, "TaggingRules.json");
 
-        public static List<CustomTag> PublicCustomTags = new();
-
-        public ICommand AddCustomTagCommand => new RelayCommand(() =>
-        {
-            CustomTags.Add(ProposedTag);
-            ProposedTag = new CustomTag();
+		public ICommand AddCustomTagCommand => new RelayCommand(() =>
+		{
+			CustomTags.Add(ProposedTag);
+			ProposedTag = new CustomTag();
 			OnPropertyChanged(nameof(CustomTags));
 			SynchroniseTags();
-        });
+			File.WriteAllText(tagsWritePath, JsonSerializer.Serialize(CustomTags));
+		});
 
-        public ICommand DeleteCustomTagCommand => new RelayCommand<CustomTag>((tag) =>
-        {
-            CustomTags.Remove(tag);
+		public ICommand DeleteCustomTagCommand => new RelayCommand<CustomTag>((tag) =>
+		{
+			CustomTags.Remove(tag);
 			OnPropertyChanged(nameof(CustomTags));
 			SynchroniseTags();
-        });
+		});
 
-		public ICommand IncreaseIndexCommand => new RelayCommand<CustomTag>((tag) =>
+		public ICommand AddRuleCommand => new RelayCommand(() =>
+		{
+			TaggingRules.Add(ProposedRule);
+			ProposedRule.TagChanged -= ProposedRule_TagChanged;
+			ProposedRule = new TaggingRule();
+			ProposedRule.TagChanged += ProposedRule_TagChanged;
+			OnPropertyChanged(nameof(TaggingRules));
+			SynchroniseRules();
+			File.WriteAllText(rulesWritePath, JsonSerializer.Serialize(TaggingRules.Select(x => new TaggingRuleDto(x))));
+		});
+
+		public ICommand DeleteRuleCommand => new RelayCommand<TaggingRule>((rule) =>
+		{
+			TaggingRules.Remove(rule);
+			OnPropertyChanged(nameof(TaggingRules));
+			SynchroniseRules();
+		});
+
+		public ICommand IncreaseTagIndexCommand => new RelayCommand<CustomTag>((tag) =>
 		{
 			var lastIndex = CustomTags.IndexOf(tag);
 			CustomTags.Remove(tag);
@@ -41,89 +64,146 @@ namespace Diary.Core.ViewModels.Views
 			SynchroniseTags();
 		});
 
-		public ICommand DecreaseIndexCommand => new RelayCommand<CustomTag>((tag) =>
+		public ICommand DecreaseTagIndexCommand => new RelayCommand<CustomTag>((tag) =>
 		{
-            var lastIndex = CustomTags.IndexOf(tag);
-            CustomTags.Remove(tag);
-            CustomTags.Insert(Math.Max(0, lastIndex - 1), tag);
+			var lastIndex = CustomTags.IndexOf(tag);
+			CustomTags.Remove(tag);
+			CustomTags.Insert(Math.Max(0, lastIndex - 1), tag);
 			OnPropertyChanged(nameof(CustomTags));
 			SynchroniseTags();
 		});
 
 		public ICommand CustomTagEditorKeyDownCommand => new RelayCommand<object>(CustomTagEditorKeyDown);
 
-        private CustomTag proposedTag;
-        public CustomTag ProposedTag
-        {
-            get => proposedTag;
-            set => SetProperty(ref proposedTag, value);
-        }
+		public ICommand RuleEditorKeyDownCommand => new RelayCommand<object>(RuleEditorKeyDown);
 
-        private string workingDirectory;
+		private CustomTag proposedTag;
+		public CustomTag ProposedTag
+		{
+			get => proposedTag;
+			set => SetProperty(ref proposedTag, value);
+		}
 
-        private ObservableCollection<CustomTag> customTags = new();
-        public ObservableCollection<CustomTag> CustomTags
-        {
-            get => customTags;
-            set
-            {
-                SetProperty(ref customTags, value);
-                PublicCustomTags = new List<CustomTag>(customTags);
-            }
-        }
+		private TaggingRule proposedRule;
+		public TaggingRule ProposedRule
+		{
+			get => proposedRule;
+			set => SetProperty(ref proposedRule, value);
+		}
 
-        private bool canAddTag;
-        public bool CanAddTag
-        {
-            get => canAddTag;
-            set => SetProperty(ref canAddTag, value);
-        }
 
-        public DataTaggingViewModel(string workingDirectory)
-            : base("Tagging")
-        {
-            this.workingDirectory = workingDirectory;
-            ProposedTag = new CustomTag();
+		private ObservableCollection<CustomTag> customTags = new();
+		public ObservableCollection<CustomTag> CustomTags
+		{
+			get => customTags;
+			set => SetProperty(ref customTags, value);
+		}
 
-            if (File.Exists(tagsWriteDirectory))
-            {
-                CustomTags = new RangeObservableCollection<CustomTag>(
-                    JsonSerializer.Deserialize<List<CustomTag>>(File.ReadAllText(tagsWriteDirectory)));
-            }
-        }
 
-        protected override void BindMessages()
-        {
-            Messenger.Register<RequestSyncTagsMessage>(this, (sender, message) =>
-            {
-                SynchroniseTags();
-            });
-            base.BindMessages();
-        }
+		private ObservableCollection<TaggingRule> taggingRules = new();
+		public ObservableCollection<TaggingRule> TaggingRules
+		{
+			get => taggingRules;
+			set => SetProperty(ref taggingRules, value);
+		}
 
-        protected override void OnShutdownStart(object? sender, EventArgs e)
-        {
-            File.WriteAllText(tagsWriteDirectory, JsonSerializer.Serialize(CustomTags));
-            base.OnShutdownStart(sender, e);
-        }
+		private bool canAddTag;
+		public bool CanAddTag
+		{
+			get => canAddTag;
+			set => SetProperty(ref canAddTag, value);
+		}
 
-        private void CustomTagEditorKeyDown(object args)
-        {
-            CanAddTag = !CustomTags.Select(x => x.Tag).Contains(proposedTag.Tag)
-                && !string.IsNullOrWhiteSpace(proposedTag.Tag)
-                && !string.IsNullOrEmpty(proposedTag.Tag);
+		private bool canAddRule;
+		public bool CanAddRule
+		{
+			get => canAddRule;
+			set => SetProperty(ref canAddRule, value);
+		}
 
-            if (CanAddTag && args is KeyEventArgs e && (e.Key == Key.Enter || e.Key == Key.Escape) && e.Key == Key.Enter)
-            {
-                AddCustomTagCommand.Execute(null);
-                File.WriteAllText(tagsWriteDirectory, JsonSerializer.Serialize(CustomTags));
-            }
-        }
+		public DataTaggingViewModel(string workingDirectory)
+			: base("Tagging")
+		{
+			this.workingDirectory = workingDirectory;
+			ProposedTag = new CustomTag();
+			ProposedRule = new TaggingRule();
+			ProposedRule.TagChanged += ProposedRule_TagChanged;
 
-        private void SynchroniseTags()
-        {
-            PublicCustomTags = new List<CustomTag>(customTags);
-            Messenger.Send(new SyncTagsMessage(CustomTags));
-        }
-    }
+			if (File.Exists(tagsWritePath))
+			{
+				CustomTags = new RangeObservableCollection<CustomTag>(
+					JsonSerializer.Deserialize<List<CustomTag>>(File.ReadAllText(tagsWritePath)));
+			}
+
+			if (File.Exists(rulesWritePath))
+			{
+				TaggingRules = new RangeObservableCollection<TaggingRule>(
+					JsonSerializer.Deserialize<List<TaggingRuleDto>>(File.ReadAllText(rulesWritePath))
+						.Where(x => CustomTags.Any(y => y.Tag == x.Tag))
+						.Select(x => new TaggingRule(x, CustomTags)));
+			}
+
+			SynchroniseRules();
+		}
+
+		protected override void BindMessages()
+		{
+			Messenger.Register<RequestSyncTagsMessage>(this, (sender, message) =>
+			{
+				SynchroniseTags();
+			});
+			Messenger.Register<RequestSyncRulesMessage>(this, (sender, message) =>
+			{
+				SynchroniseRules();
+			});
+			base.BindMessages();
+		}
+
+		protected override void OnShutdownStart(object? sender, EventArgs e)
+		{
+			File.WriteAllText(tagsWritePath, JsonSerializer.Serialize(CustomTags));
+			File.WriteAllText(rulesWritePath, JsonSerializer.Serialize(TaggingRules.Select(x => new TaggingRuleDto(x))));
+			base.OnShutdownStart(sender, e);
+		}
+
+		private void CustomTagEditorKeyDown(object args)
+		{
+			CanAddTag = !CustomTags.Select(x => x.Tag).Contains(proposedTag.Tag)
+				&& !string.IsNullOrWhiteSpace(proposedTag.Tag)
+				&& !string.IsNullOrEmpty(proposedTag.Tag);
+
+			if (CanAddTag && args is KeyEventArgs e && (e.Key == Key.Enter || e.Key == Key.Escape) && e.Key == Key.Enter)
+			{
+				AddCustomTagCommand.Execute(null);
+				File.WriteAllText(tagsWritePath, JsonSerializer.Serialize(CustomTags));
+			}
+		}
+
+		private void RuleEditorKeyDown(object args)
+		{
+			CanAddRule = !string.IsNullOrWhiteSpace(proposedRule.Text)
+				&& proposedRule.Tag != null;
+
+			if (CanAddRule && args is KeyEventArgs e && (e.Key == Key.Enter || e.Key == Key.Escape) && e.Key == Key.Enter)
+			{
+				AddRuleCommand.Execute(null);
+				File.WriteAllText(rulesWritePath, JsonSerializer.Serialize(TaggingRules.Select(x => new TaggingRuleDto(x))));
+			}
+		}
+
+		private void SynchroniseTags()
+		{
+			Messenger.Send(new SyncTagsMessage(CustomTags));
+		}
+
+		private void SynchroniseRules()
+		{
+			Messenger.Send(new SyncRulesMessage(TaggingRules));
+		}
+
+		private void ProposedRule_TagChanged(object? sender, EventArgs e)
+		{
+			RuleEditorKeyDown(null);
+		}
+	}
 }

@@ -8,11 +8,15 @@ using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using System.Windows.Input;
 using System.Windows;
+using CoreUtilities.Services;
 
 namespace Diary.Core.ViewModels.Views
 {
     public class DiaryEntryViewModel : ViewModelBase
     {
+        private IEnumerable<TaggingRule> autoTags;
+        private KeepAliveTriggerService autoTagTrigger;
+
         public ICommand EntryGotFocusCommand => new RelayCommand(EntryGotFocus);
         public ICommand EntryKeyDownCommand => new RelayCommand<object>(EntryKeyDown);
         public ICommand EntryDateChangedCommand => new RelayCommand<object>(EntryDateChanged);
@@ -61,7 +65,11 @@ namespace Diary.Core.ViewModels.Views
         public string EntryText
         {
             get => entryText;
-            set => SetProperty(ref entryText, value);
+            set
+            {
+                SetProperty(ref entryText, value);
+                autoTagTrigger.Refresh();
+            }
         }
 
         private bool isFocused;
@@ -96,7 +104,9 @@ namespace Diary.Core.ViewModels.Views
         public DiaryEntryViewModel(string starterTag = "") : base("")
         {
             this.starterTag = starterTag;
+            autoTagTrigger = new KeepAliveTriggerService(AutoTag, 1000);
             Messenger.Send(new RequestSyncTagsMessage());
+            Messenger.Send(new RequestSyncRulesMessage());
         }
 
         internal static DiaryEntryViewModel FromDto(DiaryEntryDto dto)
@@ -121,7 +131,18 @@ namespace Diary.Core.ViewModels.Views
                 }
             });
 
+            Messenger.Register<SyncRulesMessage>(this, (sender, message) =>
+            {
+                autoTags = message.Rules;
+            });
+
             base.BindMessages();
+        }
+
+        protected override void OnShutdownStart(object? sender, EventArgs e)
+        {
+            autoTagTrigger.Stop();
+            base.OnShutdownStart(sender, e);
         }
 
         private void EntryGotFocus()
@@ -144,6 +165,29 @@ namespace Diary.Core.ViewModels.Views
             {
                 var isStart = propertyArgs.NewValue == StartTime;
                 Messenger.Send(new EntryDateChangedMessage(this, isStart, oldVal, newVal));
+            }
+        }
+
+        private void AutoTag()
+        {
+            if (Tag != null || autoTags == null || string.IsNullOrEmpty(EntryText))
+            {
+                return;
+            }
+
+            CustomTag? tag = null;
+            foreach (var rule in autoTags)
+            {
+                if (this.EntryText.Contains(rule.Text, StringComparison.OrdinalIgnoreCase))
+                {
+                    tag = rule.Tag;
+                    break;
+                }
+            }
+
+            if (tag != null)
+            {
+                Tag = tag;
             }
         }
     }
