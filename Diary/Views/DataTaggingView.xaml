@@ -22,7 +22,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid Visibility="{Binding ElementName=GriddyBoi, Path=IsMouseOver, Converter={StaticResource VisibleIfTrueConverter}, ConverterParameter=Hidden}">
                     <Grid.RowDefinitions>
@@ -76,6 +76,7 @@
                     Text="{Binding Tag}" />
                 <controls:ExtendedButton
                     x:Name="DeleteTagButton"
+                    HorizontalAlignment="Right"
                     Grid.Column="3"
                     Margin="10,0,0,0"
                     Command="{Binding ElementName=root, Path=DataContext.DeleteCustomTagCommand}"
@@ -95,66 +96,56 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="RuleTemplate" DataType="{x:Type models:TaggingRule}">
-            <Grid Margin="0,0,0,10">
-                <Border
-                    Background="{DynamicResource MenuBrush}"
-                    BorderBrush="{DynamicResource MenuBorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="5">
-                    <Grid Margin="10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock
-                            Margin="0,0,10,0"
-                            VerticalAlignment="Center"
-                            FontSize="11"
-                            Foreground="{DynamicResource StatusTextBrush}"
-                            Text="Text:" />
-                        <TextBlock
-                            Grid.Column="1"
-                            VerticalAlignment="Center"
-                            Text="{Binding Text}" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Margin="0,0,10,0"
-                            VerticalAlignment="Center"
-                            FontSize="11"
-                            Foreground="{DynamicResource StatusTextBrush}"
-                            Text="Sets tag:" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            VerticalAlignment="Center"
-                            Text="{Binding Tag.Tag}" />
-                        <controls:ExtendedButton
-                            Grid.RowSpan="2"
-                            Grid.Column="2"
-                            Margin="20,0,0,0"
-                            Command="{Binding ElementName=root, Path=DataContext.DeleteRuleCommand}"
-                            CommandParameter="{Binding}"
-                            DisabledBackgroundColour="{DynamicResource DisabledControlClickablePartBrush}"
-                            DisabledForegroundColour="{DynamicResource StatusTextBrush}"
-                            Style="{StaticResource RoundButtonStyle}"
-                            ToolTip="Delete rule">
-                            <scalableicons:Icon
-                                Margin="2"
-                                Background="{DynamicResource ControlClickablePartBrush}"
-                                Foreground="{DynamicResource ButtonForegroundBrush}"
-                                Kind="Bin" />
-                        </controls:ExtendedButton>
-                    </Grid>
-                </Border>
-                <Border
-                    Background="{DynamicResource TextBrush}"
-                    CornerRadius="5"
-                    Opacity="0.05" />
+            <Grid Margin="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    FontSize="11"
+                    Foreground="{DynamicResource StatusTextBrush}"
+                    Text="Text:" />
+                <TextBlock
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="{Binding Text}" />
+                <TextBlock
+                    Grid.Column="2"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    FontSize="11"
+                    Foreground="{DynamicResource StatusTextBrush}"
+                    Text="Sets tag:" />
+                <TextBlock
+                    Grid.Column="3"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="{Binding Tag.Tag}" />
+                <controls:ExtendedButton
+                    Grid.Column="4"
+                    Margin="20,0,0,0"
+                    HorizontalAlignment="Right"
+                    Command="{Binding ElementName=root, Path=DataContext.DeleteRuleCommand}"
+                    CommandParameter="{Binding}"
+                    DisabledBackgroundColour="{DynamicResource DisabledControlClickablePartBrush}"
+                    DisabledForegroundColour="{DynamicResource StatusTextBrush}"
+                    Style="{StaticResource RoundButtonStyle}"
+                    ToolTip="Delete rule">
+                    <scalableicons:Icon
+                        Margin="2"
+                        Background="{DynamicResource ControlClickablePartBrush}"
+                        Foreground="{DynamicResource ButtonForegroundBrush}"
+                        Kind="Bin" />
+                </controls:ExtendedButton>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
@@ -363,14 +354,22 @@
                             Kind="Plus" />
                     </controls:ExtendedButton>
                 </Grid>
-                <ItemsControl
+
+                <ListBox
                     Grid.RowSpan="10"
                     Grid.Column="1"
+                    Width="Auto"
+                    Height="Auto"
+                    MinWidth="145"
+                    MinHeight="20"
                     Margin="45,11,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
+                    Background="{DynamicResource MenuBrush}"
+                    BorderBrush="{DynamicResource MenuBorderBrush}"
                     ItemTemplate="{StaticResource RuleTemplate}"
-                    ItemsSource="{Binding TaggingRules}" />
+                    ItemsSource="{Binding TaggingRules}"
+                    Visibility="{Binding TaggingRules, Converter={StaticResource SequenceHasElementsVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
         </Grid>
         <!--#endregion-->
