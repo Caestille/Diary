@@ -104,7 +104,7 @@ namespace Diary.Core.ViewModels.Views
         public DiaryEntryViewModel(string starterTag = "") : base("")
         {
             this.starterTag = starterTag;
-            autoTagTrigger = new KeepAliveTriggerService(AutoTag, 1000);
+            autoTagTrigger = new KeepAliveTriggerService(AutoTag, 300);
             Messenger.Send(new RequestSyncTagsMessage());
             Messenger.Send(new RequestSyncRulesMessage());
         }
