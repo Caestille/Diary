@@ -85,6 +85,13 @@ namespace Diary.Core.ViewModels.Views
 				//.Where(x => this.Items.Where(y => y.Group == x && y.IsDone).Any())
 				.Select(x => new GroupedItems(x, this.Items.Where(y => y.IsDone && y.Group == x), true));
 
+		private ObservableCollection<string> autofillOptions = new();
+		public ObservableCollection<string> AutofillOptions
+		{
+            get => autofillOptions;
+            set => SetProperty(ref autofillOptions, value);
+        }
+
 		public new ICommand AddItemCommand => new RelayCommand(() =>
 		{
 			var group = ProposedName.Contains(":") ? ProposedName.Split(':').First() : null;
@@ -98,6 +105,8 @@ namespace Diary.Core.ViewModels.Views
 			Items.Add(new ToDoItem(name) { Group = group });
 			Notify();
 			ProposedName = "";
+
+			AutofillOptions = new ObservableCollection<string>(Items.Select(x => $"{x.Group}: ").Distinct());
 		});
 
 		public ICommand DeleteItemCommand => new RelayCommand<ToDoItem>((item) =>
@@ -186,7 +195,9 @@ namespace Diary.Core.ViewModels.Views
 				cardUpdateTimer.Elapsed -= CardUpdateTimer_Elapsed;
 				cardUpdateTimer.Stop();
 			};
-		}
+
+            AutofillOptions = new ObservableCollection<string>(Items.Select(x => $"{x.Group}: ").Distinct());
+        }
 
 		private void CardUpdateTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
 		{

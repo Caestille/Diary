@@ -34,7 +34,7 @@
                 To="220"
                 Duration="0:0:0.2">
                 <DoubleAnimation.EasingFunction>
-                    <BackEase Amplitude="0.3" EasingMode="EaseOut" />
+                    <CircleEase />
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
         </Storyboard>
@@ -46,7 +46,7 @@
                 To="51"
                 Duration="0:0:0.2">
                 <DoubleAnimation.EasingFunction>
-                    <BackEase Amplitude="0.3" EasingMode="EaseOut" />
+                    <CircleEase />
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
         </Storyboard>
@@ -72,7 +72,7 @@
                                             To="51,0,0,0"
                                             Duration="0:0:0.1">
                                             <ThicknessAnimation.EasingFunction>
-                                                <BackEase Amplitude="0.2" EasingMode="EaseOut" />
+                                                <CircleEase EasingMode="EaseIn" />
                                             </ThicknessAnimation.EasingFunction>
                                         </ThicknessAnimation>
                                     </Storyboard>
@@ -87,7 +87,7 @@
                                             To="220,0,0,0"
                                             Duration="0:0:0.1">
                                             <ThicknessAnimation.EasingFunction>
-                                                <BackEase Amplitude="0.2" EasingMode="EaseOut" />
+                                                <CircleEase EasingMode="EaseIn" />
                                             </ThicknessAnimation.EasingFunction>
                                         </ThicknessAnimation>
                                     </Storyboard>

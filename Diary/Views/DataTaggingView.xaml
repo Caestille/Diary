@@ -76,9 +76,9 @@
                     Text="{Binding Tag}" />
                 <controls:ExtendedButton
                     x:Name="DeleteTagButton"
-                    HorizontalAlignment="Right"
                     Grid.Column="3"
                     Margin="10,0,0,0"
+                    HorizontalAlignment="Right"
                     Command="{Binding ElementName=root, Path=DataContext.DeleteCustomTagCommand}"
                     CommandParameter="{Binding}"
                     DisabledBackgroundColour="{DynamicResource DisabledControlClickablePartBrush}"
