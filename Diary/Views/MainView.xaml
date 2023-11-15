@@ -69,7 +69,7 @@
                                         <ThicknessAnimation
                                             AutoReverse="False"
                                             Storyboard.TargetProperty="Margin"
-                                            To="51,0,0,0"
+                                            To="66,0,0,0"
                                             Duration="0:0:0.1">
                                             <ThicknessAnimation.EasingFunction>
                                                 <CircleEase EasingMode="EaseIn" />
@@ -84,7 +84,7 @@
                                         <ThicknessAnimation
                                             AutoReverse="False"
                                             Storyboard.TargetProperty="Margin"
-                                            To="220,0,0,0"
+                                            To="235,0,0,0"
                                             Duration="0:0:0.1">
                                             <ThicknessAnimation.EasingFunction>
                                                 <CircleEase EasingMode="EaseIn" />
@@ -103,7 +103,10 @@
         <Border
             x:Name="SettingsBorder"
             Width="51"
-            Margin="0,0,0,0"
+            Margin="10"
+            CornerRadius="10"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource MenuBorderBrush}"
             HorizontalAlignment="Left"
             Background="{DynamicResource MenuBrush}">
             <Border.Style>
@@ -118,7 +121,6 @@
                             </DataTrigger.ExitActions>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsMenuPinned}" Value="False">
-                            <Setter Property="Border.CornerRadius" Value="0 10 10 0" />
                             <Setter Property="Border.Effect">
                                 <Setter.Value>
                                     <DropShadowEffect
@@ -131,7 +133,6 @@
                             </Setter>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsMenuOpen}" Value="False">
-                            <Setter Property="Border.CornerRadius" Value="0" />
                             <Setter Property="Border.Effect">
                                 <Setter.Value>
                                     <DropShadowEffect
@@ -213,24 +214,6 @@
                     </ScrollViewer>
                 </controls:BlurHost>
                 <!--#endregion-->
-                <Border
-                    Width="250"
-                    HorizontalAlignment="Right"
-                    BorderBrush="{DynamicResource MenuBorderBrush}"
-                    BorderThickness="0,0,1,0">
-                    <Border.Style>
-                        <Style>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsMenuPinned}" Value="False">
-                                    <Setter Property="Border.CornerRadius" Value="0 10 10 0" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IsMenuOpen}" Value="False">
-                                    <Setter Property="Border.CornerRadius" Value="0 0 0 0" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                </Border>
                 <!--#region Menu controls-->
                 <Grid Margin="10,0,0,0" VerticalAlignment="Top">
                     <Grid.ColumnDefinitions>
