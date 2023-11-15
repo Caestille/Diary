@@ -147,9 +147,6 @@
                     </Style.Triggers>
                 </Style>
             </Border.Style>
-            <Border.Clip>
-                <RectangleGeometry Rect="0,0,10000,10000" />
-            </Border.Clip>
             <Grid>
                 <!--#region Background and items host-->
                 <controls:BlurHost
