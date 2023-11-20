@@ -52,6 +52,9 @@
         </Storyboard>
     </UserControl.Resources>
     <Grid>
+        <Grid.Clip>
+            <RectangleGeometry Rect="0,0,10000,10000" />
+        </Grid.Clip>
         <!--#region Main content control-->
         <ContentControl
             x:Name="ContentControl"
