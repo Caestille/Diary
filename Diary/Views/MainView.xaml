@@ -108,6 +108,7 @@
             BorderThickness="1"
             BorderBrush="{DynamicResource MenuBorderBrush}"
             HorizontalAlignment="Left"
+            VerticalAlignment="Top"
             Background="{DynamicResource MenuBrush}">
             <Border.Style>
                 <Style>
@@ -135,12 +136,7 @@
                         <DataTrigger Binding="{Binding IsMenuOpen}" Value="False">
                             <Setter Property="Border.Effect">
                                 <Setter.Value>
-                                    <DropShadowEffect
-                                        x:Name="SettingsShadow2"
-                                        BlurRadius="50"
-                                        Opacity="0"
-                                        ShadowDepth="0"
-                                        Color="Black" />
+                                    <x:Null />
                                 </Setter.Value>
                             </Setter>
                         </DataTrigger>
