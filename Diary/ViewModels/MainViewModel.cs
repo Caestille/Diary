@@ -1,9 +1,9 @@
 ﻿using CoreUtilities.HelperClasses;
 using CoreUtilities.Interfaces.RegistryInteraction;
 using CoreUtilities.Services;
-using Diary.Core.Messages.Base;
-using Diary.Core.ViewModels.Base;
-using Diary.Core.ViewModels.Views;
+using Diary.Messages.Base;
+using Diary.ViewModels.Base;
+using Diary.ViewModels.Views;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using System;
@@ -11,8 +11,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
-using Diary.Core.Extensions;
-using MoreLinq;
+using Diary.Extensions;
 using System.Windows;
 using System.Runtime.CompilerServices;
 using System.Transactions;
@@ -203,6 +202,7 @@ namespace Diary.ViewModels
 					.First(x => x.Name == weekDate.ToString("MMMM"));
 				AllViewModels
 					.Where(x => (x is DiaryYearViewModel || x is DiaryMonthViewModel || x is DiaryWeekViewModel) && x.IsShowingChildren)
+					.ToList()
 					.ForEach(x => { x.SelectCommand.Execute(null); });
 
 				if (!calendarVm.IsShowingChildren) calendarVm.SelectCommand.Execute(null);

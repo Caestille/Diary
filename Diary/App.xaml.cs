@@ -1,14 +1,14 @@
 ﻿using Diary.ViewModels;
 using System.Collections.Generic;
 using System.Windows;
-using Diary.Core.ViewModels.Base;
+using Diary.ViewModels.Base;
 using CoreUtilities.Services.RegistryInteraction;
-using Diary.Core.ViewModels.Views;
+using Diary.ViewModels.Views;
 using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using Diary.Core.Dtos;
+using Diary.Dtos;
 using SplashScreen = Diary.Views.SplashScreen;
 using System.Threading.Tasks;
 using System.Diagnostics;

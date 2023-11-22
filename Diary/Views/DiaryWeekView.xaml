@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:scalableicons="clr-namespace:ModernThemables.Icons;assembly=ModernThemables.Icons"
     xmlns:views="clr-namespace:Diary.Views"
-    xmlns:vms="clr-namespace:Diary.Core.ViewModels.Views;assembly=Diary.Core"
+    xmlns:vms="clr-namespace:Diary.ViewModels.Views"
     mc:Ignorable="d">
     <UserControl.Resources>
         <DataTemplate DataType="{x:Type vms:DiaryDayViewModel}">
