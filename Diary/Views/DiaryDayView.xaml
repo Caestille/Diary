@@ -70,9 +70,9 @@
                     Background="{DynamicResource ControlNonClickablePartBrush}"
                     BorderBrush="{DynamicResource MenuBorderBrush}"
                     BorderThickness="0,0,0,1"
-                    TextWrapping="Wrap"
                     Foreground="{DynamicResource TextBrush}"
-                    Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    TextWrapping="Wrap" />
             </StackPanel>
             <StackPanel Grid.Row="2" Margin="10">
                 <Label

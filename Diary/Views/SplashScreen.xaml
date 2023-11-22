@@ -84,8 +84,8 @@
                                 Height="28"
                                 Margin="5,0"
                                 VerticalAlignment="Center"
-                                IsIndeterminate="True"
                                 Foreground="{DynamicResource ThemeBrush}"
+                                IsIndeterminate="True"
                                 StrokeWidthFraction="0.4"
                                 Visibility="{Binding UpdateStep, Converter={StaticResource StringNotEmptyVisibilityConverter}}" />
                             <TextBlock

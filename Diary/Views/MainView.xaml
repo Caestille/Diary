@@ -107,12 +107,12 @@
             x:Name="SettingsBorder"
             Width="51"
             Margin="10"
-            CornerRadius="10"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource MenuBorderBrush}"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Background="{DynamicResource MenuBrush}">
+            Background="{DynamicResource MenuBrush}"
+            BorderBrush="{DynamicResource MenuBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="10">
             <Border.Style>
                 <Style>
                     <Style.Triggers>

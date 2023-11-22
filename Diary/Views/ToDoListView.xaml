@@ -384,12 +384,12 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             AutofillOptions="{Binding AutofillOptions}"
-                            BorderThickness="0,0,0,1"
                             BorderBrush="{DynamicResource StatusTextBrush}"
+                            BorderThickness="0,0,0,1"
+                            CornerRadius="0"
                             Foreground="{DynamicResource TextBrush}"
                             Text="{Binding ProposedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             TextWrapping="Wrap"
-                            CornerRadius="0"
                             ToolTip="Use ':' to separate group and name to add an item to a group.&#x0a;E.g.: '[Group]:[Name]' will add a 'To Do' item of name [Name] to group [Group]"
                             ToolTipService.InitialShowDelay="50">
                             <controls:AutofillTextbox.Background>
