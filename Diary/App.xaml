@@ -219,6 +219,9 @@
 						<DataTemplate DataType="{x:Type vms:ToDoListViewModel}">
 							<scalableicons:Icon Width="16" Kind="ClipboardList" />
 						</DataTemplate>
+						<DataTemplate DataType="{x:Type vms:RepoBrowserViewModel}">
+							<scalableicons:Icon Width="16" Kind="ClipboardList" />
+						</DataTemplate>
 					</Grid.Resources>
 					<!--#endregion-->
 					<Border

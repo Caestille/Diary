@@ -111,6 +111,7 @@ namespace Diary
 					new CalendarViewModel(WorkingDirectory + "\\Calendar", weekVms),
 					taggingVm,
 					new ToDoListViewModel(WorkingDirectory),
+					new RepoBrowserViewModel(),
 				};
 				return vms;
 			});

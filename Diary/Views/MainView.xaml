@@ -26,6 +26,9 @@
 		<DataTemplate DataType="{x:Type vms:ToDoListViewModel}">
 			<views:ToDoListView />
 		</DataTemplate>
+		<DataTemplate DataType="{x:Type vms:RepoBrowserViewModel}">
+			<views:RepoBrowserView />
+		</DataTemplate>
 		<Storyboard x:Key="MenuOpenAnimation">
 			<DoubleAnimation
 				AutoReverse="False"
