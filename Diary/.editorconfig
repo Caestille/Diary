@@ -1,0 +1,16 @@
+root = true
+
+## Xaml files
+[*.xaml]
+indent_style = tab
+indent_size = 4
+
+## Xaml files
+[*.csproj]
+indent_style = space
+indent_size = 2
+
+## All files
+[*.cs]
+indent_style = tab
+indent_size = 4

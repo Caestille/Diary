@@ -18,7 +18,7 @@ using System.Transactions;
 
 namespace Diary.ViewModels
 {
-    public class MainViewModel : ViewModelBase
+	public class MainViewModel : ViewModelBase
 	{
 		private IRegistryService registryService;
 		private KeepAliveTriggerService trigger;
@@ -121,7 +121,7 @@ namespace Diary.ViewModels
 					"dd/MM/yyyy",
 					CultureInfo.InvariantCulture,
 					DateTimeStyles.None));
-            });
+			});
 
 			Messenger.Register<ViewModelRequestDeleteMessage>(this, (sender, message) =>
 			{
@@ -133,9 +133,9 @@ namespace Diary.ViewModels
 				}
 			});
 
-            Messenger.Register<TakeMeToTodayMessage>(this, (sender, message) =>
-            {
-                if (!SelectDay(DateTime.Now, true))
+			Messenger.Register<TakeMeToTodayMessage>(this, (sender, message) =>
+			{
+				if (!SelectDay(DateTime.Now, true))
 				{
 					if (MessageBox.Show("No week added for today, create one?", "No week to select", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
 					{
@@ -166,9 +166,9 @@ namespace Diary.ViewModels
 						}
 					}
 				}
-            });
+			});
 
-            Messenger.Register<NotifyChildrenChangedMessage>(this, (sender, message) =>
+			Messenger.Register<NotifyChildrenChangedMessage>(this, (sender, message) =>
 			{
 				OnPropertyChanged(nameof(AllViewModels));
 			});
@@ -223,7 +223,7 @@ namespace Diary.ViewModels
 			{
 				return false;
 			}
-        }
+		}
 
 		private async void ToggleMenuOpen()
 		{
@@ -253,7 +253,7 @@ namespace Diary.ViewModels
 			}
 			IsMenuPinned = menuPinned;
 
-            SelectDay(DateTime.Now, true);
-        }
+			SelectDay(DateTime.Now, true);
+		}
 	}
 }
