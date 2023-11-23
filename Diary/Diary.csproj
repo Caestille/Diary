@@ -12,6 +12,9 @@
 
   <ItemGroup>
 	<None Remove="Resources\Icon.ico" />
+	<None Remove="Resources\Images\NP++.png" />
+	<None Remove="Resources\Images\VS2022.png" />
+	<None Remove="Resources\Images\VSCode.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +29,15 @@
 
   <ItemGroup>
 	<Resource Include="Resources\Icon.ico">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Resource>
+	<Resource Include="Resources\Images\NP++.png">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Resource>
+	<Resource Include="Resources\Images\VS2022.png">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Resource>
+	<Resource Include="Resources\Images\VSCode.png">
 	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Resource>
   </ItemGroup>

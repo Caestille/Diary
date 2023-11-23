@@ -77,14 +77,14 @@ namespace Diary
 			if (!File.Exists(WorkingDirectory))
 			{
 				Directory.CreateDirectory(WorkingDirectory);
-            }
+			}
 
-            if (!File.Exists(WorkingDirectory + "\\Calendar"))
-            {
-                Directory.CreateDirectory(WorkingDirectory + "\\Calendar");
-            }
+			if (!File.Exists(WorkingDirectory + "\\Calendar"))
+			{
+				Directory.CreateDirectory(WorkingDirectory + "\\Calendar");
+			}
 
-            var appRegistryService = new RegistryService(@"SOFTWARE\Diary");
+			var appRegistryService = new RegistryService(@"SOFTWARE\Diary");
 
 			var taggingVm = new DataTaggingViewModel(WorkingDirectory);
 
@@ -111,7 +111,7 @@ namespace Diary
 					new CalendarViewModel(WorkingDirectory + "\\Calendar", weekVms),
 					taggingVm,
 					new ToDoListViewModel(WorkingDirectory),
-					new RepoBrowserViewModel(),
+					new RepoBrowserViewModel(WorkingDirectory),
 				};
 				return vms;
 			});

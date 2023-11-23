@@ -179,7 +179,7 @@
 							<!--#region Navigation menu item controls-->
 							<ItemsControl
 								x:Name="ItemsControl"
-								Margin="0,5,0,0"
+								Margin="0,5,0,5"
 								Focusable="False"
 								ItemTemplate="{StaticResource MenuItemDataTemplate}"
 								ItemsSource="{Binding ChildViewModels}"
