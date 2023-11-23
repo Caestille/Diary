@@ -186,11 +186,29 @@ namespace Diary.ViewModels.Views
 			}
 		}
 
+		private RangeObservableCollection<string> favouriteRoots = new();
+		public RangeObservableCollection <string> FavouriteRoots
+		{
+			get => favouriteRoots;
+			set => SetProperty(ref favouriteRoots, value);
+		}
+
+		private RangeObservableCollection<string> favouriteRepos = new();
+		public RangeObservableCollection<string> FavouriteRepos
+		{
+			get => favouriteRepos;
+			set => SetProperty(ref favouriteRepos, value);
+		}
+
 		private string assembledTags = "";
 
 		public ICommand SelectTagCommand => new RelayCommand<string>((tag) => SelectedTags = new(new List<string>(SelectedTags) { tag }));
 
 		public ICommand ClearTagsCommand => new RelayCommand(() => SelectedTags = new());
+
+		public ICommand FavouriteRepoCommand => new RelayCommand<RepoModel>((repo) => FavouriteRepos.Add(repo.Name));
+
+		public ICommand FavouriteRootCommand => new RelayCommand<string>((root) => FavouriteRoots.Add(root));
 
 		public RepoBrowserViewModel(string workingDirectory) : base("Repo Browser")
 		{
@@ -223,7 +241,7 @@ namespace Diary.ViewModels.Views
 		{
 			if (!repos.Any(x => x.Name.StartsWith(assembledTags)) && SelectedTags.Any()) SelectedTags = new();
 
-			var tags = await Task.Run(() => 
+			var tags = await Task.Run(() =>
 				repos.Where(x => x.Name.StartsWith(assembledTags))
 					.Select(x => x.Name.Split(".")
 					.Skip(SelectedTags.Count))
