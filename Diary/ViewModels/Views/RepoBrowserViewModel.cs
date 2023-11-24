@@ -4,9 +4,7 @@ using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Diary.ViewModels.Views
@@ -59,11 +57,11 @@ namespace Diary.ViewModels.Views
 
 	public class RepoActionModel : ObservableObject
 	{
-		private Dictionary<RepoAction, string> executionTemplate = new Dictionary<RepoAction, string>()
+		private Dictionary<RepoAction, (string, string)> executionTemplate = new()
 		{
-			{ RepoAction.VisualStudio2022, "start 'C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\Common7\\IDE\\devenv.exe' \'{PATH}\'" },
-			{ RepoAction.VisualStudioCode, "code \'{PATH}\'" },
-			{ RepoAction.NotePadPlusPlus, "start notepad++ \'{PATH}\'" },
+			{ RepoAction.VisualStudio2022, ("\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\Common7\\IDE\\devenv.exe\"", "\"{PATH}\"") },
+			{ RepoAction.VisualStudioCode, ("code", "\"{PATH}\"") },
+			{ RepoAction.NotePadPlusPlus, ("notepad++", "\"{PATH}\"") },
 		};
 
 		private string openPath;
@@ -72,13 +70,20 @@ namespace Diary.ViewModels.Views
 
 		public RepoAction Action { get; private set; }
 
-		public ICommand OpenCommand => new RelayCommand(() => { var what = new InvokePowershell().Start(openPath); });
+		public ICommand OpenCommand => new RelayCommand(
+			() => Process.Start(
+				new ProcessStartInfo(
+					executionTemplate[Action].Item1,
+					executionTemplate[Action].Item2.Replace("{PATH}", ItemPath))
+				{
+					UseShellExecute = true,
+					CreateNoWindow = true
+				}));
 
 		public RepoActionModel(RepoAction action, string path)
 		{
 			Action = action;
 			ItemPath = path;
-			openPath = executionTemplate[action].Replace("{PATH}", path);
 		}
 	}
 
@@ -94,6 +99,13 @@ namespace Diary.ViewModels.Views
 		public string Name { get; private set; }
 
 		public string RepoDirectory { get; private set; }
+
+		private bool isFavourited;
+		public bool IsFavourited
+		{
+			get => isFavourited;
+			set => SetProperty(ref isFavourited, value);
+		}
 
 		private RangeObservableCollection<GroupedRepoActionModels> actions = new();
 		public RangeObservableCollection<GroupedRepoActionModels> Actions
@@ -113,12 +125,12 @@ namespace Diary.ViewModels.Views
 
 		private void DiscoverActions()
 		{
+			IEnumerable<T> InsertAndReturn<T>(IList<T> inList, T add) { inList.Insert(0, add); return inList; }
 			Actions = new(
 				discoverFilter.SelectMany(x => x.Value.SelectMany(y => Directory.EnumerateFiles(RepoDirectory, $"*.{y}", SearchOption.AllDirectories)
 					.Select(z => new RepoActionModel(x.Key, z))))
 					.GroupBy(x => x.Action)
-					.Select(x => new GroupedRepoActionModels(x.Key, x))
-				);
+					.Select(x => new GroupedRepoActionModels(x.Key, x.Key == RepoAction.VisualStudioCode ? InsertAndReturn(x.ToList(), new RepoActionModel(RepoAction.VisualStudioCode, RepoDirectory)) : x)));
 		}
 	}
 
@@ -135,6 +147,7 @@ namespace Diary.ViewModels.Views
 			set
 			{
 				SetProperty(ref rootDirectory, value);
+				IsRootFavourited = FavouriteRoots.Contains(value);
 				_ = LoadReposAsync();
 			}
 		}
@@ -206,14 +219,29 @@ namespace Diary.ViewModels.Views
 
 		public ICommand ClearTagsCommand => new RelayCommand(() => SelectedTags = new());
 
-		public ICommand FavouriteRepoCommand => new RelayCommand<RepoModel>((repo) => FavouriteRepos.Add(repo.Name));
+		public ICommand FavouriteRepoCommand => new RelayCommand<RepoModel>((repo) => { repo.IsFavourited = !repo.IsFavourited; if (repo.IsFavourited) FavouriteRepos.Add(repo.Name); else FavouriteRepos.Remove(repo.Name); OrderByFavourites(); });
 
-		public ICommand FavouriteRootCommand => new RelayCommand<string>((root) => FavouriteRoots.Add(root));
+		public ICommand FavouriteRootCommand => new RelayCommand(() => { IsRootFavourited = !IsRootFavourited; if (IsRootFavourited) FavouriteRoots.Add(RootDirectory); else FavouriteRoots.Remove(RootDirectory); });
+
+		public ICommand LoadFavouriteRootCommand => new RelayCommand<string>((root) => RootDirectory = root);
+
+		private bool isRootFavourited;
+		public bool IsRootFavourited
+		{
+			get => isRootFavourited;
+			set => SetProperty(ref isRootFavourited, value);
+		}
 
 		public RepoBrowserViewModel(string workingDirectory) : base("Repo Browser")
 		{
 			this.workingDirectory = workingDirectory;
-			if (File.Exists(WritePath)) { RootDirectory = JsonSerializer.Deserialize<string>(File.ReadAllText(WritePath)); }
+			if (File.Exists(WritePath))
+			{
+				var settings = JsonSerializer.Deserialize<RepoBrowserSettings>(File.ReadAllText(WritePath));
+				FavouriteRoots = new(settings.FavouriteRoots);
+				RootDirectory = settings.CurrentRoot;
+				FavouriteRepos = new(settings.FavouriteRepos);
+			}
 
 			_ = GenerateAvailableTags();
 		}
@@ -233,6 +261,12 @@ namespace Diary.ViewModels.Views
 			{
 				repos = new();
 			}
+
+			foreach (var repo in repos)
+			{
+				repo.IsFavourited = FavouriteRepos.Contains(repo.Name);
+			}
+
 			_ = GenerateAvailableTags();
 			_ = ApplyFilters();
 		}
@@ -255,16 +289,45 @@ namespace Diary.ViewModels.Views
 
 		private async Task ApplyFilters()
 		{
-			if (string.IsNullOrWhiteSpace(SearchText) && !SelectedTags.Any()) { FilteredRepos = new(repos); return; }
-			var filtered = await Task.Run(() => repos
-				.Where(x => x.Name.StartsWith(assembledTags))
-				.Where(x => x.Name.Contains(SearchText ?? "", StringComparison.OrdinalIgnoreCase)).ToList());
-			FilteredRepos = new(filtered);
+			if (string.IsNullOrWhiteSpace(SearchText) && !SelectedTags.Any())
+			{
+				FilteredRepos = new(repos.OrderByDescending(x => x.IsFavourited));
+			}
+			else
+			{
+				var filtered = await Task.Run(() => repos
+					.Where(x => x.Name.StartsWith(assembledTags))
+					.Where(x => x.Name.Contains(SearchText ?? "", StringComparison.OrdinalIgnoreCase)).ToList());
+				FilteredRepos = new(filtered.OrderByDescending(x => x.IsFavourited));
+			}
+		}
+
+		private void OrderByFavourites()
+		{
+			FilteredRepos = new(FilteredRepos.OrderByDescending(x => x.IsFavourited));
 		}
 
 		protected override void OnShutdownStart(object? sender, EventArgs e)
 		{
-			File.WriteAllText(WritePath, JsonSerializer.Serialize(RootDirectory));
+			File.WriteAllText(WritePath, JsonSerializer.Serialize(new RepoBrowserSettings(RootDirectory, FavouriteRoots, FavouriteRepos)));
+		}
+	}
+
+	public class RepoBrowserSettings
+	{
+		public string CurrentRoot { get; set; }
+
+		public List<string> FavouriteRoots { get; set; }
+
+		public List<string> FavouriteRepos { get; set; }
+
+		public RepoBrowserSettings() { }
+
+		public RepoBrowserSettings(string currentRoot, IEnumerable<string> favouriteRoots, IEnumerable<string> favouriteRepos)
+		{
+			CurrentRoot = currentRoot;
+			FavouriteRoots = new(favouriteRoots);
+			FavouriteRepos = new(favouriteRepos);
 		}
 	}
 }

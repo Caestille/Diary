@@ -33,6 +33,7 @@
 				Text="Root directory:" />
 			<TextBox
 				MinWidth="109"
+				MaxWidth="250"
 				Margin="0,9,0,0"
 				Padding="0,0,0,3"
 				HorizontalAlignment="Left"
@@ -42,6 +43,70 @@
 				BorderThickness="0,0,0,1"
 				Foreground="{DynamicResource TextBrush}"
 				Text="{Binding RootDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+			<controls:ExtendedButton
+				x:Name="RootFavButton"
+				Margin="3,5,0,0"
+				Background="Transparent"
+				Command="{Binding FavouriteRootCommand}"
+				MouseDownColour="Transparent"
+				MouseOverColour="Transparent"
+				Style="{StaticResource RoundButtonStyle}">
+				<Grid>
+					<scalableicons:Icon
+						Margin="1"
+						Foreground="DarkGoldenrod"
+						Kind="Star"
+						Opacity="0.5"
+						Visibility="{Binding ElementName=RootFavButton, Path=IsMouseOver, Converter={StaticResource VisibleIfTrueConverter}}" />
+					<scalableicons:Icon
+						Margin="1"
+						Foreground="Goldenrod"
+						Kind="StarOutline" />
+					<scalableicons:Icon
+						Margin="1"
+						Foreground="Goldenrod"
+						Kind="Star"
+						Visibility="{Binding IsRootFavourited, Converter={StaticResource VisibleIfTrueConverter}}" />
+				</Grid>
+			</controls:ExtendedButton>
+			<controls:CircularProgressBar
+				Width="20"
+				Height="20"
+				Margin="10,0,30,0"
+				Foreground="{DynamicResource ThemeBrush}"
+				IsIndeterminate="{Binding IsLoading}"
+				StrokeWidthFraction="0.4"
+				Visibility="{Binding IsLoading, Converter={StaticResource VisibleIfTrueConverter}}" />
+			<ItemsControl
+				x:Name="FavouriteRootsIC"
+				Margin="20,3,0,0"
+				VerticalAlignment="Center"
+				ItemsSource="{Binding FavouriteRoots}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<controls:ExtendedButton
+							MaxWidth="200"
+							Margin="3,0"
+							Padding="3"
+							HorizontalContentAlignment="Right"
+							VerticalContentAlignment="Center"
+							Background="{DynamicResource ControlClickablePartBrush}"
+							Command="{Binding ElementName=FavouriteRootsIC, Path=DataContext.LoadFavouriteRootCommand}"
+							CommandParameter="{Binding}"
+							CornerRadius="5"
+							Foreground="{DynamicResource TextBrush}">
+							<controls:ExtendedButton.Content>
+								<TextBlock HorizontalAlignment="Right" Text="{Binding}" />
+							</controls:ExtendedButton.Content>
+						</controls:ExtendedButton>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
 		</WrapPanel>
 		<Border
 			Height="1"
@@ -58,14 +123,6 @@
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 			<WrapPanel Margin="10,5,0,0">
-				<controls:CircularProgressBar
-					Width="20"
-					Height="20"
-					Margin="-20,0,30,0"
-					Foreground="{DynamicResource ThemeBrush}"
-					IsIndeterminate="{Binding IsLoading}"
-					StrokeWidthFraction="0.4"
-					Visibility="{Binding IsLoading, Converter={StaticResource VisibleIfTrueConverter}}" />
 				<controls:SearchBox
 					Width="200"
 					Height="20"
@@ -148,6 +205,7 @@
 				Margin="10,20,10,10"
 				HorizontalAlignment="Left">
 				<ItemsControl
+					x:Name="ReposIC"
 					Background="Transparent"
 					BorderBrush="Transparent"
 					ItemsSource="{Binding FilteredRepos}">
@@ -160,6 +218,7 @@
 						<DataTemplate>
 							<Grid>
 								<Border
+									x:Name="RepoRoot"
 									Width="400"
 									Margin="0,0,20,8"
 									Padding="5"
@@ -178,11 +237,47 @@
 											<RowDefinition Height="Auto" />
 											<RowDefinition Height="Auto" />
 										</Grid.RowDefinitions>
-										<Label
-											Margin="0,-3"
-											Content="{Binding Name}"
-											FontWeight="DemiBold"
-											Foreground="{DynamicResource TextBrush}" />
+										<WrapPanel>
+											<Label
+												Margin="0,-3"
+												Content="{Binding Name}"
+												FontWeight="DemiBold"
+												Foreground="{DynamicResource TextBrush}" />
+											<controls:ExtendedButton
+												x:Name="RepoFavButton"
+												Margin="0,-2,0,0"
+												Background="Transparent"
+												Command="{Binding ElementName=ReposIC, Path=DataContext.FavouriteRepoCommand}"
+												CommandParameter="{Binding}"
+												MouseDownColour="Transparent"
+												MouseOverColour="Transparent"
+												Style="{StaticResource RoundButtonStyle}">
+												<controls:ExtendedButton.Visibility>
+													<MultiBinding Converter="{StaticResource MultiBoolOrToVisibilityConverter}">
+														<Binding ElementName="RepoRoot" Path="IsMouseOver" />
+														<Binding Path="IsFavourited" />
+													</MultiBinding>
+												</controls:ExtendedButton.Visibility>
+												<Grid>
+													<scalableicons:Icon
+														Margin="1"
+														Foreground="DarkGoldenrod"
+														Kind="Star"
+														Opacity="0.5"
+														Visibility="{Binding ElementName=RepoFavButton, Path=IsMouseOver, Converter={StaticResource VisibleIfTrueConverter}}" />
+													<scalableicons:Icon
+														Margin="1"
+														Foreground="Goldenrod"
+														Kind="StarOutline" />
+													<scalableicons:Icon
+														Margin="1"
+														Foreground="Goldenrod"
+														Kind="Star"
+														Visibility="{Binding IsFavourited, Converter={StaticResource VisibleIfTrueConverter}}" />
+												</Grid>
+											</controls:ExtendedButton>
+										</WrapPanel>
+
 										<TextBlock
 											Grid.Row="1"
 											MaxWidth="230"
