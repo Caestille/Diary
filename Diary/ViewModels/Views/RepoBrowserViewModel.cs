@@ -14,6 +14,7 @@ namespace Diary.ViewModels.Views
 		VisualStudio2022,
 		VisualStudioCode,
 		NotePadPlusPlus,
+		Fork,
 	}
 
 	public class GroupedRepoActionModels : ObservableObject
@@ -62,6 +63,7 @@ namespace Diary.ViewModels.Views
 			{ RepoAction.VisualStudio2022, ("\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\Common7\\IDE\\devenv.exe\"", "\"{PATH}\"") },
 			{ RepoAction.VisualStudioCode, ("code", "\"{PATH}\"") },
 			{ RepoAction.NotePadPlusPlus, ("notepad++", "\"{PATH}\"") },
+			{ RepoAction.Fork, ("\"C:\\Users\\jward\\AppData\\Local\\Fork\\Fork.exe\"", "\"{PATH}\"") },
 		};
 
 		private string openPath;
@@ -130,7 +132,8 @@ namespace Diary.ViewModels.Views
 				discoverFilter.SelectMany(x => x.Value.SelectMany(y => Directory.EnumerateFiles(RepoDirectory, $"*.{y}", SearchOption.AllDirectories)
 					.Select(z => new RepoActionModel(x.Key, z))))
 					.GroupBy(x => x.Action)
-					.Select(x => new GroupedRepoActionModels(x.Key, x.Key == RepoAction.VisualStudioCode ? InsertAndReturn(x.ToList(), new RepoActionModel(RepoAction.VisualStudioCode, RepoDirectory)) : x)));
+					.Select(x => new GroupedRepoActionModels(x.Key, x.Key == RepoAction.VisualStudioCode ? InsertAndReturn(x.ToList(), new RepoActionModel(RepoAction.VisualStudioCode, RepoDirectory)) : x)))
+			{ new GroupedRepoActionModels(RepoAction.Fork, new List<RepoActionModel>() { new RepoActionModel(RepoAction.Fork, RepoDirectory) }) };
 		}
 	}
 

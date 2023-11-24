@@ -19,6 +19,8 @@ namespace Diary.Converters
 					return new Uri(@$"..\..\..\Resources\Images\VSCode.png", UriKind.Relative);
 				case RepoAction.NotePadPlusPlus:
 					return new Uri(@$"..\..\..\Resources\Images\NP++.png", UriKind.Relative);
+				case RepoAction.Fork:
+					return new Uri(@$"..\..\..\Resources\Images\Fork.png", UriKind.Relative);
 			}
 
 			return null;
