@@ -219,7 +219,7 @@
 							<Grid>
 								<Border
 									x:Name="RepoRoot"
-									Width="400"
+									Width="435"
 									Margin="0,0,20,8"
 									Padding="5"
 									HorizontalAlignment="Stretch"
