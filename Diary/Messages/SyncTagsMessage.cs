@@ -1,8 +1,8 @@
-﻿using Diary.Models;
+﻿using Diary.Models.Tagging;
 
 namespace Diary.Messages
 {
-    public class SyncTagsMessage
+	public class SyncTagsMessage
     {
         public IEnumerable<CustomTag> Tags { get; private set; }
 

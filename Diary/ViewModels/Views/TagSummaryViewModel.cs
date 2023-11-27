@@ -1,9 +1,9 @@
-﻿using Diary.Models;
+﻿using Diary.Models.Tagging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace Diary.ViewModels.Views
 {
-    public class TagSummaryViewModel : ObservableObject
+	public class TagSummaryViewModel : ObservableObject
     {
         private CustomTag tag;
         public CustomTag Tag

@@ -1,13 +1,8 @@
-﻿using Diary.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Diary.Models.Tagging;
 
 namespace Diary.Dtos
 {
-    public class TaggingRuleDto
+	public class TaggingRuleDto
     {
         public TaggingRuleDto() { }
 

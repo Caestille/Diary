@@ -1,145 +1,18 @@
 ﻿using CoreUtilities.HelperClasses;
+using CoreUtilities.Services;
+using Diary.Models.RepoBrowser;
 using Diary.ViewModels.Base;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
-using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Windows.Input;
 
 namespace Diary.ViewModels.Views
 {
-	public enum RepoAction
-	{
-		VisualStudio2022,
-		VisualStudioCode,
-		NotePadPlusPlus,
-		Fork,
-	}
-
-	public class GroupedRepoActionModels : ObservableObject
-	{
-		private string searchText;
-		public string SearchText
-		{
-			get => searchText;
-			set
-			{
-				SetProperty(ref searchText, value);
-				_ = ApplyFilters();
-			}
-		}
-
-		public RepoAction Action { get; private set; }
-
-		private List<RepoActionModel> actions;
-
-		private RangeObservableCollection<RepoActionModel> filteredActions = new();
-		public RangeObservableCollection<RepoActionModel> FilteredActions
-		{
-			get => filteredActions;
-			set => SetProperty(ref filteredActions, value);
-		}
-
-		public GroupedRepoActionModels(RepoAction action, IEnumerable<RepoActionModel> actions)
-		{
-			Action = action;
-			this.actions = new(actions);
-			_ = ApplyFilters();
-		}
-
-		private async Task ApplyFilters()
-		{
-			if (string.IsNullOrWhiteSpace(SearchText)) { FilteredActions = new(actions); return; }
-			var filtered = await Task.Run(() => actions.Where(x => x.ItemPath.Contains(SearchText, StringComparison.OrdinalIgnoreCase)).ToList());
-			FilteredActions = new(filtered);
-		}
-	}
-
-	public class RepoActionModel : ObservableObject
-	{
-		private Dictionary<RepoAction, (string, string)> executionTemplate = new()
-		{
-			{ RepoAction.VisualStudio2022, ("\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\Common7\\IDE\\devenv.exe\"", "\"{PATH}\"") },
-			{ RepoAction.VisualStudioCode, ("code", "\"{PATH}\"") },
-			{ RepoAction.NotePadPlusPlus, ("notepad++", "\"{PATH}\"") },
-			{ RepoAction.Fork, ("\"C:\\Users\\jward\\AppData\\Local\\Fork\\Fork.exe\"", "\"{PATH}\"") },
-		};
-
-		private string openPath;
-
-		public string ItemPath { get; private set; }
-
-		public RepoAction Action { get; private set; }
-
-		public ICommand OpenCommand => new RelayCommand(
-			() => Process.Start(
-				new ProcessStartInfo(
-					executionTemplate[Action].Item1,
-					executionTemplate[Action].Item2.Replace("{PATH}", ItemPath))
-				{
-					UseShellExecute = true,
-					CreateNoWindow = true
-				}));
-
-		public RepoActionModel(RepoAction action, string path)
-		{
-			Action = action;
-			ItemPath = path;
-		}
-	}
-
-	public class RepoModel : ObservableObject
-	{
-		private Dictionary<RepoAction, IEnumerable<string>> discoverFilter = new Dictionary<RepoAction, IEnumerable<string>>()
-		{
-			{ RepoAction.VisualStudio2022, new List<string>() { "sln" } },
-			{ RepoAction.VisualStudioCode, new List<string>() { "md", "txt", "json" } },
-			{ RepoAction.NotePadPlusPlus, new List<string>() { "txt", "json", "m" } },
-		};
-
-		public string Name { get; private set; }
-
-		public string RepoDirectory { get; private set; }
-
-		private bool isFavourited;
-		public bool IsFavourited
-		{
-			get => isFavourited;
-			set => SetProperty(ref isFavourited, value);
-		}
-
-		private RangeObservableCollection<GroupedRepoActionModels> actions = new();
-		public RangeObservableCollection<GroupedRepoActionModels> Actions
-		{
-			get => actions;
-			set => SetProperty(ref actions, value);
-		}
-
-		public ICommand OpenDirectoryCommand => new RelayCommand(() => Process.Start("explorer.exe", RepoDirectory));
-
-		public RepoModel(string directory)
-		{
-			RepoDirectory = directory;
-			Name = Path.GetFileName(directory);
-			DiscoverActions();
-		}
-
-		private void DiscoverActions()
-		{
-			IEnumerable<T> InsertAndReturn<T>(IList<T> inList, T add) { inList.Insert(0, add); return inList; }
-			Actions = new(
-				discoverFilter.SelectMany(x => x.Value.SelectMany(y => Directory.EnumerateFiles(RepoDirectory, $"*.{y}", SearchOption.AllDirectories)
-					.Select(z => new RepoActionModel(x.Key, z))))
-					.GroupBy(x => x.Action)
-					.Select(x => new GroupedRepoActionModels(x.Key, x.Key == RepoAction.VisualStudioCode ? InsertAndReturn(x.ToList(), new RepoActionModel(RepoAction.VisualStudioCode, RepoDirectory)) : x)))
-			{ new GroupedRepoActionModels(RepoAction.Fork, new List<RepoActionModel>() { new RepoActionModel(RepoAction.Fork, RepoDirectory) }) };
-		}
-	}
-
 	public class RepoBrowserViewModel : ViewModelBase
 	{
 		private string workingDirectory;
+		private KeepAliveTriggerService searchThrottler;
 
 		private string WritePath => Path.Combine(workingDirectory, "RepoBrowserSettings.json");
 
@@ -171,7 +44,7 @@ namespace Diary.ViewModels.Views
 			set
 			{
 				SetProperty(ref searchText, value);
-				_ = ApplyFilters();
+				searchThrottler.Refresh();
 			}
 		}
 
@@ -249,6 +122,7 @@ namespace Diary.ViewModels.Views
 		public RepoBrowserViewModel(string workingDirectory) : base("Repositories")
 		{
 			this.workingDirectory = workingDirectory;
+			searchThrottler = new KeepAliveTriggerService(() => _ = ApplyFilters(), 300);
 			if (File.Exists(WritePath))
 			{
 				var settings = JsonSerializer.Deserialize<RepoBrowserSettings>(File.ReadAllText(WritePath));
@@ -323,25 +197,8 @@ namespace Diary.ViewModels.Views
 
 		protected override void OnShutdownStart(object? sender, EventArgs e)
 		{
+			searchThrottler.Stop();
 			File.WriteAllText(WritePath, JsonSerializer.Serialize(new RepoBrowserSettings(RootDirectory, FavouriteRoots, FavouriteRepos)));
-		}
-	}
-
-	public class RepoBrowserSettings
-	{
-		public string CurrentRoot { get; set; }
-
-		public List<string> FavouriteRoots { get; set; }
-
-		public List<string> FavouriteRepos { get; set; }
-
-		public RepoBrowserSettings() { }
-
-		public RepoBrowserSettings(string currentRoot, IEnumerable<string> favouriteRoots, IEnumerable<string> favouriteRepos)
-		{
-			CurrentRoot = currentRoot;
-			FavouriteRoots = new(favouriteRoots);
-			FavouriteRepos = new(favouriteRepos);
 		}
 	}
 }

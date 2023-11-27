@@ -1,9 +1,9 @@
-﻿using Diary.Models;
+﻿using Diary.Models.Tagging;
 using Diary.ViewModels.Base;
 
 namespace Diary.Messages
 {
-    public class TagChangedMessage
+	public class TagChangedMessage
     {
         public ViewModelBase Sender { get; }
 

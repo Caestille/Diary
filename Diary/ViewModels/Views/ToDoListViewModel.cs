@@ -1,5 +1,5 @@
 ﻿using Diary.Messages;
-using Diary.Models;
+using Diary.Models.ToDoList;
 using Diary.ViewModels.Base;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;

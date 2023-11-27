@@ -1,5 +1,4 @@
-﻿using Diary.ViewModels.Views;
-using System;
+﻿using Diary.Models.RepoBrowser;
 using System.Globalization;
 using System.Windows.Data;
 

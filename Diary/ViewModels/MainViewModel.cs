@@ -6,15 +6,10 @@ using Diary.ViewModels.Base;
 using Diary.ViewModels.Views;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Input;
 using Diary.Extensions;
 using System.Windows;
-using System.Runtime.CompilerServices;
-using System.Transactions;
 
 namespace Diary.ViewModels
 {

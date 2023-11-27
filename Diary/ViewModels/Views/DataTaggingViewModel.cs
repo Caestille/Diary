@@ -7,9 +7,9 @@ using System.Collections.ObjectModel;
 using Diary.ViewModels.Base;
 using Diary.Messages;
 using Diary.Messages.Base;
-using Diary.Models;
 using Diary.Dtos;
 using System.IO;
+using Diary.Models.Tagging;
 
 namespace Diary.ViewModels.Views
 {

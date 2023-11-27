@@ -3,7 +3,7 @@ using Diary.Dtos;
 using Diary.Extensions;
 using Diary.Messages;
 using Diary.Messages.Base;
-using Diary.Models;
+using Diary.Models.Tagging;
 using Diary.ViewModels.Base;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace Diary.ViewModels.Views
 {
-    public class DiaryWeekViewModel : NameableViewModelBase
+	public class DiaryWeekViewModel : NameableViewModelBase
     {
         private string workingDirectory;
         private System.Timers.Timer autoSaveTimer;

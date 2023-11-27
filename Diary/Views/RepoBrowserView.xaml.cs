@@ -1,4 +1,4 @@
-﻿using Diary.ViewModels.Views;
+﻿using Diary.Models.RepoBrowser;
 using System.Windows.Controls;
 
 namespace Diary.Views

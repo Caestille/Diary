@@ -1,9 +1,8 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-using System;
 
 namespace Diary.ViewModels
 {
-    public class SplashScreenViewModel : ObservableObject
+	public class SplashScreenViewModel : ObservableObject
 	{
         private string applicationName;
         public string ApplicationName

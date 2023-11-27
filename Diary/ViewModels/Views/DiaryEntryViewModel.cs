@@ -2,17 +2,17 @@
 using Diary.Dtos;
 using Diary.Messages;
 using Diary.Messages.Base;
-using Diary.Models;
 using Diary.ViewModels.Base;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using System.Windows.Input;
 using System.Windows;
 using CoreUtilities.Services;
+using Diary.Models.Tagging;
 
 namespace Diary.ViewModels.Views
 {
-    public class DiaryEntryViewModel : ViewModelBase
+	public class DiaryEntryViewModel : ViewModelBase
     {
         private IEnumerable<TaggingRule> autoTags;
         private KeepAliveTriggerService autoTagTrigger;

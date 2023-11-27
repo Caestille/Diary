@@ -1,14 +1,13 @@
-﻿using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Diary.Views
 {
-    /// <summary>
-    /// Interaction logic for DiaryEntryView.xaml
-    /// </summary>
-    public partial class DiaryEntryView : UserControl
+	/// <summary>
+	/// Interaction logic for DiaryEntryView.xaml
+	/// </summary>
+	public partial class DiaryEntryView : UserControl
     {
         public DiaryEntryView()
         {

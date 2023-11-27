@@ -7,7 +7,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:helperclasses="clr-namespace:CoreUtilities.HelperClasses;assembly=CoreUtilities"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:models="clr-namespace:Diary.Models"
+	xmlns:models="clr-namespace:Diary.Models.Tagging"
 	xmlns:mvvm="clr-namespace:Microsoft.Toolkit.Mvvm.ComponentModel;assembly=Microsoft.Toolkit.Mvvm"
 	xmlns:scalableicons="clr-namespace:ModernThemables.Icons;assembly=ModernThemables.Icons"
 	x:Name="root"
