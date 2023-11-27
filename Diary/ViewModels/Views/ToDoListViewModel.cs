@@ -101,7 +101,7 @@ namespace Diary.ViewModels.Views
 			if (match != null) group = match;
 			group = group != null ? group.Trim() : null;
 
-			var name = (ProposedName.Contains(":") ? ProposedName.Split(':').Last() : ProposedName).Trim();
+			var name = (ProposedName.Contains(":") ? string.Join(":", ProposedName.Split(':').Skip(1)) : ProposedName).Trim();
 
 			Items.Add(new ToDoItem(name) { Group = group });
 			Notify();
@@ -124,8 +124,8 @@ namespace Diary.ViewModels.Views
 
 		public ICommand CloseEditPanelCommand => new RelayCommand(() =>
 		{
-			ShowItemEditPanel = false;
 			EditItem = null;
+			ShowItemEditPanel = false;
 		});
 
         public ICommand ToggleListStyleCommand => new RelayCommand(() =>
@@ -165,7 +165,7 @@ namespace Diary.ViewModels.Views
 
             Items.Remove(item);
             var mainIndex = Items.IndexOf(nextItem);
-			Items.Insert(mainIndex - 1, item);
+			Items.Insert(Math.Clamp(mainIndex - 1, 0, Items.Count), item);
 
 			Notify();
 			allowUpdate = true;

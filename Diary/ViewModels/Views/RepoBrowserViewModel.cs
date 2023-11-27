@@ -222,9 +222,20 @@ namespace Diary.ViewModels.Views
 
 		public ICommand ClearTagsCommand => new RelayCommand(() => SelectedTags = new());
 
-		public ICommand FavouriteRepoCommand => new RelayCommand<RepoModel>((repo) => { repo.IsFavourited = !repo.IsFavourited; if (repo.IsFavourited) FavouriteRepos.Add(repo.Name); else FavouriteRepos.Remove(repo.Name); OrderByFavourites(); });
+		public ICommand FavouriteRepoCommand => new RelayCommand<RepoModel>((repo) =>
+		{
+			repo.IsFavourited = !repo.IsFavourited;
+			if (repo.IsFavourited) FavouriteRepos.Add(repo.Name);
+			else FavouriteRepos.Remove(repo.Name);
+			OrderByFavourites();
+		});
 
-		public ICommand FavouriteRootCommand => new RelayCommand(() => { IsRootFavourited = !IsRootFavourited; if (IsRootFavourited) FavouriteRoots.Add(RootDirectory); else FavouriteRoots.Remove(RootDirectory); });
+		public ICommand FavouriteRootCommand => new RelayCommand(() =>
+		{
+			IsRootFavourited = !IsRootFavourited;
+			if (IsRootFavourited) FavouriteRoots.Add(RootDirectory);
+			else FavouriteRoots.Remove(RootDirectory);
+		});
 
 		public ICommand LoadFavouriteRootCommand => new RelayCommand<string>((root) => RootDirectory = root);
 
@@ -235,7 +246,7 @@ namespace Diary.ViewModels.Views
 			set => SetProperty(ref isRootFavourited, value);
 		}
 
-		public RepoBrowserViewModel(string workingDirectory) : base("Repo Browser")
+		public RepoBrowserViewModel(string workingDirectory) : base("Repositories")
 		{
 			this.workingDirectory = workingDirectory;
 			if (File.Exists(WritePath))

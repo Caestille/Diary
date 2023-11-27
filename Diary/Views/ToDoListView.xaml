@@ -527,44 +527,50 @@
 								</Style>
 							</Grid.Resources>
 							<Grid.RowDefinitions>
-								<RowDefinition Height="40" />
-								<RowDefinition Height="40" />
-								<RowDefinition Height="40" />
-								<RowDefinition Height="40" />
-								<RowDefinition Height="40" />
+								<RowDefinition Height="Auto" MinHeight="40" />
+								<RowDefinition Height="Auto" MinHeight="40" />
+								<RowDefinition Height="Auto" MinHeight="40" />
+								<RowDefinition Height="Auto" MinHeight="40" />
+								<RowDefinition Height="Auto" MinHeight="40" />
 							</Grid.RowDefinitions>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
-							<TextBlock Style="{StaticResource LabelStyle}" Text="Name" />
+							<TextBlock
+								Margin="10"
+								Style="{StaticResource LabelStyle}"
+								Text="Name" />
 							<TextBox
 								Grid.Column="1"
-								Margin="0"
+								Margin="10"
 								Text="{Binding EditItem.Name, Mode=TwoWay}"
 								TextWrapping="Wrap" />
 							<TextBlock
 								Grid.Row="1"
+								Margin="10"
 								Style="{StaticResource LabelStyle}"
 								Text="Group" />
 							<TextBox
 								Grid.Row="1"
 								Grid.Column="1"
-								Margin="0"
+								Margin="10"
 								Text="{Binding EditItem.Group, Mode=TwoWay}"
 								TextWrapping="Wrap" />
 							<TextBlock
 								Grid.Row="2"
+								Margin="10"
 								Style="{StaticResource LabelStyle}"
 								Text="Description" />
 							<TextBox
 								Grid.Row="2"
 								Grid.Column="1"
-								Margin="0"
+								Margin="10"
 								Text="{Binding EditItem.Description, Mode=TwoWay}"
 								TextWrapping="Wrap" />
 							<TextBlock
 								Grid.Row="3"
+								Margin="10"
 								Style="{StaticResource LabelStyle}"
 								Text="Deadline" />
 							<controls:DatetimeTextBox
@@ -572,7 +578,7 @@
 								Grid.Column="1"
 								Width="Auto"
 								Height="20"
-								Margin="-10,0,0,0"
+								Margin="10"
 								VerticalAlignment="Top"
 								VerticalContentAlignment="Center"
 								BorderBrush="LightGray"
@@ -582,9 +588,13 @@
 								WarningBrush="{DynamicResource StatusTextBrush}" />
 							<TextBlock
 								Grid.Row="4"
+								Margin="10"
 								Style="{StaticResource LabelStyle}"
 								Text="Warning threshold" />
-							<WrapPanel Grid.Row="4" Grid.Column="1">
+							<WrapPanel
+								Grid.Row="4"
+								Grid.Column="1"
+								Margin="10">
 								<TextBox
 									MinWidth="40"
 									Margin="0"
