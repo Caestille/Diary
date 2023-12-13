@@ -97,7 +97,7 @@ namespace Diary.ViewModels.Views
 		{
 			var group = ProposedName.Contains(":") ? ProposedName.Split(':').First() : null;
 			if (string.IsNullOrEmpty(group)) group = null;
-			var match = group != null ? Items.Select(x => x.Group).FirstOrDefault(x => x.IndexOf(group, StringComparison.OrdinalIgnoreCase) != -1) : null;
+			var match = group != null ? Items.Select(x => x.Group).Where(x => x != null).FirstOrDefault(x => x.IndexOf(group, StringComparison.OrdinalIgnoreCase) != -1) : null;
 			if (match != null) group = match;
 			group = group != null ? group.Trim() : null;
 

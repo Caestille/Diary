@@ -121,6 +121,7 @@
 							<TextBlock
 								x:Name="DescriptionBlock"
 								FontSize="11"
+								Margin="0,5,0,0"
 								Foreground="{DynamicResource StatusTextBrush}"
 								Text="{Binding Description}"
 								TextTrimming="CharacterEllipsis">
@@ -129,6 +130,9 @@
 										<Style.Triggers>
 											<DataTrigger Binding="{Binding IsDescriptionExpanded}" Value="True">
 												<Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+											</DataTrigger>
+											<DataTrigger Binding="{Binding IsDescriptionExpanded}" Value="False">
+												<Setter Property="TextBlock.MaxHeight" Value="20" />
 											</DataTrigger>
 										</Style.Triggers>
 									</Style>
@@ -565,6 +569,7 @@
 							<TextBox
 								Grid.Row="2"
 								Grid.Column="1"
+								AcceptsReturn="True"
 								Margin="10"
 								Text="{Binding EditItem.Description, Mode=TwoWay}"
 								TextWrapping="Wrap" />
