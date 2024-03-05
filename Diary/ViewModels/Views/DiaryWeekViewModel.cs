@@ -25,7 +25,21 @@ namespace Diary.ViewModels.Views
 
         private Guid guid;
 
-        public ICommand ShowWeekSummaryCommand => new RelayCommand(() => { GenerateSummary(); ShowWeekSummary = true; });
+        public ICommand ShowWeekSummaryCommand => new RelayCommand(() =>
+		{
+			_ = Task.Run(() =>
+			{
+				foreach (var day in this.ChildViewModels.Cast<DiaryDayViewModel>())
+				{
+					if (!day.Loaded)
+					{
+						day.LoadEntries();
+					}
+				}
+				GenerateSummary();
+				ShowWeekSummary = true;
+			});
+		});
 
         public ICommand CloseWeekSummaryCommand => new RelayCommand(() => ShowWeekSummary = false);
 

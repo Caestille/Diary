@@ -1,5 +1,6 @@
 ﻿using CoreUtilities.HelperClasses;
 using Diary.Dtos;
+using Diary.Extensions;
 using Diary.Messages;
 using Diary.Messages.Base;
 using Diary.ViewModels.Base;
@@ -151,6 +152,18 @@ namespace Diary.ViewModels.Views
             {
                 if (ChildViewModels.Contains(message.Sender))
                 {
+					if ((message.IsStartDate ? message.Sender.StartTime : message.Sender.EndTime).ToShortDateString() != Name)
+					{
+						var date = DateTime.Parse(Name);
+						if (message.IsStartDate)
+						{
+							message.Sender.StartTime.SetDate(date);
+						}
+						else
+						{
+							message.Sender.EndTime.SetDate(date);
+						}
+					}
                     if (SyncDates)
                     {
                         var index = ChildViewModels.IndexOf(message.Sender);
