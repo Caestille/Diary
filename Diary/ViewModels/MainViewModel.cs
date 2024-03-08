@@ -16,7 +16,7 @@ namespace Diary.ViewModels
 	public class MainViewModel : ViewModelBase
 	{
 		private IRegistryService registryService;
-		private KeepAliveTriggerService trigger;
+		private RefreshTrigger trigger;
 
 		private const string MenuPinnedSettingName = "MenuPinned";
 
@@ -86,7 +86,7 @@ namespace Diary.ViewModels
 			this.registryService = registryService;
 			ChildViewModels.AddRange(viewModels);
 			SetLevel(0);
-			trigger = new KeepAliveTriggerService(() => { if (SearchText != "") OnPropertyChanged(nameof(FilteredViewModels)); }, 100);
+			trigger = new RefreshTrigger(() => { if (SearchText != "") OnPropertyChanged(nameof(FilteredViewModels)); }, 100);
 
 			foreach (var vm in AllViewModels)
 			{

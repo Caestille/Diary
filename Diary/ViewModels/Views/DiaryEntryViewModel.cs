@@ -15,7 +15,7 @@ namespace Diary.ViewModels.Views
 	public class DiaryEntryViewModel : ViewModelBase
     {
         private IEnumerable<TaggingRule> autoTags;
-        private KeepAliveTriggerService autoTagTrigger;
+        private RefreshTrigger autoTagTrigger;
 
         public ICommand EntryGotFocusCommand => new RelayCommand(EntryGotFocus);
         public ICommand EntryKeyDownCommand => new RelayCommand<object>(EntryKeyDown);
@@ -99,12 +99,12 @@ namespace Diary.ViewModels.Views
             set => SetProperty(ref selectableTags, value);
         }
 
-        public TimeSpan Span => EndTime - StartTime;
+		public TimeSpan Span => EndTime - StartTime;
 
         public DiaryEntryViewModel(string starterTag = "") : base("")
         {
             this.starterTag = starterTag;
-            autoTagTrigger = new KeepAliveTriggerService(AutoTag, 300);
+            autoTagTrigger = new RefreshTrigger(AutoTag, 300);
             Messenger.Send(new RequestSyncTagsMessage());
             Messenger.Send(new RequestSyncRulesMessage());
         }

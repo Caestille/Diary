@@ -12,7 +12,7 @@ namespace Diary.ViewModels.Views
 	public class RepoBrowserViewModel : ViewModelBase
 	{
 		private string workingDirectory;
-		private KeepAliveTriggerService searchThrottler;
+		private RefreshTrigger searchThrottler;
 
 		private string WritePath => Path.Combine(workingDirectory, "RepoBrowserSettings.json");
 
@@ -122,7 +122,7 @@ namespace Diary.ViewModels.Views
 		public RepoBrowserViewModel(string workingDirectory) : base("Repositories")
 		{
 			this.workingDirectory = workingDirectory;
-			searchThrottler = new KeepAliveTriggerService(() => _ = ApplyFilters(), 300);
+			searchThrottler = new RefreshTrigger(() => _ = ApplyFilters(), 300);
 			if (File.Exists(WritePath))
 			{
 				var settings = JsonSerializer.Deserialize<RepoBrowserSettings>(File.ReadAllText(WritePath));

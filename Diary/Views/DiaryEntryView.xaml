@@ -5,7 +5,6 @@
 	xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
 	xmlns:controls="clr-namespace:ModernThemables.Controls;assembly=ModernThemables"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:local="clr-namespace:Diary.Views"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:scalableicons="clr-namespace:ModernThemables.Icons;assembly=ModernThemables.Icons"
 	x:Name="root"

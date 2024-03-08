@@ -6,6 +6,7 @@ using Diary.Messages.Base;
 using Diary.ViewModels.Base;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Diary.ViewModels.Views
@@ -154,13 +155,14 @@ namespace Diary.ViewModels.Views
 					if ((message.IsStartDate ? message.Sender.StartTime : message.Sender.EndTime).ToShortDateString() != Name)
 					{
 						var date = DateTime.Parse(Name);
+						var toSet = ChildViewModels.First(x => (x as DiaryEntryViewModel).EntryText == message.Sender.EntryText) as DiaryEntryViewModel;
 						if (message.IsStartDate)
 						{
-							message.Sender.StartTime = message.Sender.StartTime.SetDate(date);
+							toSet.StartTime =  message.Sender.StartTime.SetDate(date);
 						}
 						else
 						{
-							message.Sender.EndTime = message.Sender.EndTime.SetDate(date);
+							toSet.EndTime = message.Sender.EndTime.SetDate(date);
 						}
 					}
 					if (SyncDates)
