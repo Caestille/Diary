@@ -171,41 +171,6 @@
 					MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
 					MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
 					ToolTip="Toggle sync. dates between entries">
-					<controls:ExtendedToggleButton.Effect>
-						<DropShadowEffect
-							BlurRadius="10"
-							Opacity="0"
-							ShadowDepth="0"
-							Color="{DynamicResource TextColour}" />
-					</controls:ExtendedToggleButton.Effect>
-					<controls:ExtendedToggleButton.Style>
-						<Style>
-							<Style.Triggers>
-								<DataTrigger Binding="{Binding IsChecked, ElementName=SyncDatebutton}" Value="True">
-									<DataTrigger.EnterActions>
-										<BeginStoryboard>
-											<Storyboard>
-												<DoubleAnimation
-													Storyboard.TargetProperty="(Effect).(DropShadowEffect.Opacity)"
-													To="1"
-													Duration="0:0:0.0" />
-											</Storyboard>
-										</BeginStoryboard>
-									</DataTrigger.EnterActions>
-									<DataTrigger.ExitActions>
-										<BeginStoryboard>
-											<Storyboard>
-												<DoubleAnimation
-													Storyboard.TargetProperty="(Effect).(DropShadowEffect.Opacity)"
-													To="0"
-													Duration="0:0:0.0" />
-											</Storyboard>
-										</BeginStoryboard>
-									</DataTrigger.ExitActions>
-								</DataTrigger>
-							</Style.Triggers>
-						</Style>
-					</controls:ExtendedToggleButton.Style>
 					<scalableicons:Icon
 						Width="14"
 						Height="18"
@@ -229,41 +194,6 @@
 					MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
 					MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
 					ToolTip="Toggle show full dates">
-					<controls:ExtendedToggleButton.Effect>
-						<DropShadowEffect
-							BlurRadius="10"
-							Opacity="0"
-							ShadowDepth="0"
-							Color="{DynamicResource TextColour}" />
-					</controls:ExtendedToggleButton.Effect>
-					<controls:ExtendedToggleButton.Style>
-						<Style>
-							<Style.Triggers>
-								<DataTrigger Binding="{Binding IsChecked, ElementName=ShowDatesButton}" Value="True">
-									<DataTrigger.EnterActions>
-										<BeginStoryboard>
-											<Storyboard>
-												<DoubleAnimation
-													Storyboard.TargetProperty="(Effect).(DropShadowEffect.Opacity)"
-													To="1"
-													Duration="0:0:0.0" />
-											</Storyboard>
-										</BeginStoryboard>
-									</DataTrigger.EnterActions>
-									<DataTrigger.ExitActions>
-										<BeginStoryboard>
-											<Storyboard>
-												<DoubleAnimation
-													Storyboard.TargetProperty="(Effect).(DropShadowEffect.Opacity)"
-													To="0"
-													Duration="0:0:0.0" />
-											</Storyboard>
-										</BeginStoryboard>
-									</DataTrigger.ExitActions>
-								</DataTrigger>
-							</Style.Triggers>
-						</Style>
-					</controls:ExtendedToggleButton.Style>
 					<scalableicons:Icon
 						Width="18"
 						Height="18"
