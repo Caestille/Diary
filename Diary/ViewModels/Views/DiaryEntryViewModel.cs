@@ -106,8 +106,11 @@ namespace Diary.ViewModels.Views
             this.starterTag = starterTag;
             autoTagTrigger = new RefreshTrigger(AutoTag, 300);
             Messenger.Send(new RequestSyncTagsMessage());
-            Messenger.Send(new RequestSyncRulesMessage());
-        }
+            Messenger.Send(new RequestSyncRulesMessage()); 
+			Messenger.Send(new EntryDateChangedMessage(this, true, StartTime, StartTime));
+			Messenger.Send(new EntryDateChangedMessage(this, false, EndTime, EndTime));
+
+		}
 
         internal static DiaryEntryViewModel FromDto(DiaryEntryDto dto)
         {
