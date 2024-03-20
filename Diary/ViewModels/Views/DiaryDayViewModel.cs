@@ -179,6 +179,10 @@ namespace Diary.ViewModels.Views
 							((DiaryEntryViewModel)entryAfter).StartTime = message.NewValue;
 						}   
 					}
+					if (message.Sender.ShowFullDates != ShowFullDates)
+					{
+						message.Sender.ShowFullDates = ShowFullDates;
+					}
 				}
 			});
 			base.BindMessages();
