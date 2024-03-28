@@ -90,6 +90,19 @@ namespace Diary.ViewModels.Views
 			entries = new List<DiaryEntryDto>();
 		}
 
+		public void ApplyDto(DiaryDayDto dto)
+		{
+			Notes = dto.Notes;
+			DayOfWeek = dto.DayOfWeek;
+			entries = dto.Entries;
+			LoadEntries();
+		}
+
+		public void Stop()
+		{
+			this.ChildViewModels.ToList().ForEach(x => (x as DiaryEntryViewModel).Stop());
+		}
+
 		internal static DiaryDayViewModel FromDto(DiaryDayDto dto)
 		{
 			var vm = new DiaryDayViewModel(dto.Entries) { Name = dto.Name, Notes = dto.Notes, DayOfWeek = dto.DayOfWeek };
