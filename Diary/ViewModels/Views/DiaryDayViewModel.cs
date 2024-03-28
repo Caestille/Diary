@@ -155,7 +155,7 @@ namespace Diary.ViewModels.Views
 					if ((message.IsStartDate ? message.Sender.StartTime : message.Sender.EndTime).ToShortDateString() != Name)
 					{
 						var date = DateTime.Parse(Name);
-						var toSet = ChildViewModels.First(x => (x as DiaryEntryViewModel).EntryText == message.Sender.EntryText) as DiaryEntryViewModel;
+						var toSet = message.Sender;
 						if (message.IsStartDate)
 						{
 							toSet.StartTime =  message.Sender.StartTime.SetDate(date);
@@ -197,12 +197,13 @@ namespace Diary.ViewModels.Views
 				&& ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) 
 					|| (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))))
 			{
-				var start = lastFocusedVm != null ? lastFocusedVm.EndTime : DateTime.Now - TimeSpan.FromMinutes(5);
+				var now = DateTime.Now.SetDate(DateTime.Parse(Name));
+				var start = lastFocusedVm != null ? lastFocusedVm.EndTime : now - TimeSpan.FromMinutes(5);
 				var end = lastFocusedVm != null
 					? ChildViewModels.IndexOf(lastFocusedVm) < ChildViewModels.Count - 1
 						? (ChildViewModels[ChildViewModels.IndexOf(lastFocusedVm) + 1] as DiaryEntryViewModel).StartTime
-						: DateTime.Now < start ? start + TimeSpan.FromMinutes(5) : DateTime.Now
-					: DateTime.Now < start ? start + TimeSpan.FromMinutes(5) : DateTime.Now;
+						: now < start ? start + TimeSpan.FromMinutes(5) : now
+					: now < start ? start + TimeSpan.FromMinutes(5) : now;
 				var newVM = new DiaryEntryViewModel()
 				{
 					StartTime = start,
@@ -215,11 +216,12 @@ namespace Diary.ViewModels.Views
 
 		private void AddFirstChild()
 		{
-			var start = ChildViewModels.Any()? (ChildViewModels.Last() as DiaryEntryViewModel).EndTime : DateTime.Now - TimeSpan.FromMinutes(5);
+			var now = DateTime.Now.SetDate(DateTime.Parse(Name));
+			var start = ChildViewModels.Any()? (ChildViewModels.Last() as DiaryEntryViewModel).EndTime : now - TimeSpan.FromMinutes(5);
 			var newVM = new DiaryEntryViewModel()
 			{
 				StartTime = start,
-				EndTime = DateTime.Now < start ? start + TimeSpan.FromMinutes(5) : DateTime.Now,
+				EndTime = now < start ? start + TimeSpan.FromMinutes(5) : now,
 			};
 
 			AddChild(newVM);
