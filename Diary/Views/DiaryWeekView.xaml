@@ -41,6 +41,8 @@
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 				<!--#region Name and renaming-->
 				<!--#region Name label-->
@@ -213,6 +215,38 @@
 					Content="Week Summary"
 					CornerRadius="5"
 					Foreground="{DynamicResource TextBrush}"
+					MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
+					MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}" />
+				<controls:ExtendedButton
+					x:Name="OpenJsonButton"
+					Grid.Column="9"
+					Margin="0,4,5,3"
+					ToolTip="Open week .json file"
+					Padding="5"
+					HorizontalAlignment="Right"
+					VerticalAlignment="Center"
+					Background="{DynamicResource ControlClickablePartBrush}"
+					BorderThickness="0"
+					Command="{Binding OpenJsonCommand}"
+					Content="{scalableicons:Icon Kind=OpenFile, Width=10, Height=10}"
+					Foreground="{DynamicResource StatusTextBrush}"
+					CornerRadius="5"
+					MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
+					MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}" />
+				<controls:ExtendedButton
+					x:Name="ReloadFromJsonButton"
+					Grid.Column="10"
+					Margin="0,4,10,3"
+					ToolTip="Reload from file"
+					Padding="5"
+					HorizontalAlignment="Right"
+					VerticalAlignment="Center"
+					Background="{DynamicResource ControlClickablePartBrush}"
+					BorderThickness="0"
+					Command="{Binding ReloadCommand}"
+					Content="{scalableicons:Icon Kind=Reload, Width=10, Height=10}"
+					Foreground="{DynamicResource StatusTextBrush}"
+					CornerRadius="5"
 					MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
 					MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}" />
 				<!--#endregion-->

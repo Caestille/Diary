@@ -7,6 +7,7 @@ using Diary.Models.Tagging;
 using Diary.ViewModels.Base;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Timers;
@@ -40,12 +41,45 @@ namespace Diary.ViewModels.Views
 				ShowWeekSummary = true;
 			});
 		});
-
+		
         public ICommand CloseWeekSummaryCommand => new RelayCommand(() => ShowWeekSummary = false);
 
         public ICommand SaveCommand => new AsyncRelayCommand(Save);
 
-        private bool showWeekSummary;
+		public ICommand OpenJsonCommand => new RelayCommand(() => 
+		{
+			IsAutoSaveEnabled = false;
+			Process.Start(new ProcessStartInfo(this.WritePath)
+				{
+					UseShellExecute = true,
+					CreateNoWindow = true
+				});
+		});
+
+		public ICommand ReloadCommand => new RelayCommand(() =>
+		{
+			IEnumerable<DiaryDayDto>? days = null;
+			try
+			{
+				days = JsonSerializer.Deserialize<DiaryWeekDto>(File.ReadAllText(this.WritePath))?.Days;
+			}
+			catch
+			{
+				//Failed to deserialise json, just return
+			}
+
+			if (days is null) return;
+			// TODO messagebox to confirm this failed to user
+
+			foreach (var day in ChildViewModels.Cast<DiaryDayViewModel>())
+			{
+				var matchingDto = days.FirstOrDefault(x => x.Name == day.Name);
+				if (matchingDto == null) continue;
+				day.ApplyDto(matchingDto);
+			}
+		});
+
+		private bool showWeekSummary;
         public bool ShowWeekSummary
         {
             get => showWeekSummary;
@@ -237,6 +271,7 @@ namespace Diary.ViewModels.Views
             autoSaveTimer.Stop();
             autoSaveTimer.Elapsed -= Timer_Elapsed;
             _ = Save();
+			this.ChildViewModels.ToList().ForEach(x => (x as DiaryDayViewModel).Stop());
             base.OnShutdownStart(sender, e);
         }
 

@@ -112,6 +112,11 @@ namespace Diary.ViewModels.Views
 
 		}
 
+		public void Stop()
+		{
+			this.autoTagTrigger.Stop();
+		}
+
         internal static DiaryEntryViewModel FromDto(DiaryEntryDto dto)
         {
             return new DiaryEntryViewModel(dto.Tag) { EntryText = dto.Entry, StartTime = dto.Start, EndTime = dto.End };
@@ -140,12 +145,6 @@ namespace Diary.ViewModels.Views
             });
 
             base.BindMessages();
-        }
-
-        protected override void OnShutdownStart(object? sender, EventArgs e)
-        {
-            autoTagTrigger.Stop();
-            base.OnShutdownStart(sender, e);
         }
 
         private void EntryGotFocus()
