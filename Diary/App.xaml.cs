@@ -7,6 +7,8 @@ using System.Text.Json;
 using Diary.Dtos;
 using SplashScreen = Diary.Views.SplashScreen;
 using ModernThemables.ViewModels;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace Diary
 {
