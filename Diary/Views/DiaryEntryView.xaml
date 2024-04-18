@@ -43,7 +43,7 @@
 		</controls:DatetimeTextBox>
 		<Label
 			Grid.Column="1"
-			Margin="-2,3,0,0"
+			Margin="-7,3,-3,0"
 			Content="-"
 			Focusable="False"
 			Foreground="{DynamicResource TextBrush}" />
@@ -91,7 +91,7 @@
 		<ComboBox
 			Grid.Column="4"
 			Width="Auto"
-			Margin="10,3,10,0"
+			Margin="10,3,0,0"
 			VerticalAlignment="Top"
 			DisplayMemberPath="Tag"
 			IsEditable="False"
@@ -107,7 +107,7 @@
 		<controls:ExtendedButton
 			x:Name="Button"
 			Grid.Column="6"
-			Margin="10,0"
+			Margin="5,0"
 			Padding="3"
 			HorizontalAlignment="Right"
 			VerticalAlignment="Center"

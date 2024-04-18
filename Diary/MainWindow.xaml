@@ -8,7 +8,7 @@
 	Title="Diary"
 	Width="1400"
 	Height="800"
-    FontFamily="Resources/Fonts/#Inter"
+	FontFamily="Resources/Fonts/#Inter"
 	FontSize="13"
 	Icon="Resources/Icon.ico"
 	RenderOptions.BitmapScalingMode="NearestNeighbor"

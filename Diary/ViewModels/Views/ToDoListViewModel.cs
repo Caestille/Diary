@@ -1,6 +1,6 @@
 ﻿using Diary.Messages;
 using Diary.Models.ToDoList;
-using Diary.ViewModels.Base;
+using ModernThemables.ViewModels;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;

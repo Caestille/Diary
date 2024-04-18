@@ -1,4 +1,4 @@
-﻿using Diary.ViewModels.Base;
+﻿using ModernThemables.ViewModels;
 using Diary.Messages.Base;
 using Microsoft.Toolkit.Mvvm.Messaging;
 

@@ -1,7 +1,7 @@
 ﻿using CoreUtilities.HelperClasses;
 using CoreUtilities.Services;
 using Diary.Models.RepoBrowser;
-using Diary.ViewModels.Base;
+using ModernThemables.ViewModels;
 using Microsoft.Toolkit.Mvvm.Input;
 using System.IO;
 using System.Text.Json;

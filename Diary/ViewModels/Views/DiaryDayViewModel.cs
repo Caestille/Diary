@@ -3,15 +3,15 @@ using Diary.Dtos;
 using Diary.Extensions;
 using Diary.Messages;
 using Diary.Messages.Base;
-using Diary.ViewModels.Base;
+using ModernThemables.ViewModels;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
-using System.Windows;
 using System.Windows.Input;
+using ModernThemables.Messages;
 
 namespace Diary.ViewModels.Views
 {
-	public class DiaryDayViewModel : ViewModelBase
+	public class DiaryDayViewModel : ViewModelBase<DiaryEntryViewModel>
 	{
 		public ICommand AddFirstChildCommand => new RelayCommand(AddFirstChild);
 
@@ -68,8 +68,6 @@ namespace Diary.ViewModels.Views
 
 		public DiaryDayViewModel() : base("")
 		{
-			AllowShowDropdownIndicator = false;
-			ShowsInSearch = true;
 			GenerateSummary();
 			Loaded = true;
 		}
@@ -77,15 +75,12 @@ namespace Diary.ViewModels.Views
 		public DiaryDayViewModel(IEnumerable<DiaryEntryDto> entries) : base("")
 		{
 			this.entries = entries;
-
-			AllowShowDropdownIndicator = false;
-			ShowsInSearch = true;
 			GenerateSummary();
 		}
 
 		public void LoadEntries()
 		{
-			this.ChildViewModels = new RangeObservableCollection<ViewModelBase>(entries.Select(x => DiaryEntryViewModel.FromDto(x)));
+			this.ChildViewModels = new (entries.Select(DiaryEntryViewModel.FromDto));
 			Loaded = true;
 			entries = new List<DiaryEntryDto>();
 		}
@@ -100,7 +95,7 @@ namespace Diary.ViewModels.Views
 
 		public void Stop()
 		{
-			this.ChildViewModels.ToList().ForEach(x => (x as DiaryEntryViewModel).Stop());
+			this.ChildViewModels.ToList().ForEach(x => x.Stop());
 		}
 
 		internal static DiaryDayViewModel FromDto(DiaryDayDto dto)
@@ -126,7 +121,7 @@ namespace Diary.ViewModels.Views
 			base.OnChildrenChanged();
 		}
 
-		protected override void OnViewModelRequestDelete(ViewModelRequestDeleteMessage message)
+		protected override void OnRequestDeleteReceived(ModernThemables.Messages.ViewModelRequestDeleteMessage message)
 		{
 			if (message.ViewModel is DiaryEntryViewModel entryVm && ChildViewModels.Contains(entryVm))
 			{
@@ -135,7 +130,7 @@ namespace Diary.ViewModels.Views
 					lastFocusedVm = null;
 				}
 			}
-			base.OnViewModelRequestDelete(message);
+			base.OnRequestDeleteReceived(message);
 		}
 
 		protected override void BindMessages()

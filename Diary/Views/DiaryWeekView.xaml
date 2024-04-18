@@ -73,14 +73,14 @@
 					FontWeight="{Binding ElementName=NameLabel, Path=FontWeight}"
 					Foreground="{DynamicResource TextBrush}"
 					IsVisibleChanged="NameTextbox_IsVisibleChanged"
-					Text="{Binding TemporaryName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-					Visibility="{Binding IsEditingName, Converter={StaticResource VisibleIfTrueConverter}}">
+					Text="{Binding Alias, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+					Visibility="{Binding IsEditingAlias, Converter={StaticResource VisibleIfTrueConverter}}">
 					<TextBox.Background>
 						<SolidColorBrush Opacity="0.01" Color="{DynamicResource InvertedTextColour}" />
 					</TextBox.Background>
 					<b:Interaction.Triggers>
 						<b:EventTrigger EventName="PreviewKeyDown">
-							<b:InvokeCommandAction Command="{Binding NameEditorKeyDownCommand}" PassEventArgsToCommand="True" />
+							<b:InvokeCommandAction Command="{Binding AliasEditorKeyDownCommand}" PassEventArgsToCommand="True" />
 						</b:EventTrigger>
 					</b:Interaction.Triggers>
 				</TextBox>
@@ -97,7 +97,7 @@
 					VerticalAlignment="Center"
 					Background="{DynamicResource ControlClickablePartBrush}"
 					BorderThickness="0"
-					Command="{Binding EditNameCommand}"
+					Command="{Binding EditAliasCommand}"
 					CornerRadius="5"
 					Foreground="{DynamicResource StatusTextBrush}"
 					MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
@@ -220,7 +220,10 @@
 					Foreground="{DynamicResource TextBrush}"
 					MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
 					MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}" />
-				<StackPanel Grid.Column="9" VerticalAlignment="Center" Margin="0,0,8,0">
+				<StackPanel
+					Grid.Column="9"
+					Margin="0,0,8,0"
+					VerticalAlignment="Center">
 					<controls:ExtendedButton
 						x:Name="OpenJsonButton"
 						Grid.Column="9"
@@ -275,7 +278,7 @@
 						VerticalScrollBarVisibility="Auto">
 						<ItemsControl
 							x:Name="ItemsControl"
-							Width="126"
+							Width="120"
 							Focusable="False"
 							ItemTemplate="{StaticResource DayMenuItemDataTemplate}"
 							ItemsSource="{Binding ChildViewModels}" />

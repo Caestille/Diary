@@ -1,12 +1,12 @@
 ﻿using Diary.Messages;
-using Diary.ViewModels.Base;
+using ModernThemables.ViewModels;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using CoreUtilities.HelperClasses;
 using System.Globalization;
 
 namespace Diary.ViewModels.Views
 {
-    public class DiaryMonthViewModel : ViewModelBase
+    public class DiaryMonthViewModel : ViewModelBase<DiaryWeekViewModel>
     {
         private string shortName;
         public string ShortName
@@ -19,8 +19,6 @@ namespace Diary.ViewModels.Views
             string workingDirectory, IEnumerable<DiaryWeekViewModel> startingWeeks = null, string startingName = "")
             : base("", () => new DiaryWeekViewModel(workingDirectory))
         {
-            SupportsDeleting = true;
-
             if (!string.IsNullOrEmpty(startingName))
             {
                 Name = startingName;
@@ -45,7 +43,6 @@ namespace Diary.ViewModels.Views
             else
             {
                 AddChild();
-                IsShowingChildren = true;
                 ChildViewModels.Last().SelectCommand.Execute(this);
             }
         }
@@ -54,16 +51,9 @@ namespace Diary.ViewModels.Views
         {
             Messenger.Register<WeekChangedMessage>(this, (recipient, sender) => 
             {
-                var vms = new List<ViewModelBase>(ChildViewModels);
-                ChildViewModels = new RangeObservableCollection<ViewModelBase>(
-                    vms.OrderByDescending(x => (x as DiaryWeekViewModel).WeekStart));
+                ChildViewModels = new (ChildViewModels.OrderByDescending(x => x.WeekStart));
             });
             base.BindMessages();
-        }
-
-        public override void AddChild(ViewModelBase viewModelToAdd = null, string name = "", int? index = null)
-        {
-            base.AddChild(viewModelToAdd, name, 0);
         }
     }
 }

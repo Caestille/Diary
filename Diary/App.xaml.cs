@@ -1,14 +1,12 @@
 ﻿using Diary.ViewModels;
 using System.Windows;
-using Diary.ViewModels.Base;
 using CoreUtilities.Services.RegistryInteraction;
 using Diary.ViewModels.Views;
 using System.IO;
 using System.Text.Json;
 using Diary.Dtos;
 using SplashScreen = Diary.Views.SplashScreen;
-using System.Diagnostics;
-using System.Reflection;
+using ModernThemables.ViewModels;
 
 namespace Diary
 {
@@ -80,8 +78,6 @@ namespace Diary
 				Directory.CreateDirectory(WorkingDirectory + "\\Calendar");
 			}
 
-			var appRegistryService = new RegistryService(@"SOFTWARE\Diary");
-
 			var taggingVm = new DataTaggingViewModel(WorkingDirectory);
 
 			var viewModels = await Task.Run(() => 
@@ -101,7 +97,7 @@ namespace Diary
 						WorkingDirectory + "\\Calendar",
 						Guid.Parse(Path.GetFileNameWithoutExtension(week))));
 				}
-				var vms = new List<ViewModelBase>()
+				var vms = new List<GenericViewModelBase>()
 				{
 					new TakeMeToTodayViewModel(),
 					new CalendarViewModel(WorkingDirectory + "\\Calendar", weekVms),
@@ -112,7 +108,7 @@ namespace Diary
 				return vms;
 			});
 
-			var mainViewModel = new MainViewModel(viewModels, appRegistryService);
+			var mainViewModel = new MainViewModel(viewModels);
 			viewModels[0].SelectCommand.Execute(null);
 
 			var mainView = new MainWindow()

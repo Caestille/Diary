@@ -4,12 +4,12 @@ using System.Windows.Input;
 using CoreUtilities.HelperClasses;
 using System.Text.Json;
 using System.Collections.ObjectModel;
-using Diary.ViewModels.Base;
 using Diary.Messages;
 using Diary.Messages.Base;
 using Diary.Dtos;
 using System.IO;
 using Diary.Models.Tagging;
+using ModernThemables.ViewModels;
 
 namespace Diary.ViewModels.Views
 {

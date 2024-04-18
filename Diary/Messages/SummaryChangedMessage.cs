@@ -1,12 +1,13 @@
-﻿using Diary.ViewModels.Base;
+﻿using Diary.ViewModels.Views;
+using ModernThemables.ViewModels;
 
 namespace Diary.Messages
 {
     public class SummaryChangedMessage
     {
-        public ViewModelBase Sender { get; }
+        public DiaryDayViewModel Sender { get; }
 
-        public SummaryChangedMessage(ViewModelBase sender)
+        public SummaryChangedMessage(DiaryDayViewModel sender)
         {
             Sender = sender;
         }

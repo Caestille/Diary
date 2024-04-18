@@ -2,7 +2,7 @@
 using Diary.Dtos;
 using Diary.Messages;
 using Diary.Messages.Base;
-using Diary.ViewModels.Base;
+using ModernThemables.ViewModels;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using System.Windows.Input;

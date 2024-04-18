@@ -1,16 +1,14 @@
-﻿using Diary.ViewModels.Base;
+﻿using ModernThemables.ViewModels;
 using System.Globalization;
 
 namespace Diary.ViewModels.Views
 {
-    public class DiaryYearViewModel : ViewModelBase
+    public class DiaryYearViewModel : ViewModelBase<DiaryMonthViewModel>
     {
         public DiaryYearViewModel(
             string workingDirectory, IEnumerable<DiaryWeekViewModel> startingWeeks = null, string startingName = "")
             : base("", () => new DiaryMonthViewModel(workingDirectory))
         {
-            SupportsDeleting = true;
-
             if (!string.IsNullOrEmpty(startingName))
             {
                 Name = startingName;
@@ -37,12 +35,11 @@ namespace Diary.ViewModels.Views
             else
             {
                 AddChild();
-                IsShowingChildren = true;
             }
         }
 
-        public override void AddChild(ViewModelBase viewModelToAdd = null, string name = "", int? index = null)
-        {
+		public override void AddChild(DiaryMonthViewModel? viewModelToAdd = null, string name = "", int? index = null)
+		{
             base.AddChild(viewModelToAdd, name, 0);
         }
     }

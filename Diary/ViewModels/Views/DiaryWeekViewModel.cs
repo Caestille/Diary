@@ -4,7 +4,7 @@ using Diary.Extensions;
 using Diary.Messages;
 using Diary.Messages.Base;
 using Diary.Models.Tagging;
-using Diary.ViewModels.Base;
+using ModernThemables.ViewModels;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using System.Diagnostics;
@@ -12,10 +12,11 @@ using System.IO;
 using System.Text.Json;
 using System.Timers;
 using System.Windows.Input;
+using ModernThemables.Messages;
 
 namespace Diary.ViewModels.Views
 {
-	public class DiaryWeekViewModel : NameableViewModelBase
+	public class DiaryWeekViewModel : AliasableViewModelBase<DiaryDayViewModel>
     {
         private string workingDirectory;
         private System.Timers.Timer autoSaveTimer;
@@ -164,8 +165,6 @@ namespace Diary.ViewModels.Views
             set => SetProperty(ref canSave, value);
         }
 
-        public override bool SupportsAddingChildren => false;
-
         public DiaryWeekViewModel(
             string workingDirectory, DateTime? overrideWeekStart = null, Guid? overrideGuid = null) : base("", "")
         {
@@ -175,8 +174,6 @@ namespace Diary.ViewModels.Views
             WeekStart = firstDayOfWeek;
             Name = $"Week {firstDayOfWeek.ToString("dd/MM/yyyy")}";
             SetDaysForStartOfWeek();
-            SupportsDeleting = true;
-            AllowShowDropdownIndicator = false;
             GenerateSummary();
 
             autoSaveTimer = new System.Timers.Timer(5000);
@@ -191,13 +188,13 @@ namespace Diary.ViewModels.Views
                 dto.WeekStart,
                 guid)
             {
-                ChildViewModels = new RangeObservableCollection<ViewModelBase>(
+                ChildViewModels = new (
                     dto.Days.Select(x => DiaryDayViewModel.FromDto(x)))
             };
         }
 
-        protected override void OnCommitNameUpdate()
-        {
+		protected override void OnCommitAliasUpdate()
+		{
             DateTime date = new DateTime();
             Name.Split(' ').FirstOrDefault(x => DateTime.TryParse(x, out date));
             if (date != default(DateTime))
@@ -206,7 +203,7 @@ namespace Diary.ViewModels.Views
                 Messenger.Send(new WeekChangedMessage());
             }
             SetDaysForStartOfWeek();
-            base.OnCommitNameUpdate();
+            base.OnCommitAliasUpdate();
         }
 
         protected override void BindMessages()
@@ -249,14 +246,14 @@ namespace Diary.ViewModels.Views
             base.BindMessages();
         }
 
-        protected override void OnDelete()
-        {
+		protected override void OnRequestDeleteReceived(ViewModelRequestDeleteMessage message)
+		{
             Messenger.UnregisterAll(this);
             if (File.Exists(WritePath))
             {
                 File.Delete(WritePath);
             }
-            base.OnDelete();
+            base.OnRequestDeleteReceived(message);
         }
 
         protected override void OnChildrenChanged()

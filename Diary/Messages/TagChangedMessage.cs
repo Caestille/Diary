@@ -1,5 +1,5 @@
 ﻿using Diary.Models.Tagging;
-using Diary.ViewModels.Base;
+using ModernThemables.ViewModels;
 
 namespace Diary.Messages
 {

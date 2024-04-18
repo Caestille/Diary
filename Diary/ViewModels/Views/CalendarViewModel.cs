@@ -1,9 +1,9 @@
-﻿using Diary.ViewModels.Base;
+﻿using ModernThemables.ViewModels;
 using System.IO;
 
 namespace Diary.ViewModels.Views
 {
-    public class CalendarViewModel : ViewModelBase
+    public class CalendarViewModel : ViewModelBase<DiaryYearViewModel>
     {
         public CalendarViewModel(
             string workingDirectory, IEnumerable<DiaryWeekViewModel> startingWeeks)
@@ -24,19 +24,11 @@ namespace Diary.ViewModels.Views
                 var years = startingWeeks.Select(x => x.WeekStart.Year).Distinct().ToList();
                 years.ForEach(x => AddChild(new DiaryYearViewModel(workingDirectory, startingWeeks, x.ToString())));
             }
-
-            IsShowingChildren = false;
         }
 
-        public override void AddChild(ViewModelBase viewModelToAdd = null, string name = "", int? index = null)
-        {
+		public override void AddChild(DiaryYearViewModel? viewModelToAdd = null, string name = "", int? index = null)
+		{
             base.AddChild(viewModelToAdd, name, 0);
-        }
-
-        protected override void OnChildrenChanged()
-        {
-            IsShowingChildren = true;
-            base.OnChildrenChanged();
         }
     }
 }
