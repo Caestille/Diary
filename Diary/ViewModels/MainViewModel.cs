@@ -141,7 +141,7 @@ namespace Diary.ViewModels
 				{
 					var dayVm = weekVm.GetChildren()
 						.First(x => (x as DiaryDayViewModel).Name == day.ToString("dd/MM/yyyy")) as DiaryDayViewModel;
-					if (!dayVm.IsSelected) dayVm.Select(this);
+					dayVm.Select(this);
 				}
 
 				return true;
