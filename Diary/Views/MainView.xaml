@@ -142,9 +142,30 @@
 				Icon="{Binding}"
 				IconTemplate="{StaticResource IconTemplate}"
 				IsContainingMenuOpen="{Binding ElementName=Menu, Path=IsMenuOpen}"
-				IsSelected="{Binding IsSelected, Mode=TwoWay}"
 				IsOpen="{Binding IsExpanded, Mode=TwoWay}"
+				IsSelected="{Binding IsSelected, Mode=TwoWay}"
 				ReserveIconSpace="True"
+				SelectCommand="{Binding SelectCommand}"
+				ShowOpenIndicator="{Binding Path=., Converter={StaticResource MenuBehaviourConverter}, ConverterParameter=ShowOpenIndicator}">
+				<controls:MenuItem.Style>
+					<Style BasedOn="{StaticResource ResourceKey={x:Type controls:MenuItem}}" TargetType="{x:Type controls:MenuItem}">
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding ElementName=Menu, Path=IsMenuOpen}" Value="True">
+								<Setter Property="controls:MenuItem.Margin" Value="{Binding Path=., Converter={StaticResource MenuBehaviourConverter}, ConverterParameter=Margin}" />
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</controls:MenuItem.Style>
+			</controls:MenuItem>
+		</DataTemplate>
+		<DataTemplate x:Key="SearchItemTemplate">
+			<controls:MenuItem
+				Title="{Binding Name}"
+				CanAddChild="False"
+				CanDelete="False"
+				CanOpen="False"
+				IsContainingMenuOpen="{Binding ElementName=Menu, Path=IsMenuOpen}"
+				IsOpen="False"
 				SelectCommand="{Binding SelectCommand}" />
 		</DataTemplate>
 		<DataTemplate DataType="{x:Type vms:DiaryWeekViewModel}">
@@ -218,6 +239,7 @@
 			BlurBackground="{Binding ElementName=ContentControl}"
 			IsMenuOpen="{Binding IsMenuOpen, Mode=TwoWay}"
 			ItemTemplate="{StaticResource ChildItemTemplate}"
-			Items="{Binding ChildViewModels}" />
+			Items="{Binding ChildViewModels}"
+			SearchItemTemplate="{StaticResource SearchItemTemplate}" />
 	</Grid>
 </UserControl>

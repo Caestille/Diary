@@ -12,7 +12,7 @@ namespace Diary.ViewModels.Views
             
         }
 
-        protected override void Select()
+        public override void Select(GenericViewModelBase? sender = null)
         {
             Messenger.Send(new TakeMeToTodayMessage());
         }

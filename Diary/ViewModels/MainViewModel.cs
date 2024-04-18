@@ -43,7 +43,7 @@ namespace Diary.ViewModels
 
 		protected override void BindMessages()
 		{
-			Messenger.Register<ViewModelRequestShowMessage>(this, (sender, message) =>
+			Messenger.Register<ViewModelRequestShowMessage>(this, (recipient, message) =>
 			{
 				foreach (var vm in AllViewModels.Where(x => x is not DiaryDayViewModel))
 				{
@@ -53,16 +53,17 @@ namespace Diary.ViewModels
 				VisibleViewModel = message.ViewModel;
 			});
 
-			Messenger.Register<ViewModelRequestShowMessage<DiaryDayViewModel>>(this, (sender, message) =>
+			Messenger.Register<ViewModelRequestShowMessage<DiaryDayViewModel>>(this, (recipient, message) =>
 			{
 				SelectDay(DateTime.ParseExact(
 					message.ViewModel.Name,
 					"dd/MM/yyyy",
 					CultureInfo.InvariantCulture,
-					DateTimeStyles.None));
+					DateTimeStyles.None),
+					autoExpand: (message.Sender is MainViewModel));
 			});
 
-			Messenger.Register<ViewModelRequestDeleteMessage>(this, (sender, message) =>
+			Messenger.Register<ViewModelRequestDeleteMessage>(this, (recipient, message) =>
 			{
 				if (message.ViewModel is DiaryWeekViewModel)
 				{
@@ -112,7 +113,7 @@ namespace Diary.ViewModels
 			OnPropertyChanged(nameof(AllViewModels));
 		}
 
-		private bool SelectDay(DateTime day, bool includeDay = false)
+		private bool SelectDay(DateTime day, bool includeDay = false, bool autoExpand = false)
 		{
 			try
 			{
@@ -127,21 +128,20 @@ namespace Diary.ViewModels
 				var monthVm = yearVm.ChildViewModels
 					.Where(x => x is DiaryMonthViewModel)
 					.First(x => x.Name == weekDate.ToString("MMMM"));
-				//AllViewModels
-				//	.Where(x => (x is DiaryYearViewModel || x is DiaryMonthViewModel || x is DiaryWeekViewModel))
-				//	.ToList()
-				//	.ForEach(x => x.SelectCommand.Execute(null));
 
-				if (!calendarVm.IsExpanded) calendarVm.IsExpanded = true;
-				if (!yearVm.IsExpanded) yearVm.IsExpanded = true;
-				if (!monthVm.IsExpanded) monthVm.IsExpanded = true;
-				if (!weekVm.IsSelected) weekVm.SelectCommand.Execute(null);
+				if (autoExpand)
+				{
+					if (!calendarVm.IsExpanded) calendarVm.IsExpanded = true;
+					if (!yearVm.IsExpanded) yearVm.IsExpanded = true;
+					if (!monthVm.IsExpanded) monthVm.IsExpanded = true;
+					if (!weekVm.IsSelected) weekVm.Select();
+				}
 
 				if (includeDay)
 				{
 					var dayVm = weekVm.GetChildren()
 						.First(x => (x as DiaryDayViewModel).Name == day.ToString("dd/MM/yyyy")) as DiaryDayViewModel;
-					if (!dayVm.IsSelected) dayVm.SelectCommand.Execute(null);
+					if (!dayVm.IsSelected) dayVm.Select(this);
 				}
 
 				return true;

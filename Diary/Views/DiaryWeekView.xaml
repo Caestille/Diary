@@ -14,6 +14,16 @@
 		<DataTemplate DataType="{x:Type vms:DiaryDayViewModel}">
 			<views:DiaryDayView />
 		</DataTemplate>
+		<DataTemplate x:Key="DayMenuItemTemplate" DataType="{x:Type vms:DiaryDayViewModel}">
+			<controls:MenuItem
+				Title="{Binding DayOfWeek}"
+				CanAddChild="False"
+				CanDelete="False"
+				CanOpen="False"
+				IsSelected="{Binding IsSelected}"
+				SelectCommand="{Binding SelectCommand}"
+				SubTitle="{Binding Name}" />
+		</DataTemplate>
 	</UserControl.Resources>
 	<Grid>
 		<Grid x:Name="MainGrid">
@@ -273,15 +283,19 @@
 				</Grid.ColumnDefinitions>
 				<Grid>
 					<ScrollViewer
+						Width="150"
 						Margin="6,9,0,0"
 						Focusable="False"
 						VerticalScrollBarVisibility="Auto">
-						<ItemsControl
-							x:Name="ItemsControl"
-							Width="120"
-							Focusable="False"
-							ItemTemplate="{StaticResource DayMenuItemDataTemplate}"
-							ItemsSource="{Binding ChildViewModels}" />
+						<controls:MenuItem
+							Title="Days"
+							CanAddChild="False"
+							CanDelete="False"
+							CanOpen="True"
+							ChildItemTemplate="{StaticResource DayMenuItemTemplate}"
+							ChildItems="{Binding ChildViewModels}"
+							ShowOpenIndicator="False"
+							StartOpen="True" />
 					</ScrollViewer>
 				</Grid>
 				<!--#region Account view host-->

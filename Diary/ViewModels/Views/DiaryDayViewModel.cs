@@ -104,14 +104,14 @@ namespace Diary.ViewModels.Views
 			return vm;
 		}
 
-		protected override void Select()
+		public override void Select(GenericViewModelBase? sender = null)
 		{
 			IsSelected = true;
 			if (!Loaded)
 			{
 				LoadEntries();
 			}
-			Messenger.Send(new ViewModelRequestShowMessage<DiaryDayViewModel>(this));
+			Messenger.Send(new ViewModelRequestShowMessage<DiaryDayViewModel>(this, sender ?? this));
 			GenerateSummary();
 		}
 
