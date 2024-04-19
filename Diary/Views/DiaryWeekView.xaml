@@ -283,7 +283,7 @@
 				</Grid.ColumnDefinitions>
 				<Grid>
 					<ScrollViewer
-						Width="150"
+						Width="125"
 						Margin="6,9,0,0"
 						Focusable="False"
 						VerticalScrollBarVisibility="Auto">
