@@ -112,7 +112,7 @@
 			HorizontalAlignment="Right"
 			VerticalAlignment="Center"
 			Background="Transparent"
-			Command="{Binding RequestDeleteCommand}"
+			Command="{Binding DeleteCommand}"
 			DisabledBackgroundColour="{DynamicResource DisabledControlClickablePartBrush}"
 			Style="{StaticResource RoundButtonStyle}"
 			ToolTip="Delete"

@@ -117,7 +117,13 @@ namespace Diary.ViewModels.Views
 			this.autoTagTrigger.Stop();
 		}
 
-        internal static DiaryEntryViewModel FromDto(DiaryEntryDto dto)
+		public override void OnDelete()
+		{
+			Stop();
+			base.OnDelete();
+		}
+
+		internal static DiaryEntryViewModel FromDto(DiaryEntryDto dto)
         {
             return new DiaryEntryViewModel(dto.Tag) { EntryText = dto.Entry, StartTime = dto.Start, EndTime = dto.End };
         }
