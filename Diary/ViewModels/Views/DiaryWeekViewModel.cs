@@ -246,17 +246,13 @@ namespace Diary.ViewModels.Views
             base.BindMessages();
         }
 
-		protected override void OnRequestDeleteReceived(ViewModelRequestDeleteMessage message)
+		public override void OnDelete()
 		{
-			if (message.ViewModel == this)
+			Messenger.UnregisterAll(this);
+			if (File.Exists(WritePath))
 			{
-				Messenger.UnregisterAll(this);
-				if (File.Exists(WritePath))
-				{
-					File.Delete(WritePath);
-				}
+				File.Delete(WritePath);
 			}
-            base.OnRequestDeleteReceived(message);
         }
 
         protected override void OnChildrenChanged()

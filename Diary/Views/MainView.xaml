@@ -134,6 +134,7 @@
 			<controls:MenuItem
 				Title="{Binding Name}"
 				AddChildCommand="{Binding AddChildCommand}"
+				DeleteCommand="{Binding DeleteCommand}"
 				CanAddChild="{Binding Path=., Converter={StaticResource MenuBehaviourConverter}, ConverterParameter=CanAddChild}"
 				CanDelete="{Binding Path=., Converter={StaticResource MenuBehaviourConverter}, ConverterParameter=CanDelete}"
 				CanOpen="{Binding Path=., Converter={StaticResource MenuBehaviourConverter}, ConverterParameter=CanOpen}"
