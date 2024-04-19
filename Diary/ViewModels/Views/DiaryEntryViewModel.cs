@@ -147,11 +147,6 @@ namespace Diary.ViewModels.Views
             base.BindMessages();
         }
 
-		protected override void RequestDelete()
-		{
-			base.RequestDelete();
-		}
-
 		private void EntryGotFocus()
         {
             this.IsFocused = true;
