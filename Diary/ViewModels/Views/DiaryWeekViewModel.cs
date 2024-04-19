@@ -248,11 +248,14 @@ namespace Diary.ViewModels.Views
 
 		protected override void OnRequestDeleteReceived(ViewModelRequestDeleteMessage message)
 		{
-            Messenger.UnregisterAll(this);
-            if (File.Exists(WritePath))
-            {
-                File.Delete(WritePath);
-            }
+			if (message.ViewModel == this)
+			{
+				Messenger.UnregisterAll(this);
+				if (File.Exists(WritePath))
+				{
+					File.Delete(WritePath);
+				}
+			}
             base.OnRequestDeleteReceived(message);
         }
 

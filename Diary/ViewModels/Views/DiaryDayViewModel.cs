@@ -121,7 +121,7 @@ namespace Diary.ViewModels.Views
 			base.OnChildrenChanged();
 		}
 
-		protected override void OnRequestDeleteReceived(ModernThemables.Messages.ViewModelRequestDeleteMessage message)
+		protected override void OnRequestDeleteReceived(ViewModelRequestDeleteMessage message)
 		{
 			if (message.ViewModel is DiaryEntryViewModel entryVm && ChildViewModels.Contains(entryVm))
 			{

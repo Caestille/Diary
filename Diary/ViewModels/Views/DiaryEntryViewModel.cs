@@ -147,7 +147,12 @@ namespace Diary.ViewModels.Views
             base.BindMessages();
         }
 
-        private void EntryGotFocus()
+		protected override void RequestDelete()
+		{
+			base.RequestDelete();
+		}
+
+		private void EntryGotFocus()
         {
             this.IsFocused = true;
             Messenger.Send(new EntryFocusedMessage(this));
