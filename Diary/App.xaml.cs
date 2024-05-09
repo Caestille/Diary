@@ -22,7 +22,7 @@ namespace Diary
 		public static bool MenuStartOpen { get; }
 
 		public static string WorkingDirectory
-			=> @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Diary";
+			=> @$"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\Diary";
 		public static string CrashReportsDirectory => $@"{WorkingDirectory}\CrashReports";
 
 		public App()
