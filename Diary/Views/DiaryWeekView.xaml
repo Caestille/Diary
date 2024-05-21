@@ -22,7 +22,26 @@
 				CanOpen="False"
 				IsSelected="{Binding IsSelected}"
 				SelectCommand="{Binding SelectCommand}"
-				SubTitle="{Binding Name}" />
+				SubTitle="{Binding Name}">
+				<controls:MenuItem.SubTitleTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding}">
+							<TextBlock.Style>
+								<Style>
+									<Setter Property="TextBlock.Foreground" Value="{DynamicResource ControlClickablePartMouseOverBrush}" />
+									<Style.Triggers>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:MenuItem}}, Path=IsSelected}" Value="True">
+											<DataTrigger.Setters>
+												<Setter Property="TextBlock.Foreground" Value="{DynamicResource StatusTextBrush}" />
+											</DataTrigger.Setters>
+										</DataTrigger>
+									</Style.Triggers>
+								</Style>
+							</TextBlock.Style>
+						</TextBlock>
+					</DataTemplate>
+				</controls:MenuItem.SubTitleTemplate>
+			</controls:MenuItem>
 		</DataTemplate>
 	</UserControl.Resources>
 	<Grid>

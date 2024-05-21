@@ -238,11 +238,14 @@
 											<RowDefinition Height="Auto" />
 										</Grid.RowDefinitions>
 										<WrapPanel>
-											<Label
-												Margin="0,-3"
-												Content="{Binding Name}"
+											<TextBlock
+												MaxWidth="220"
+												Margin="5,1"
 												FontWeight="DemiBold"
-												Foreground="{DynamicResource TextBrush}" />
+												Foreground="{DynamicResource TextBrush}"
+												Text="{Binding Name}"
+												TextTrimming="CharacterEllipsis"
+												ToolTip="{Binding Name}" />
 											<controls:ExtendedButton
 												x:Name="RepoFavButton"
 												Margin="0,-2,0,0"
@@ -277,16 +280,16 @@
 												</Grid>
 											</controls:ExtendedButton>
 										</WrapPanel>
-
 										<TextBlock
 											Grid.Row="1"
 											MaxWidth="230"
-											Margin="10,-3"
-											HorizontalAlignment="Stretch"
+											Margin="10,0,0,0"
+											HorizontalAlignment="Left"
 											FontSize="10"
 											Foreground="{DynamicResource StatusTextBrush}"
 											Text="{Binding RepoDirectory}"
-											TextWrapping="Wrap" />
+											TextTrimming="CharacterEllipsis"
+											ToolTip="{Binding RepoDirectory}" />
 										<ItemsControl
 											Grid.RowSpan="2"
 											Grid.Column="1"
@@ -296,66 +299,74 @@
 											ItemsSource="{Binding Actions}">
 											<ItemsControl.ItemTemplate>
 												<DataTemplate>
-													<controls:ExtendedButton
-														Width="30"
-														Height="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}"
-														Margin="3"
-														Click="Button_Click"
-														CornerRadius="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight, Converter={StaticResource ValueMultiplierConverter}, ConverterParameter=0.5}"
-														Style="{StaticResource RoundButtonStyle}"
-														ToolTip="{Binding FilteredActions.Count}">
-														<Button.Content>
-															<Image
-																Margin="3"
-																RenderOptions.BitmapScalingMode="HighQuality"
-																Source="{Binding Action, Converter={StaticResource ActionIconConverter}}" />
-														</Button.Content>
-														<Button.ContextMenu>
-															<ContextMenu DisplayMemberPath="ItemPath" ItemsSource="{Binding FilteredActions}">
-																<ContextMenu.ItemContainerStyle>
-																	<Style TargetType="MenuItem">
-																		<Setter Property="Command" Value="{Binding OpenCommand}" />
-																	</Style>
-																</ContextMenu.ItemContainerStyle>
-																<ContextMenu.Style>
-																	<Style>
-																		<Setter Property="ContextMenu.Foreground" Value="{DynamicResource TextBrush}" />
-																		<Setter Property="ContextMenu.Template">
-																			<Setter.Value>
-																				<ControlTemplate>
-																					<Border
-																						Background="{DynamicResource MenuBorderBrush}"
-																						BorderBrush="{DynamicResource StatusTextLightBrush}"
-																						BorderThickness="1"
-																						CornerRadius="5">
-																						<Border.Effect>
-																							<DropShadowEffect
-																								BlurRadius="30"
-																								Opacity="1"
-																								ShadowDepth="0"
-																								Color="{DynamicResource InvertedTextColour}" />
-																						</Border.Effect>
-																						<StackPanel>
-																							<controls:SearchBox
-																								Height="20"
-																								HorizontalAlignment="Stretch"
-																								Background="{DynamicResource TextBrush}"
-																								BackgroundOpacity="0.1"
-																								Foreground="{DynamicResource TextBrush}"
-																								SearchText="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
-																							<ScrollViewer MaxHeight="500" Margin="0,3">
-																								<ItemsPresenter />
-																							</ScrollViewer>
-																						</StackPanel>
-																					</Border>
-																				</ControlTemplate>
-																			</Setter.Value>
-																		</Setter>
-																	</Style>
-																</ContextMenu.Style>
-															</ContextMenu>
-														</Button.ContextMenu>
-													</controls:ExtendedButton>
+													<Grid>
+														<Ellipse
+															Width="8"
+															Height="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}"
+															Margin="12"
+															Fill="{DynamicResource ControlClickablePartBrush}" />
+														<controls:ExtendedButton
+															Width="30"
+															Height="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}"
+															Margin="3"
+															Click="Button_Click"
+															CornerRadius="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight, Converter={StaticResource ValueMultiplierConverter}, ConverterParameter=0.5}"
+															Style="{StaticResource RoundButtonStyle}"
+															ToolTip="{Binding FilteredActions.Count}"
+															Visibility="{Binding ElementName=RepoRoot, Path=IsMouseOver, Converter={StaticResource VisibleIfTrueConverter}, ConverterParameter=Hidden}">
+															<Button.Content>
+																<Image
+																	Margin="3"
+																	RenderOptions.BitmapScalingMode="HighQuality"
+																	Source="{Binding Action, Converter={StaticResource ActionIconConverter}}" />
+															</Button.Content>
+															<Button.ContextMenu>
+																<ContextMenu DisplayMemberPath="ItemPath" ItemsSource="{Binding FilteredActions}">
+																	<ContextMenu.ItemContainerStyle>
+																		<Style TargetType="MenuItem">
+																			<Setter Property="Command" Value="{Binding OpenCommand}" />
+																		</Style>
+																	</ContextMenu.ItemContainerStyle>
+																	<ContextMenu.Style>
+																		<Style>
+																			<Setter Property="ContextMenu.Foreground" Value="{DynamicResource TextBrush}" />
+																			<Setter Property="ContextMenu.Template">
+																				<Setter.Value>
+																					<ControlTemplate>
+																						<Border
+																							Background="{DynamicResource MenuBorderBrush}"
+																							BorderBrush="{DynamicResource StatusTextLightBrush}"
+																							BorderThickness="1"
+																							CornerRadius="5">
+																							<Border.Effect>
+																								<DropShadowEffect
+																									BlurRadius="30"
+																									Opacity="1"
+																									ShadowDepth="0"
+																									Color="{DynamicResource InvertedTextColour}" />
+																							</Border.Effect>
+																							<StackPanel>
+																								<controls:SearchBox
+																									Height="20"
+																									HorizontalAlignment="Stretch"
+																									Background="{DynamicResource TextBrush}"
+																									BackgroundOpacity="0.1"
+																									Foreground="{DynamicResource TextBrush}"
+																									SearchText="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+																								<ScrollViewer MaxHeight="500" Margin="0,3">
+																									<ItemsPresenter />
+																								</ScrollViewer>
+																							</StackPanel>
+																						</Border>
+																					</ControlTemplate>
+																				</Setter.Value>
+																			</Setter>
+																		</Style>
+																	</ContextMenu.Style>
+																</ContextMenu>
+															</Button.ContextMenu>
+														</controls:ExtendedButton>
+													</Grid>
 												</DataTemplate>
 											</ItemsControl.ItemTemplate>
 											<ItemsControl.ItemsPanel>
