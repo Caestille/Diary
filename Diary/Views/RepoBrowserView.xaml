@@ -219,8 +219,8 @@
 							<Grid>
 								<Border
 									x:Name="RepoRoot"
-									Width="435"
-									Margin="0,0,20,8"
+									Width="455"
+									Margin="0,0,0,8"
 									Padding="5"
 									HorizontalAlignment="Stretch"
 									Background="{DynamicResource MenuBrush}"
