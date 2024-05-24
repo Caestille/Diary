@@ -5,11 +5,11 @@ namespace Diary.Messages
 {
 	public class TagChangedMessage
     {
-        public ViewModelBase Sender { get; }
+        public GenericViewModelBase Sender { get; }
 
         public CustomTag Tag { get; }
 
-        public TagChangedMessage(ViewModelBase sender, CustomTag tag)
+        public TagChangedMessage(GenericViewModelBase sender, CustomTag tag)
         {
             Sender = sender;
             Tag = tag;

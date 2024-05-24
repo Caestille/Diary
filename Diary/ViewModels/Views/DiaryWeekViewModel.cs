@@ -194,7 +194,14 @@ namespace Diary.ViewModels.Views
 					CanSave = GenerateSummary();
                 }
             });
-            Messenger.Register<SyncTagsMessage>(this, (recipient, message) =>
+			Messenger.Register<TagChangedMessage>(this, (recipient, message) =>
+			{
+				if (ChildViewModels.Contains(message.Sender))
+				{
+					CanSave = true;
+				}
+			});
+			Messenger.Register<SyncTagsMessage>(this, (recipient, message) =>
             {
                 tags = new List<CustomTag>(message.Tags);
             });

@@ -156,6 +156,7 @@ namespace Diary.ViewModels.Views
 				if (ChildViewModels.Contains(message.Sender))
 				{
 					GenerateSummary();
+					Messenger.Send(new TagChangedMessage(this, message.Tag));
 				}
 			});
 			Messenger.Register<EntryDateChangedMessage>(this, (recipient, message) =>
