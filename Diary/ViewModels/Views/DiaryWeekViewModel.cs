@@ -190,9 +190,8 @@ namespace Diary.ViewModels.Views
             Messenger.Register<SummaryChangedMessage>(this, (recipient, message) =>
             {
                 if (ChildViewModels.Contains(message.Sender))
-                {
-                    GenerateSummary();
-                    //CanSave = true;
+				{
+					CanSave = GenerateSummary();
                 }
             });
             Messenger.Register<SyncTagsMessage>(this, (recipient, message) =>
@@ -247,6 +246,7 @@ namespace Diary.ViewModels.Views
 
         protected override void OnChildrenChanged()
         {
+			CanSave = true;
             GenerateSummary();
             base.OnChildrenChanged();
         }
@@ -269,7 +269,7 @@ namespace Diary.ViewModels.Views
 
 			var content = File.ReadAllText(this.WritePath);
 			var self = JsonSerializer.Serialize(this.ToDto());
-			if (self == content) return false;
+			if (self == content) { isReloading = false; return false; }
 
 			IEnumerable<DiaryDayDto>? days = null;
 			try
@@ -281,7 +281,7 @@ namespace Diary.ViewModels.Views
 				//Failed to deserialise json, just return
 			}
 
-			if (days is null) return false;
+			if (days is null) { isReloading = false; return false; }
 			// TODO messagebox to confirm this failed to user
 
 			foreach (var day in ChildViewModels.Cast<DiaryDayViewModel>())
@@ -356,7 +356,7 @@ namespace Diary.ViewModels.Views
             }
         }
 
-        private void GenerateSummary()
+        private bool GenerateSummary()
         {
             var summaries = ChildViewModels.Select(x => new DayTagSummaryViewModel(
                 x.DayOfWeek,
@@ -375,6 +375,7 @@ namespace Diary.ViewModels.Views
                 summary.Tags = new RangeObservableCollection<TagSummaryViewModel>(newItems);
             }
 
+			var changed = Summary == null || (Summary.Count == summaries.Count && !Summary.All(x => summaries.Any(y => y.Equals(x))));
             Summary = new RangeObservableCollection<DayTagSummaryViewModel>(summaries);
 
             TagSummary = new RangeObservableCollection<TagSummaryViewModel>(
@@ -388,6 +389,8 @@ namespace Diary.ViewModels.Views
 
             var total = TimeSpan.FromSeconds(TagSummary.Sum(x => x.Time.TotalSeconds));
             FormattedTotal = TagSummary.Any() ? $"{total.Days * 24 + total.Hours:00}:{total.Minutes:00}" : "00:00";
+
+			return changed;
         }
     }
 }

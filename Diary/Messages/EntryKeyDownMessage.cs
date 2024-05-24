@@ -7,9 +7,9 @@ namespace Diary.Messages.Base
     {
         public GenericViewModelBase Sender { get; }
 
-        public KeyEventArgs Args { get; }
+        public KeyEventArgs? Args { get; }
 
-        public EntryKeyDownMessage(GenericViewModelBase sender, KeyEventArgs args)
+        public EntryKeyDownMessage(GenericViewModelBase sender, KeyEventArgs? args = null)
         {
             Sender = sender;
             Args = args;

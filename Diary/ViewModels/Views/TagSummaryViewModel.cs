@@ -39,5 +39,15 @@ namespace Diary.ViewModels.Views
             Time = TimeSpan.FromSeconds(timespanSeconds);
             FormattedTime = $"{Time.Days * 24 + Time.Hours:00}:{Time.Minutes:00}{(formatAsDecimal ? $" ({Time.TotalHours:0.00})": "")}";
         }
-    }
+
+		public override bool Equals(object? obj)
+		{
+			if (obj is not TagSummaryViewModel other)
+			{
+				return false;
+			}
+
+			return Tag.Tag == other.Tag.Tag && Day == other.Day && Time == other.Time;
+		}
+	}
 }

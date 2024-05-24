@@ -120,6 +120,7 @@ namespace Diary.ViewModels.Views
 		{
 			GenerateSummary();
 			base.OnChildrenChanged();
+			Messenger.Send(new EntryKeyDownMessage(this));
 		}
 
 		protected override void OnRequestDeleteReceived(ViewModelRequestDeleteMessage message)
@@ -220,6 +221,7 @@ namespace Diary.ViewModels.Views
 				};
 
 				AddChild(newVM, index: lastFocusedVm != null ? ChildViewModels.IndexOf(lastFocusedVm) + 1 : null);
+				Messenger.Send(new EntryKeyDownMessage(this, args));
 			}
 		}
 
@@ -234,6 +236,7 @@ namespace Diary.ViewModels.Views
 			};
 
 			AddChild(newVM);
+			Messenger.Send(new EntryKeyDownMessage(this));
 		}
 
 		private void SetFocus(DiaryEntryViewModel entry)

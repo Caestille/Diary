@@ -40,5 +40,15 @@ namespace Diary.ViewModels.Views
             Time = TimeSpan.FromSeconds(Tags.Where(x => x.Tag?.IsIncluded ?? false).Sum(x => x.Time.TotalSeconds));
             FormattedTotal = Tags.Any() ? $"{Time.Hours:00}:{Time.Minutes:00}" : "00:00";
         }
-    }
+
+		public override bool Equals(object? obj)
+		{
+			if (obj is not DayTagSummaryViewModel other)
+			{
+				return false;
+			}
+
+			return Tags.Count == other.Tags.Count && Tags.All(x => other.Tags.Any(y => y.Equals(x)));
+		}
+	}
 }
