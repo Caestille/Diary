@@ -174,7 +174,7 @@
 				</controls:ExtendedButton>
 				<StackPanel
 					Grid.Column="4"
-					Margin="0,0,0,3"
+					Margin="0,-2,0,3"
 					VerticalAlignment="Center">
 					<Label
 						HorizontalAlignment="Left"
@@ -184,6 +184,7 @@
 						FontSize="10"
 						Foreground="{DynamicResource StatusTextBrush}" />
 					<CheckBox
+						Margin="4,-3,0,0"
 						HorizontalAlignment="Left"
 						VerticalAlignment="Center"
 						IsChecked="{Binding IsAutoSaveEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -271,24 +272,6 @@
 						MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
 						MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
 						ToolTip="Open week .json file" />
-					<controls:ExtendedButton
-						x:Name="ReloadFromJsonButton"
-						Grid.Column="10"
-						Margin="0,1,0,0"
-						Padding="5"
-						HorizontalAlignment="Right"
-						VerticalAlignment="Center"
-						Background="{DynamicResource ControlClickablePartBrush}"
-						BorderThickness="0"
-						Command="{Binding ReloadCommand}"
-						Content="{scalableicons:Icon Kind=Reload,
-						                             Width=10,
-						                             Height=10}"
-						CornerRadius="5"
-						Foreground="{DynamicResource StatusTextBrush}"
-						MouseDownColour="{DynamicResource ControlClickablePartMouseDownBrush}"
-						MouseOverColour="{DynamicResource ControlClickablePartMouseOverBrush}"
-						ToolTip="Reload from file" />
 				</StackPanel>
 
 				<!--#endregion-->

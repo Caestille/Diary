@@ -7,7 +7,7 @@ namespace Diary.Extensions
     {
         public static DiaryDayDto ToDto(this DiaryDayViewModel viewModel)
         {
-            return new DiaryDayDto() { Name = viewModel.Name, Notes = viewModel.Notes, Entries = viewModel.ChildViewModels.Select(x => (x as DiaryEntryViewModel).ToDto()).ToList(), DayOfWeek = viewModel.DayOfWeek };
+            return new DiaryDayDto() { Name = viewModel.Name, Notes = viewModel.Notes, Entries = viewModel.ChildViewModels.Select(x => x.ToDto()).ToList(), DayOfWeek = viewModel.DayOfWeek };
         }
     }
 }

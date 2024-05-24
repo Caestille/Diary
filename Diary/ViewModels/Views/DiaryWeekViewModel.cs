@@ -27,6 +27,9 @@ namespace Diary.ViewModels.Views
 
         private Guid guid;
 
+		private object locker = new();
+		private bool isReloading;
+
         public ICommand ShowWeekSummaryCommand => new RelayCommand(() =>
 		{
 			_ = Task.Run(() =>
@@ -49,35 +52,11 @@ namespace Diary.ViewModels.Views
 
 		public ICommand OpenJsonCommand => new RelayCommand(() => 
 		{
-			IsAutoSaveEnabled = false;
 			Process.Start(new ProcessStartInfo(this.WritePath)
 				{
 					UseShellExecute = true,
 					CreateNoWindow = true
 				});
-		});
-
-		public ICommand ReloadCommand => new RelayCommand(() =>
-		{
-			IEnumerable<DiaryDayDto>? days = null;
-			try
-			{
-				days = JsonSerializer.Deserialize<DiaryWeekDto>(File.ReadAllText(this.WritePath))?.Days;
-			}
-			catch
-			{
-				//Failed to deserialise json, just return
-			}
-
-			if (days is null) return;
-			// TODO messagebox to confirm this failed to user
-
-			foreach (var day in ChildViewModels.Cast<DiaryDayViewModel>())
-			{
-				var matchingDto = days.FirstOrDefault(x => x.Name == day.Name);
-				if (matchingDto == null) continue;
-				day.ApplyDto(matchingDto);
-			}
 		});
 
 		private bool showWeekSummary;
@@ -94,7 +73,7 @@ namespace Diary.ViewModels.Views
             set
             {
                 SetProperty(ref showFullDates, value);
-                ChildViewModels.ToList().ForEach(x => (x as DiaryDayViewModel).ShowFullDates = value);
+                ChildViewModels.ToList().ForEach(x => x.ShowFullDates = value);
             }
         }
 
@@ -105,7 +84,7 @@ namespace Diary.ViewModels.Views
             set
             {
                 SetProperty(ref syncDates, value);
-                ChildViewModels.ToList().ForEach(x => (x as DiaryDayViewModel).SyncDates = value);
+                ChildViewModels.ToList().ForEach(x => x.SyncDates = value);
             }
         }
 
@@ -213,7 +192,7 @@ namespace Diary.ViewModels.Views
                 if (ChildViewModels.Contains(message.Sender))
                 {
                     GenerateSummary();
-                    CanSave = true;
+                    //CanSave = true;
                 }
             });
             Messenger.Register<SyncTagsMessage>(this, (recipient, message) =>
@@ -226,7 +205,7 @@ namespace Diary.ViewModels.Views
                 {
                     if (ChildViewModels.Contains(message.ViewModel))
                     {
-                        SelectedDay = message.ViewModel as DiaryDayViewModel;
+                        SelectedDay = message.ViewModel;
                         foreach (var vm in ChildViewModels)
                         {
                             if (vm != message.ViewModel && vm.IsSelected)
@@ -238,13 +217,24 @@ namespace Diary.ViewModels.Views
                 });
             Messenger.Register<EntryKeyDownMessage>(this, (recipient, message) =>
             {
-                if (ChildViewModels.Contains(message.Sender))
-                {
-                    CanSave = true;
-                }
+				lock (locker)
+				{
+					if (!isReloading && ChildViewModels.Contains(message.Sender))
+					{
+						var content = File.ReadAllText(this.WritePath);
+						var self = JsonSerializer.Serialize(this.ToDto());
+						CanSave = self != content;
+					}
+				}
             });
             base.BindMessages();
         }
+
+		public override void Select(GenericViewModelBase? sender = null)
+		{
+			ChildViewModels.Where(x => !x.Loaded).ToList().ForEach(x => x.LoadEntries());
+			base.Select(sender);
+		}
 
 		public override void OnDelete()
 		{
@@ -267,16 +257,61 @@ namespace Diary.ViewModels.Views
             autoSaveTimer.Stop();
             autoSaveTimer.Elapsed -= Timer_Elapsed;
             _ = Save();
-			this.ChildViewModels.ToList().ForEach(x => (x as DiaryDayViewModel).Stop());
+			this.ChildViewModels.ToList().ForEach(x => x.Stop());
             base.OnShutdownStart(sender, e);
-        }
+		}
 
-        private void Timer_Elapsed(object? sender, ElapsedEventArgs e)
+		private bool Reload()
+		{
+			if (!ChildViewModels.All(x => x.Loaded)) return false;
+
+			isReloading = true;
+
+			var content = File.ReadAllText(this.WritePath);
+			var self = JsonSerializer.Serialize(this.ToDto());
+			if (self == content) return false;
+
+			IEnumerable<DiaryDayDto>? days = null;
+			try
+			{
+				days = JsonSerializer.Deserialize<DiaryWeekDto>(content)?.Days;
+			}
+			catch
+			{
+				//Failed to deserialise json, just return
+			}
+
+			if (days is null) return false;
+			// TODO messagebox to confirm this failed to user
+
+			foreach (var day in ChildViewModels.Cast<DiaryDayViewModel>())
+			{
+				var matchingDto = days.FirstOrDefault(x => x.Name == day.Name);
+				if (matchingDto == null) continue;
+				day.ApplyDto(matchingDto);
+			}
+
+			isReloading = false;
+
+			return true;
+		}
+
+		private void Timer_Elapsed(object? sender, ElapsedEventArgs e)
         {
-            if (IsAutoSaveEnabled && CanSave)
-            {
-                _ = Save();
-            }
+			lock (locker)
+			{
+				if (CanSave)
+				{
+					if (IsAutoSaveEnabled)
+					{
+						_ = Save();
+					}
+				}
+				else
+				{
+					Reload();
+				}
+			}
         }
 
         public async Task Save()
@@ -306,7 +341,7 @@ namespace Diary.ViewModels.Views
                 if (ChildViewModels.Count > i)
                 {
                     ChildViewModels[i].Name = firstDayOfWeek.ToString("dd/MM/yyyy");
-                    (ChildViewModels[i] as DiaryDayViewModel).DayOfWeek = firstDayOfWeek.DayOfWeek.ToString();
+                    ChildViewModels[i].DayOfWeek = firstDayOfWeek.DayOfWeek.ToString();
                 }
                 else
                 {
@@ -324,8 +359,8 @@ namespace Diary.ViewModels.Views
         private void GenerateSummary()
         {
             var summaries = ChildViewModels.Select(x => new DayTagSummaryViewModel(
-                (x as DiaryDayViewModel).DayOfWeek,
-                (x as DiaryDayViewModel).GenerateSummary(false))).ToList();
+                x.DayOfWeek,
+                x.GenerateSummary(false))).ToList();
 
             foreach (var summary in summaries)
             {

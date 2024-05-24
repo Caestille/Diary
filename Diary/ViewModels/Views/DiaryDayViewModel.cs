@@ -35,7 +35,7 @@ namespace Diary.ViewModels.Views
 			set
 			{
 				SetProperty(ref showFullDates, value);
-				ChildViewModels.ToList().ForEach(x => (x as DiaryEntryViewModel).ShowFullDates = value);
+				ChildViewModels.ToList().ForEach(x => x.ShowFullDates = value);
 			}
 		}
 
@@ -80,6 +80,7 @@ namespace Diary.ViewModels.Views
 
 		public void LoadEntries()
 		{
+			this.ChildViewModels.ToList().ForEach(x => x.Stop());
 			this.ChildViewModels = new (entries.Select(DiaryEntryViewModel.FromDto));
 			Loaded = true;
 			entries = new List<DiaryEntryDto>();
@@ -179,12 +180,12 @@ namespace Diary.ViewModels.Views
 						if (message.IsStartDate && index > 0)
 						{
 							var entryBefore = ChildViewModels[index - 1];
-							((DiaryEntryViewModel)entryBefore).EndTime = message.NewValue;
+							entryBefore.EndTime = message.NewValue;
 						}
 						else if (index < ChildViewModels.Count - 1)
 						{
 							var entryAfter = ChildViewModels[index + 1];
-							((DiaryEntryViewModel)entryAfter).StartTime = message.NewValue;
+							entryAfter.StartTime = message.NewValue;
 						}   
 					}
 					if (message.Sender.ShowFullDates != ShowFullDates)
@@ -209,7 +210,7 @@ namespace Diary.ViewModels.Views
 				var start = lastFocusedVm != null ? lastFocusedVm.EndTime : now - TimeSpan.FromMinutes(5);
 				var end = lastFocusedVm != null
 					? ChildViewModels.IndexOf(lastFocusedVm) < ChildViewModels.Count - 1
-						? (ChildViewModels[ChildViewModels.IndexOf(lastFocusedVm) + 1] as DiaryEntryViewModel).StartTime
+						? ChildViewModels[ChildViewModels.IndexOf(lastFocusedVm) + 1].StartTime
 						: now < start ? start + TimeSpan.FromMinutes(5) : now
 					: now < start ? start + TimeSpan.FromMinutes(5) : now;
 				var newVM = new DiaryEntryViewModel()
@@ -225,7 +226,7 @@ namespace Diary.ViewModels.Views
 		private void AddFirstChild()
 		{
 			var now = DateTime.Now.SetDate(DateTime.Parse(Name));
-			var start = ChildViewModels.Any()? (ChildViewModels.Last() as DiaryEntryViewModel).EndTime : now - TimeSpan.FromMinutes(5);
+			var start = ChildViewModels.Any()? ChildViewModels.Last().EndTime : now - TimeSpan.FromMinutes(5);
 			var newVM = new DiaryEntryViewModel()
 			{
 				StartTime = start,
@@ -242,7 +243,7 @@ namespace Diary.ViewModels.Views
 			{
 				if (vm != lastFocusedVm)
 				{
-					(vm as DiaryEntryViewModel).IsFocused = false;
+					vm.IsFocused = false;
 				}
 			}
 		}

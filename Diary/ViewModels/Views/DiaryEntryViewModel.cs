@@ -138,7 +138,7 @@ namespace Diary.ViewModels.Views
                 {
                     Tag = null;
                 }
-                if (starterTag != "")
+                if (starterTag != "" && Tag == null)
                 {
                     Tag = SelectableTags.First(x => x.Tag == starterTag);
                     starterTag = "";
