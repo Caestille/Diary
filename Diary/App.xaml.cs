@@ -1,6 +1,5 @@
 ﻿using Diary.ViewModels;
 using System.Windows;
-using CoreUtilities.Services.RegistryInteraction;
 using Diary.ViewModels.Views;
 using System.IO;
 using System.Text.Json;
@@ -22,7 +21,7 @@ namespace Diary
 		public static bool MenuStartOpen { get; }
 
 		public static string WorkingDirectory
-			=> @$"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\Diary";
+			=> @$"G:\Software\Public\Joseph Ward\Diary";
 		public static string CrashReportsDirectory => $@"{WorkingDirectory}\CrashReports";
 
 		public App()
