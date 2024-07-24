@@ -8,6 +8,7 @@ using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
 using System.Windows.Input;
 using ModernThemables.Messages;
+using Diary.Models.Tagging;
 
 namespace Diary.ViewModels.Views
 {
@@ -260,6 +261,10 @@ namespace Diary.ViewModels.Views
 				.Select(x => x.Tag)
 				.Distinct()
 				.Select(x => new TagSummaryViewModel(x, castChildren.Where(y => (y.Tag?.Tag ?? "") == x.Tag).Sum(z => z.Span.TotalSeconds))));
+			var total = new TagSummaryViewModel(
+				new CustomTag() { IsIncluded = false, Tag = "Total" },
+				summaries.Where(x => x.Tag.IsIncluded).Sum(x => x.Time.TotalSeconds));
+			summaries.Add(total);
 			TagSummaries = new RangeObservableCollection<TagSummaryViewModel>(summaries);
 			if (sendMessage) Messenger.Send(new SummaryChangedMessage(this));
 			return summaries;
