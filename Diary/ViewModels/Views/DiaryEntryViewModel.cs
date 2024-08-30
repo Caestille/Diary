@@ -20,8 +20,9 @@ namespace Diary.ViewModels.Views
         public ICommand EntryGotFocusCommand => new RelayCommand(EntryGotFocus);
         public ICommand EntryKeyDownCommand => new RelayCommand<object>(EntryKeyDown);
         public ICommand EntryDateChangedCommand => new RelayCommand<object>(EntryDateChanged);
+		public ICommand SetEndTimeToNowCommand => new RelayCommand(() => this.EndTime = DateTime.Now);
 
-        private DateTime startTime;
+		private DateTime startTime;
         public DateTime StartTime
         {
             get => startTime;

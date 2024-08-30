@@ -30,6 +30,8 @@ namespace Diary.ViewModels.Views
 		private object locker = new();
 		private bool isReloading;
 
+		private DateTime lastEdit = DateTime.MinValue;
+
         public ICommand ShowWeekSummaryCommand => new RelayCommand(() =>
 		{
 			_ = Task.Run(() =>
@@ -222,7 +224,8 @@ namespace Diary.ViewModels.Views
                     }
                 });
             Messenger.Register<EntryKeyDownMessage>(this, (recipient, message) =>
-            {
+			{
+				this.lastEdit = DateTime.Now;
 				lock (locker)
 				{
 					if (!isReloading && ChildViewModels.Contains(message.Sender))
@@ -273,6 +276,8 @@ namespace Diary.ViewModels.Views
 			if (!ChildViewModels.All(x => x.Loaded)) return false;
 
 			isReloading = true;
+
+			if (this.lastEdit > new FileInfo(this.WritePath).LastWriteTime) { isReloading = false; return false; }
 
 			var content = File.ReadAllText(this.WritePath);
 			var self = JsonSerializer.Serialize(this.ToDto());
@@ -365,7 +370,9 @@ namespace Diary.ViewModels.Views
 
         private bool GenerateSummary()
         {
-            var summaries = ChildViewModels.Select(x => new DayTagSummaryViewModel(
+			ChildViewModels.ToList().ForEach(x => x.ShowFullDates = this.ShowFullDates);
+
+			var summaries = ChildViewModels.Select(x => new DayTagSummaryViewModel(
                 x.DayOfWeek,
                 x.GenerateSummary(false))).ToList();
 

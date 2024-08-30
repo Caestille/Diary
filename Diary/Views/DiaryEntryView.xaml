@@ -17,6 +17,7 @@
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="Auto" />
@@ -63,9 +64,26 @@
 				</b:EventTrigger>
 			</b:Interaction.Triggers>
 		</controls:DatetimeTextBox>
+		<controls:ExtendedButton
+			Grid.Column="3"
+			Margin="0,0,5,0"
+			Padding="3"
+			HorizontalAlignment="Right"
+			VerticalAlignment="Center"
+			Background="Transparent"
+			Command="{Binding SetEndTimeToNowCommand}"
+			DisabledBackgroundColour="{DynamicResource DisabledControlClickablePartBrush}"
+			Style="{StaticResource RoundButtonStyle}"
+			ToolTip="Set end time to now"
+			Visibility="{Binding ElementName=root, Path=IsMouseOver, Converter={StaticResource VisibleIfTrueConverter}, ConverterParameter=Hidden}">
+			<scalableicons:Icon
+				Margin="1"
+				Foreground="{DynamicResource StatusTextBrush}"
+				Kind="ClockNow" />
+		</controls:ExtendedButton>
 		<TextBox
 			x:Name="EntryTextbox"
-			Grid.Column="3"
+			Grid.Column="4"
 			Margin="10,3,3,0"
 			Padding="2,4"
 			VerticalContentAlignment="Center"
@@ -89,7 +107,7 @@
 			</b:Interaction.Triggers>
 		</TextBox>
 		<ComboBox
-			Grid.Column="4"
+			Grid.Column="5"
 			Width="Auto"
 			Margin="10,3,0,0"
 			VerticalAlignment="Top"
@@ -106,7 +124,7 @@
 		</ComboBox>
 		<controls:ExtendedButton
 			x:Name="Button"
-			Grid.Column="6"
+			Grid.Column="7"
 			Margin="5,0"
 			Padding="3"
 			HorizontalAlignment="Right"
