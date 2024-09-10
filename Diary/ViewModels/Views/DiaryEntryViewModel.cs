@@ -80,8 +80,8 @@ namespace Diary.ViewModels.Views
             set => SetProperty(ref isFocused, value);
         }
 
-        private CustomTag tag;
-        public CustomTag Tag
+        private CustomTag? tag;
+        public CustomTag? Tag
         {
             get => tag;
             set
@@ -141,7 +141,7 @@ namespace Diary.ViewModels.Views
                 }
                 if (starterTag != "" && Tag == null)
                 {
-                    Tag = SelectableTags.First(x => x.Tag == starterTag);
+                    Tag = SelectableTags.FirstOrDefault(x => x.Tag == starterTag) ?? null;
                     starterTag = "";
                 }
             });
