@@ -54,6 +54,11 @@ namespace Diary.ViewModels.Views
                 ChildViewModels = new (ChildViewModels.OrderByDescending(x => x.WeekStart));
             });
             base.BindMessages();
-        }
-    }
+		}
+
+		public override void OnDelete()
+		{
+			this.ChildViewModels.ToList().ForEach(x => x.Delete());
+		}
+	}
 }

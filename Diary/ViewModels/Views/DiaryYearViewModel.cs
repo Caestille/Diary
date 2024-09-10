@@ -42,5 +42,10 @@ namespace Diary.ViewModels.Views
 		{
             base.AddChild(viewModelToAdd, name, 0);
         }
-    }
+
+		public override void OnDelete()
+		{
+			this.ChildViewModels.ToList().ForEach(x => x.Delete());
+		}
+	}
 }
