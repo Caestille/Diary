@@ -228,7 +228,7 @@ namespace Diary.ViewModels.Views
 				this.lastEdit = DateTime.Now;
 				lock (locker)
 				{
-					if (!isReloading && ChildViewModels.Contains(message.Sender))
+					if (!isReloading && ChildViewModels.Contains(message.Sender) && File.Exists(this.WritePath))
 					{
 						var content = File.ReadAllText(this.WritePath);
 						var self = JsonSerializer.Serialize(this.ToDto());
