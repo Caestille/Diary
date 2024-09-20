@@ -177,7 +177,7 @@ namespace Diary.ViewModels.Views
             }
         }
 
-        private void AutoTag()
+        public void AutoTag()
         {
             if (Tag != null || autoTags == null || string.IsNullOrEmpty(EntryText))
             {

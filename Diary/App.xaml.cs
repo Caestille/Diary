@@ -98,19 +98,32 @@ namespace Diary
 						WorkingDirectory + "\\Calendar",
 						Guid.Parse(Path.GetFileNameWithoutExtension(week))));
 				}
+				var calendarVm = new CalendarViewModel(WorkingDirectory + "\\Calendar", weekVms);
 				var vms = new List<GenericViewModelBase>()
 				{
 					new TakeMeToTodayViewModel(),
-					new CalendarViewModel(WorkingDirectory + "\\Calendar", weekVms),
+					calendarVm,
 					taggingVm,
 					new ToDoListViewModel(WorkingDirectory),
 					new RepoBrowserViewModel(WorkingDirectory),
+					new StatsViewModel(calendarVm),
 				};
+
 				return vms;
 			});
 
 			var mainViewModel = new MainViewModel(viewModels);
 			viewModels[0].SelectCommand.Execute(null);
+
+			// Load entries in the background
+			_ = Task.Run(() =>
+			{
+				Parallel.ForEach((viewModels[1] as CalendarViewModel).ChildViewModels.SelectMany(x => x.ChildViewModels).SelectMany(x => x.ChildViewModels), week =>
+				{
+					week.ChildViewModels.ToList().ForEach(x => { if (!x.Loaded) x.LoadEntries(); });
+				});
+				(viewModels.First(x => x is StatsViewModel) as StatsViewModel).AllWeeksLoaded();
+			});
 
 			var mainView = new MainWindow()
 			{

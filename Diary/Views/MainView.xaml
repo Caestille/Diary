@@ -20,6 +20,9 @@
 		<DataTemplate x:Key="IconTemplate">
 			<Grid>
 				<Grid.Resources>
+					<DataTemplate DataType="{x:Type vms:StatsViewModel}">
+						<scalableicons:Icon Kind="Calculator" />
+					</DataTemplate>
 					<DataTemplate DataType="{x:Type vms:TakeMeToTodayViewModel}">
 						<scalableicons:Icon Kind="Plus" />
 					</DataTemplate>
@@ -180,6 +183,9 @@
 		</DataTemplate>
 		<DataTemplate DataType="{x:Type vms:RepoBrowserViewModel}">
 			<views:RepoBrowserView />
+		</DataTemplate>
+		<DataTemplate DataType="{x:Type vms:StatsViewModel}">
+			<views:StatsView />
 		</DataTemplate>
 	</UserControl.Resources>
 	<Grid>

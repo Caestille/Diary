@@ -129,8 +129,15 @@ namespace Diary.ViewModels.Views
 
 			if (File.Exists(tagsWritePath))
 			{
-				CustomTags = new RangeObservableCollection<CustomTag>(
-					JsonSerializer.Deserialize<List<CustomTag>>(File.ReadAllText(tagsWritePath)));
+				try
+				{
+					CustomTags = new RangeObservableCollection<CustomTag>(
+						JsonSerializer.Deserialize<List<CustomTag>>(File.ReadAllText(tagsWritePath)));
+				}
+				catch
+				{
+					CustomTags = new RangeObservableCollection<CustomTag>();
+				}
 			}
 
 			if (File.Exists(rulesWritePath))

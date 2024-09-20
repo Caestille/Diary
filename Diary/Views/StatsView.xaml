@@ -1,0 +1,37 @@
+﻿<UserControl
+	x:Class="Diary.Views.StatsView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+	xmlns:charts="clr-namespace:ModernThemables.Charting.Controls;assembly=ModernThemables"
+	xmlns:controls="clr-namespace:ModernThemables.Controls;assembly=ModernThemables"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:helperclasses="clr-namespace:CoreUtilities.HelperClasses;assembly=CoreUtilities"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:models="clr-namespace:Diary.Models.Tagging"
+	xmlns:mvvm="clr-namespace:Microsoft.Toolkit.Mvvm.ComponentModel;assembly=Microsoft.Toolkit.Mvvm"
+	xmlns:scalableicons="clr-namespace:ModernThemables.Icons;assembly=ModernThemables.Icons"
+	x:Name="root"
+	mc:Ignorable="d">
+	<Grid>
+		<charts:BarChart
+			x:Name="AccountsChart"
+			Grid.Row="1"
+			Grid.RowSpan="4"
+			Grid.Column="2"
+			Grid.ColumnSpan="3"
+			Margin="20,10"
+			BarCornerRadiusFraction="0.2"
+			BarGroupSeparationPixels="3"
+			BarSeparationPixels="0"
+			FontSize="9.75"
+			Foreground="{DynamicResource TextBrush}"
+			LegendLocation="Bottom"
+			Series="{Binding DisplayedSeries, UpdateSourceTrigger=PropertyChanged}"
+			ShowYSeparatorLines="True"
+			TooltipLocation="Points"
+			TooltipOpacity="0.8"
+			Visibility="{Binding DisplayedSeries, Converter={StaticResource SequenceHasElementsVisibilityConverter}}"
+			XAxisLabelRotation="90" />
+	</Grid>
+</UserControl>
